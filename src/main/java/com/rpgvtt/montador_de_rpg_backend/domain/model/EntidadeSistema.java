@@ -1,13 +1,17 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "Entidade_Sistema")
 public class EntidadeSistema {
@@ -30,4 +34,7 @@ public class EntidadeSistema {
     private String nome;
 
     private String descricao;
+
+    @OneToMany(mappedBy = "entidade")
+    private List<EntidadeSistema> entidadeSistemas;
 }

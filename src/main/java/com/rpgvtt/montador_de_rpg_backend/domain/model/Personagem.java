@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,9 +9,12 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Personagem {
     @Id
@@ -46,4 +50,7 @@ public class Personagem {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode atributos;
+
+    @OneToMany(mappedBy = "personagem")
+    private List<HistoricoAcoes> historicoAcoes;
 }

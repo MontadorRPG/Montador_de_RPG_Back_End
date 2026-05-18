@@ -5,38 +5,51 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Cena {
+@Table(name = "Historico_Acoes")
+public class HistoricoAcoes {
+
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "cena_seq"
+            generator = "histAc_seq"
     )
     @SequenceGenerator(
-            name = "cena_seq",
-            sequenceName = "cena_sequence",
+            name = "histAc_seq",
+            sequenceName = "histAc_sequence",
             allocationSize = 1
     )
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_personagem")
+    private Personagem personagem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode mapa;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entidade")
+    private EntidadeSistema entidade;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime momento;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private JsonNode estado;
+    private JsonNode resultado;
 
 }

@@ -14,18 +14,26 @@ import tools.jackson.databind.JsonNode;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Cena {
+public class EfeitoAtivo {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "cena_seq"
+            generator = "efAt_seq"
     )
     @SequenceGenerator(
-            name = "cena_seq",
-            sequenceName = "cena_sequence",
+            name = "efAt_seq",
+            sequenceName = "efAt_sequence",
             allocationSize = 1
     )
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_personagem")
+    private Personagem personagem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_efeito")
+    private EntidadeEfeito entidadeEfeito;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
@@ -33,10 +41,11 @@ public class Cena {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private JsonNode mapa;
+    private JsonNode parametros;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode estado;
+    private int expiraEm;
+
+    @Column(name = "usos_restantes")
+    private int usosRestantes;
 
 }

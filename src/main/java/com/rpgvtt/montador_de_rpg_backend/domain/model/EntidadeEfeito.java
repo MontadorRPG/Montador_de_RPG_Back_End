@@ -6,34 +6,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Usuario {
-
+@Table(name = "Entidade_Efeito")
+public class EntidadeEfeito {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "user_seq"
+            generator = "entEf_seq"
     )
     @SequenceGenerator(
-            name = "user_seq",
-            sequenceName = "user_sequence",
+            name = "entEf_seq",
+            sequenceName = "entEf_sequence",
             allocationSize = 1
     )
     private Long id;
 
-    private String senha;
-    private String email;
-    private String apelido;
-
-    @OneToMany(mappedBy = "usuario")
-    private List<Sistema> sistema;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<Personagem>  personagens;
+    @Many
 }
