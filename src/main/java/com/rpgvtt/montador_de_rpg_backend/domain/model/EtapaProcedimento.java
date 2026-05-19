@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -26,17 +29,15 @@ public class EtapaProcedimento {
         allocationSize = 1
     )
     @Column(name = "id_etapa")
-    private Integer idEtapa;
+    private Long idEtapa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Procedimentos_id_procedimento")
     private Procedimento procedimento;
 
-    private Interger ordem;
+    private Integer ordem;
 
     private String nome;
-
-    //tipo_etapa enum
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")

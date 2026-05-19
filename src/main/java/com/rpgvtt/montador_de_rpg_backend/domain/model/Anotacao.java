@@ -45,7 +45,7 @@ public class Anotacao {
     private Cena cena;
 
     @Column(name = "id_entidade_vinculo")
-    private Interger idEntidadeVinculo;
+    private Integer idEntidadeVinculo;
 
     private String titulo;
 

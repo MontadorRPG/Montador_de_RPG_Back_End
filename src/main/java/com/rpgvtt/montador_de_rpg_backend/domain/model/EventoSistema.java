@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -16,10 +19,17 @@ import java.util.List;
 @Table(name = "Evento_Sistema")
 public class EventoSistema {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evento_sistema_seq")
-    @SequenceGenerator(name = "evento_sistema_seq", sequenceName = "evento_sistema_sequence", allocationSize = 1)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "evento_sistema_seq"
+    )
+    @SequenceGenerator(
+            name = "evento_sistema_seq",
+            sequenceName = "evento_sistema_sequence",
+            allocationSize = 1
+    )
     @Column(name = "id_evento")
-    private Integer idEvento;
+    private Long idEvento;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Sistemas_id_sistema", referencedColumnName = "id_sistema")

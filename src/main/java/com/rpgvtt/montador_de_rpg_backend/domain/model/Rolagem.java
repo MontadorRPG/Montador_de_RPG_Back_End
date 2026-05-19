@@ -1,10 +1,14 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.TipoVantagem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -17,10 +21,17 @@ import java.util.List;
 @Table(name = "Rolagem")
 public class Rolagem {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evento_sistema_seq")
-    @SequenceGenerator(name = "evento_sistema_seq", sequenceName = "evento_sistema_sequence", allocationSize = 1)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "evento_sistema_seq"
+    )
+    @SequenceGenerator(
+            name = "evento_sistema_seq",
+            sequenceName = "evento_sistema_sequence",
+            allocationSize = 1
+    )
     @Column(name = "id_rolagem")
-    private Integer idRolagem;
+    private Long idRolagem;
 
     private String dado;
 

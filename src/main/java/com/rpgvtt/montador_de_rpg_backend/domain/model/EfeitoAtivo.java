@@ -43,9 +43,9 @@ public class EfeitoAtivo {
     @Column(columnDefinition = "jsonb")
     private JsonNode parametros;
 
-    private int expiraEm;
+    private Integer expiraEm;
 
     @Column(name = "usos_restantes")
-    private int usosRestantes;
+    private Integer usosRestantes;
 
 }

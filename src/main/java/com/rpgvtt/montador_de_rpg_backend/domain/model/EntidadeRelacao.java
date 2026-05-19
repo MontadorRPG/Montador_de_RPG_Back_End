@@ -5,8 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import java.util.List;
 @Table(name = "Entidade_Relacao")
 public class EntidadeRelacao {
     @EmbeddedId 
-    private EntidadeRelacionamentoId id = new EntidadeRelacionamentoId();
+    private EntidadeRelacaoId id = new EntidadeRelacaoId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idEntidadePai") 

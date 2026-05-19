@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class Primitivo {
         allocationSize = 1
     )
     @Column(name = "id_primitivo")
-    private Integer idPrimitivo;
+    private Long idPrimitivo;
 
     private String nome;
 

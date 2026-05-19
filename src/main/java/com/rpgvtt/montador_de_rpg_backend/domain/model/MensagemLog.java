@@ -28,7 +28,7 @@ public class MensagemLog {
         allocationSize = 1
     )
     @Column(name = "id_log")
-    private Integer idLog;
+    private Long idLog;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Sessoes_id_sessao")

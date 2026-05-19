@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class Procedimento {
         allocationSize = 1
     )
     @Column(name = "id_procedimento")
-    private Integer idProcedimento;
+    private Long idProcedimento;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Sistemas_id_sistema")
@@ -35,8 +38,6 @@ public class Procedimento {
     private String nome;
 
     private String descricao;
-
-    //tipo enum
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
