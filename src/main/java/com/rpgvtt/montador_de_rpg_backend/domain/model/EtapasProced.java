@@ -19,31 +19,32 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Procedimento {
+@Table (name = "etapas_procedimento")
+public class EtapasProced {
 
-    @Id
-    @GeneratedValue (
+    @Id 
+    @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
-        generator = "proced_seq"
+        generator = "etap_seq"
     )
     @SequenceGenerator (
-        name = "proced_seq",
-        sequenceName = "proced_sequence",
+        name = "etap_seq",
+        sequenceName = "etap_sequence",
         allocationSize = 1
     )
     private Long id;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_sistema")
-    private Sistema sistema;
+    @ManyToOne(fatch = FetchType.LAZY)
+    @JoinColumn (name = "id_procedimento")
+    private Procedimento procedimento;
 
-    private String descricao;
-    private String tipo;
-
+    private String tipoEtapa;
+    
     @JdbcTypeCode (SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
-    private JsonNode confgsGeral;
+    private JsonNode parametros;
 
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "procedimento")
-    private List<EtapasProced> etapas = new ArrayList<>();
+    private boolean obrigatorio;
+
+
 }

@@ -36,7 +36,7 @@ public class Personagem {
     @JoinColumn(name = "id_tipoPersonagem")
     private TipoPersonagem tipoPersonagem;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JdbcTypeCode(SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
     private JsonNode atributos;
 

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Getter
@@ -30,6 +33,10 @@ public class Usuario {
     private String senha;
     private String email;
     private String apelido;
+    private boolean e_admin;
+
+    private LocalDateTime criado_em;
+    private LocalDateTime atualizado_em;
 
     @OneToMany(mappedBy = "usuario")
     private List<Sistema> sistema;

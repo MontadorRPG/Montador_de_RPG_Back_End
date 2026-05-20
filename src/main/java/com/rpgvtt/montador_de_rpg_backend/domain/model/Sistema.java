@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.List;
 
 @Getter
@@ -27,19 +33,48 @@ public class Sistema {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario_criador")
     private Usuario usuario;
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "id_sistema_pai ")
+    private Sistema sistemaPai;
 
     private String nome;
 
     private String descricao;
 
-    @OneToMany(mappedBy = "sistema")
-    private List<Campanha> campanhas;
+    @JdbcTypeCode (SqlTypes.JSONB)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode schemaAtributos;
+
+    @JdbcTypeCode (SqlTypes.JSONB)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode schemaEntidades;
+
+    private int versaoSchemas;
+
+    private boolean eOficial;
+    private LocalDateTime criadoEm;
+
 
     @OneToMany(mappedBy = "sistema")
-    private List<TipoPersonagem> tiposPersonagens;
+    private List<Campanha> campanhas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sistema")
-    private List<Personagem> personagens;
+    // @OneToMany(mappedBy = "sistema")
+    // private List<TipoPersonagem> tiposPersonagens = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sistema")
+    private List<Personagem> personagens = new ArrayList<>();
+
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "sistema")
+    private List<Procedimento> procedimento = new ArrayList<>();
+
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "sistema")
+    private List<Eventos> eventos = new ArrayList<>();
+
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "sistemaPai")
+    private List<Sistema> sistemasFilhos = new ArrayList<>();
+
+
 }

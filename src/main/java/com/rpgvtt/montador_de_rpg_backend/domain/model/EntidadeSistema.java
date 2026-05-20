@@ -46,6 +46,12 @@ public class EntidadeSistema {
     @Column(columnDefinition = "jsonb")
     private JsonNode propriedades;
 
+    private String tipo;
+
+    @JdbcTypeCode (SqlTypes.JSONB)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode atributos;
+
     @OneToMany(mappedBy = "entidade")
     private List<EntidadeSistema> entidadeSistemas;
 

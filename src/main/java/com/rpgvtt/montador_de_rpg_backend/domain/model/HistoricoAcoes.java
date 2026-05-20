@@ -48,7 +48,7 @@ public class HistoricoAcoes {
     @Column(nullable = false, updatable = false)
     private LocalDateTime momento;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JdbcTypeCode(SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
     private JsonNode resultado;
 

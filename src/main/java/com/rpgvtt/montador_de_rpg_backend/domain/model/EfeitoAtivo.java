@@ -14,6 +14,7 @@ import tools.jackson.databind.JsonNode;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table (name = "efeito_ativo")
 public class EfeitoAtivo {
     @Id
     @GeneratedValue(
@@ -39,7 +40,7 @@ public class EfeitoAtivo {
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JdbcTypeCode(SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
     private JsonNode parametros;
 

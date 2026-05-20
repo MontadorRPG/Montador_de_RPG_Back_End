@@ -5,13 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
-@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,7 +41,7 @@ public class Resolucao {
     @Column(name = "alvo_referencia")
     private String alvoReferencia;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JdbcTypeCode(SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
     private JsonNode parametros;
 }

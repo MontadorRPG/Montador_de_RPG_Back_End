@@ -15,35 +15,37 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Procedimento {
+public class Eventos {
 
     @Id
     @GeneratedValue (
         strategy = GenerationType.SEQUENCE,
-        generator = "proced_seq"
+        generator = "envet_seq"
     )
     @SequenceGenerator (
-        name = "proced_seq",
-        sequenceName = "proced_sequence",
+        name = "envet_seq",
+        sequenceName = "envet_sequence",
         allocationSize = 1
     )
     private Long id;
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_sistema")
+    @JoinColumn(name = "id_sistema")
     private Sistema sistema;
 
+    private String nome;
     private String descricao;
-    private String tipo;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @JdbcTypeCode(SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
-    private JsonNode confgsGeral;
+    private JsonNode payload;
 
-    @OneToMany (cascade = CascadeType.ALL, mappedBy = "procedimento")
-    private List<EtapasProced> etapas = new ArrayList<>();
+
+
 }

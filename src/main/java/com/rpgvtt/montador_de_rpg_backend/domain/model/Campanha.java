@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Getter
@@ -29,13 +32,15 @@ public class Campanha {
 
     private String nome;
 
+    private LocalDateTime criadoEm;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sistema")
     private Sistema sistema;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_mestre")
-    private Usuario mestre;
+//     @ManyToOne(fetch = FetchType.LAZY)
+//     @JoinColumn(name = "id_mestre")
+//     private Usuario mestre;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
     private List<Sessao> sessoes;

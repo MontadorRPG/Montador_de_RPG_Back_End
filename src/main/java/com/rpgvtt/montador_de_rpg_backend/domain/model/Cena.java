@@ -31,12 +31,12 @@ public class Cena {
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JdbcTypeCode (SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
     private JsonNode mapa;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode estado;
+//     @JdbcTypeCode(SqlTypes.JSONB)
+//     @Column(columnDefinition = "jsonb")
+//     private JsonNode estado;
 
 }

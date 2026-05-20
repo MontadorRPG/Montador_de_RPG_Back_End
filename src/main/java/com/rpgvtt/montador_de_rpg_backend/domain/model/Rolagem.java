@@ -1,18 +1,16 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.enums.TipoVantagem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
-@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,7 +41,7 @@ public class Rolagem {
     @Column(name = "vantagem_desvantagem", length = 11, nullable = true) 
     private TipoVantagem vantagemDesvantagem;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JdbcTypeCode(SqlTypes.JSONB)
     @Column(columnDefinition = "jsonb")
     private JsonNode valorAgregado;
 }
