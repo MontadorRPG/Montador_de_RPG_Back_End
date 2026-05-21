@@ -1,15 +1,14 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.enums.TipoVantagem;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
 @Table(name = "Rolagem")
 public class Rolagem {
     @Id
@@ -31,19 +29,24 @@ public class Rolagem {
             allocationSize = 1
     )
     @Column(name = "id_rolagem")
-    private Long idRolagem;
+    private Long id;
 
+    @NotNull
     private String dado;
 
+    @NotNull
     private Integer quantidade;
 
+    @NotNull
     private Boolean explosao;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "vantagem_desvantagem", length = 11, nullable = true) 
-    private TipoVantagem vantagemDesvantagem;
-
-    @JdbcTypeCode(SqlTypes.JSONB)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode valorAgregado;
+
+    @OneToMany(mappedBy = "rolagem")
+    private List<EntidadeEfeito> entidadeEfeitos;
+
+    @OneToMany(mappedBy = "rolagem")
+    private List<Resolucao> resolucao;
 }

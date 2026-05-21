@@ -1,21 +1,23 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.entidade;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.CenaParticipantes;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.EfeitoAtivo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import java.util.List;
 
-import javax.annotation.processing.Generated;
-
-import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
-
-
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,29 +35,41 @@ public class EntidadeInstancia {
         allocationSize = 1
     )
     @Column(name = "id_instancia")
-    private Long idInstancia;
+    private Long id;
 
-    @ManyToOne(fatch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn (name = "id_campanha")
     private Campanha campanha;
 
-    @ManyToOne(fatch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn (name = "id_entidade")
     private EntidadeSistema entidade;
 
+    @NotNull
     private String tipo;
+
+    @NotNull
     private String nome;
+
     private String descricao;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @NotNull
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private JsonNode AtributosAtuais;
+    private JsonNode atributosAtuais;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @NotNull
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode customizacoes;
 
-    private LocalDateTime criadoEm;
-    
+    @CreationTimestamp
+    @Column(name = "criada_em")
+    private LocalDateTime criadaEm;
 
+    @OneToMany(mappedBy = "entidadeInstancia")
+    private List<EfeitoAtivo> efeitosAtivos;
+
+    @OneToMany(mappedBy = "entidadeInstancia")
+    private List<CenaParticipantes> cenas;
 }

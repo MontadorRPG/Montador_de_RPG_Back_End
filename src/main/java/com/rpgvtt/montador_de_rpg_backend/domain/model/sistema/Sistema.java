@@ -1,20 +1,19 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sistema;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
-import java.util.List;
-
-import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
-
 import java.util.List;
 
 @Getter
@@ -47,11 +46,11 @@ public class Sistema {
 
     private String descricao;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode schemaAtributos;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @JdbcTypeCode (SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode schemaEntidades;
 
@@ -59,7 +58,6 @@ public class Sistema {
 
     private boolean eOficial;
     private LocalDateTime criadoEm;
-
 
     @OneToMany(mappedBy = "sistema")
     private List<Campanha> campanhas = new ArrayList<>();

@@ -1,16 +1,16 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
-import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
-
 import tools.jackson.databind.JsonNode;
 
 @Getter
@@ -32,22 +32,24 @@ public class EfeitoAtivo {
     )
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_personagem")
-    private Personagem personagem;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_instancia")
+    private EntidadeInstancia entidadeInstancia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_efeito")
     private EntidadeEfeito entidadeEfeito;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
-    @JdbcTypeCode(SqlTypes.JSONB)
+    @NotNull
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode parametros;
 
+    @NotNull
     private Integer expiraEm;
 
     @Column(name = "usos_restantes")

@@ -1,14 +1,14 @@
 // domain/validation/SchemaValidator.java
 package com.rpgvtt.montador_de_rpg_backend.domain.validation;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeSistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.validation.exception.*;
 import com.rpgvtt.montador_de_rpg_backend.domain.validation.schema.*;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Map;

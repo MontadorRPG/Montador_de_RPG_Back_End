@@ -2,17 +2,12 @@ package com.rpgvtt.montador_de_rpg_backend.domain.model.sistema;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -40,10 +35,10 @@ public class Procedimento {
     private String descricao;
     private String tipo;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @JdbcTypeCode (SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode confgsGeral;
 
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "procedimento")
-    private List<EtapasProcedimento> etapas = new ArrayList<>();
+    private List<EtapaProcedimento> etapas;
 }

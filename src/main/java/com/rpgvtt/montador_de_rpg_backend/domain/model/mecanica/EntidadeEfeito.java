@@ -4,10 +4,16 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeSistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EventoSistema;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,28 +34,33 @@ public class EntidadeEfeito {
     )
     private Long id;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_evento")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_evento")
     private EventoSistema evento;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_entidade")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entidade")
     private EntidadeSistema entidade;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_resolucao")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_resolucao")
     private Resolucao resolucao;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_rolagem")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_rolagem")
     private Rolagem rolagem;
 
-    private string processamento; // O quanto o sistema consegue processar essa efeito
+    @NotNull
+    private String processamento; // O quanto o sistema consegue processar essa efeito
 
-    @JdbcTypeCode(SqlTypes.JSONB)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode condicao;
 
+    @NotNull
     private boolean eReativo;
+
+    @OneToMany(mappedBy = "efeito")
+    private List<EfeitosPrimitivos> primitivos;
 
 }

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class CampanhaUsuarioKey {
+public class CampanhaUsuarioKey implements Serializable {
 
     @Column (name = "id_campanha")
     private Long idCampanha;

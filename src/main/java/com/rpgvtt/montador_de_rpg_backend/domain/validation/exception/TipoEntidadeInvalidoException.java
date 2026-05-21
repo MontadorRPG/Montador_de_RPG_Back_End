@@ -4,7 +4,6 @@ public class TipoEntidadeInvalidoException extends RuntimeException {
 
     public TipoEntidadeInvalidoException(String tipo) {
         super(
-            "tipo",
             "O tipo '%s' não existe no schema_entidades deste sistema".formatted(tipo)
         );
     }

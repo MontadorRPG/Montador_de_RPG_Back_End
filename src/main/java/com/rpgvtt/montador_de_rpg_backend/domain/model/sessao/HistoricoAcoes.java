@@ -1,5 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeSistema;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,10 +10,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
-import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeSistema;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
-
 import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDateTime;
@@ -52,7 +50,7 @@ public class HistoricoAcoes {
     @Column(nullable = false, updatable = false)
     private LocalDateTime momento;
 
-    @JdbcTypeCode(SqlTypes.JSONB)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode resultado;
 

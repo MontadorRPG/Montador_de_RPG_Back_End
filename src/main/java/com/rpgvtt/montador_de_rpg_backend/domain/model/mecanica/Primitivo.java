@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,21 +22,26 @@ public class Primitivo {
     @Id
     @GeneratedValue(
         strategy = GenerationType.SEQUENCE, 
-        generator = "evento_sistema_seq"
+        generator = "primitivo_seq"
     )
     @SequenceGenerator(
-        name = "evento_sistema_seq", 
-        sequenceName = "evento_sistema_sequence", 
+        name = "primitivo_seq",
+        sequenceName = "primitivo_sequence",
         allocationSize = 1
     )
     @Column(name = "id_primitivo")
-    private Long idPrimitivo;
+    private Long id;
 
+    @NotNull
     private String nome;
 
     private String descricao;
 
-    @JdbcTypeCode(SqlTypes.JSONB)
+    @NotNull
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode parametro_schemas;
+
+    @OneToMany(mappedBy = "primitivo")
+    private List<EfeitosPrimitivos> efeitos;
 }

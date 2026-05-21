@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,15 +30,22 @@ public class Cena {
     )
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
-    @JdbcTypeCode (SqlTypes.JSONB)
+    @NotNull
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode mapa;
 
-//     @JdbcTypeCode(SqlTypes.JSONB)
+    @NotNull
+    private Integer ordem;
+
+    @OneToMany(mappedBy = "cena")
+    private List<CenaParticipantes> participantes;
+
+//     @JdbcTypeCode(SqlTypes.JSON)
 //     @Column(columnDefinition = "jsonb")
 //     private JsonNode estado;
 

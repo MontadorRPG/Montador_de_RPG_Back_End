@@ -16,7 +16,7 @@ public class CampoCompostoSchema {
     private Object defaultVal;
 
     public String getTipo()      { return tipo; }
-    public boolean isDeriado()   { return derivado; }
+    public boolean isDerivado()   { return derivado; }
     public String getFormula()   { return formula; }
     public Integer getMin()      { return min; }
     public Integer getMax()      { return max; }

@@ -2,7 +2,9 @@ package com.rpgvtt.montador_de_rpg_backend.domain.model.entidade;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,38 +25,38 @@ public class EntidadeSistema {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "ent_seq"
+            generator = "entSist_seq"
     )
     @SequenceGenerator(
-            name = "ent_seq",
-            sequenceName = "ent_sequence",
+            name = "entSist_seq",
+            sequenceName = "entSist_sequence",
             allocationSize = 1
     )
     @Column(name = "id_entidade")
-    private Long idEntidade;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sistema")
     private Sistema sistema;
 
+    @NotNull
+    private String tipo;
+
+    @NotNull
     private String nome;
 
     private String descricao;
 
+    @NotNull
+    @JdbcTypeCode (SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode atributos;
+
+    @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode propriedades;
 
-    private String tipo;
-
-    @JdbcTypeCode (SqlTypes.JSONB)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode atributos;
-
     @OneToMany(mappedBy = "entidade")
     private List<EntidadeSistema> entidadeSistemas;
-
-    @OneToOne(mappedBy = "EntidadeSistema", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Personagem personagem;
 }

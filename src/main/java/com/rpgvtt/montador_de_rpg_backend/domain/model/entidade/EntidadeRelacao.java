@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.entidade;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import tools.jackson.databind.JsonNode;
 @Table(name = "Entidade_Relacao")
 public class EntidadeRelacao {
     @EmbeddedId 
-    private EntidadeRelacaoId id = new EntidadeRelacaoId();
+    private EntidadeRelacaoKey id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idEntidadePai") 
@@ -29,8 +30,10 @@ public class EntidadeRelacao {
     @JoinColumn(name = "id_entidade_filha")
     private EntidadeSistema idEntidadeFilha;
 
+    @NotNull
     private Integer quantidade;
 
+    @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode customizacoes;

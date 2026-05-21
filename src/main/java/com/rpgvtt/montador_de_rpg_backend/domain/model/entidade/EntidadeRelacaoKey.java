@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode 
 @Embeddable 
-public class EntidadeRelacaoId implements Serializable {
+public class EntidadeRelacaoKey implements Serializable {
 
     @Column(name = "id_entidade_pai")
     private Integer idEntidadePai;

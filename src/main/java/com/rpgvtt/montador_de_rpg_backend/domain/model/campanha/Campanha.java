@@ -4,11 +4,14 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Sessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,11 +37,14 @@ public class Campanha {
     )
     private Long id;
 
+    @NotNull
     private String nome;
 
-    private LocalDateTime criadoEm;
+    @CreationTimestamp
+    @Column(name = "criada_em")
+    private LocalDateTime criadaEm;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sistema")
     private Sistema sistema;
 
@@ -51,4 +57,7 @@ public class Campanha {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
     private List<Personagem> personagens;
+
+    @OneToMany(mappedBy = "campanha")
+    private List<Usuario> usuarios;
 }

@@ -12,9 +12,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Embeddable
-public class EfeitosPrimitivosKey {
+public class EfeitosPrimitivosKey implements Serializable {
 
-    
     @Column (name = "id_efeito")
     private Long idEfeito;
 

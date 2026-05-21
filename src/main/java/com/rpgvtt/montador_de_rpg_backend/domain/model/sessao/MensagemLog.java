@@ -1,17 +1,14 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter

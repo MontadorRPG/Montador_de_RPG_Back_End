@@ -1,13 +1,12 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-
-import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 
 import java.time.LocalDateTime;
 import java.util.List;
