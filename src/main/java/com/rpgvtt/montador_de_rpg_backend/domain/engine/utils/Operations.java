@@ -22,7 +22,7 @@ package com.rpgvtt.montador_de_rpg_backend.engine.utils;
                 else yield Math.pow(valueB, 1.0 / valueA);
             }
             default -> throw new IllegalArgumentException("Operador matemático desconhecido: " + operator);
-       }
+        };
    }
 
 }
