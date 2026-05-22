@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: rpgdb-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rpguser
+      POSTGRES_PASSWORD: rpgpass
+      POSTGRES_DB: db_rpg
+    ports:
+      - "5432:5432"        # host:container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # persists data between restarts
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql  # optional
+
+volumes:
+  postgres_data:
