@@ -59,7 +59,7 @@ public class EntidadeInstancia {
     @Column(columnDefinition = "jsonb")
     private JsonNode atributosAtuais;
 
-    @NotNull
+    // @NotNull nem sempre vai ter customizacoes
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private JsonNode customizacoes;

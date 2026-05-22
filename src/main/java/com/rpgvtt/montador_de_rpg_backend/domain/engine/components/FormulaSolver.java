@@ -9,13 +9,14 @@ import java.util.Stack;
 
 public class FormulaSolver{ 
 
-    public static void execute(String Formula) {
+    public static double execute(String Formula) {
         List<Object> tokens = Procedures.cloneTokens(Formula);
         // Converter para RPN
         List<Object> rpn = formulaTranslator(tokens);
         // Avaliar RPN
         double finalResult = solver(rpn);
         System.out.printf("\nResultado Final: %.4f\n", finalResult);
+        return finalResult;
     }
 
     private static List<Object> formulaTranslator(List<Object> tokens) {

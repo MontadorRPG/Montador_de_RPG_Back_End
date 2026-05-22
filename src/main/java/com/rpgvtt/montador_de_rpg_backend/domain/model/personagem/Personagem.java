@@ -42,9 +42,9 @@ public class Personagem {
     @JoinColumn(name = "id_campanha")
     private EntidadeInstancia instancia;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode atributos;
+//     @JdbcTypeCode(SqlTypes.JSON) Não precisa
+//     @Column(columnDefinition = "jsonb")
+//     private JsonNode atributos;
 
     private String historia;
 

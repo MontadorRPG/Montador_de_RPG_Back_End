@@ -2,6 +2,7 @@ package com.rpgvtt.montador_de_rpg_backend.domain.model.campanha;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Sessao;
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusCampanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
@@ -17,6 +18,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import java.util.List;
+
+import javax.net.ssl.Status;
 
 @Getter
 @Setter
@@ -39,6 +42,9 @@ public class Campanha {
 
     @NotNull
     private String nome;
+
+    @NoteNull
+    private StatusCampanha Status;
 
     @CreationTimestamp
     @Column(name = "criada_em")
