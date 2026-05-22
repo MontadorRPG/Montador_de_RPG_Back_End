@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sistema;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;
@@ -73,7 +74,7 @@ public class Sistema {
     private List<Campanha> campanhas;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sistema")
-    private List<Personagem> personagens;
+    private List<EntidadeInstancia> personagens;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sistema")
     private List<Procedimento> procedimento;

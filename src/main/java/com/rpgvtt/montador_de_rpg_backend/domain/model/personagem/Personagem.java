@@ -1,10 +1,8 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.personagem;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.HistoricoAcoes;
-
-
+import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +11,6 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,11 +21,11 @@ public class Personagem {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "entEf_seq"
+            generator = "pers_seq"
     )
     @SequenceGenerator(
-            name = "entEf_seq",
-            sequenceName = "entEf_sequence",
+            name = "pers_seq",
+            sequenceName = "pers_sequence",
             allocationSize = 1
     )
     private Long id;
@@ -39,12 +35,20 @@ public class Personagem {
     private Usuario usuario;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_campanha")
+    @JoinColumn(name = "id_instancia")
     private EntidadeInstancia instancia;
 
 //     @JdbcTypeCode(SqlTypes.JSON) Não precisa
 //     @Column(columnDefinition = "jsonb")
 //     private JsonNode atributos;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_campanha")
+    private Campanha campanha;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode atributos;
 
     private String historia;
 
@@ -52,9 +56,6 @@ public class Personagem {
 
     @Column(name = "notas_jogador")
     private String notasJogador;
-
-    @OneToMany(mappedBy = "personagem")
-    private List<HistoricoAcoes> historicoAcoes;
 
     // @OneToOne
     // @MapsId
