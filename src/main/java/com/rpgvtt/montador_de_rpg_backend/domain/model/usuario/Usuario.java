@@ -35,7 +35,6 @@ public class Usuario {
     )
     private Long id;
 
-    @NotBlank
     private String senha;
 
     @NotBlank
@@ -44,8 +43,11 @@ public class Usuario {
     @NotBlank
     private String apelido;
 
-    @NotBlank
     private boolean e_admin;
+
+    // NOVOS CAMPOS PARA OAUTH2:
+    private String provider;   // Salvará "GOOGLE" ou "DISCORD"
+    private String providerId; // ID único que o Google/Discord gera para aquele usuário
 
     @CreationTimestamp
     @Column(name="criado_em", updatable = false)
