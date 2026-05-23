@@ -1,7 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.security;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
-import com.rpgvtt.montador_de_rpg_backend.repository.UsuarioRepository;
+import com.rpgvtt.montador_de_rpg_backend.repository.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

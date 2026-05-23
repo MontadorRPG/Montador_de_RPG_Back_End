@@ -1,4 +1,4 @@
-package com.rpgvtt.montador_de_rpg_backend.repository;
+package com.rpgvtt.montador_de_rpg_backend.repository.usuario;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;

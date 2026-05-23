@@ -1,4 +1,4 @@
-package com.rpgvtt.montador_de_rpg_backend.repository;
+package com.rpgvtt.montador_de_rpg_backend.repository.entidade;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
 import org.springframework.data.jpa.repository.JpaRepository;

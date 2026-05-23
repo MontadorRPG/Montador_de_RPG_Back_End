@@ -10,9 +10,9 @@ import com.rpgvtt.montador_de_rpg_backend.dto.campanha.AdicionarJogadorDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaCreateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaParticipanteResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaResponseDTO;
-import com.rpgvtt.montador_de_rpg_backend.repository.CampanhaRepository;
-import com.rpgvtt.montador_de_rpg_backend.repository.CampanhaUsuarioRepository;
-import com.rpgvtt.montador_de_rpg_backend.repository.UsuarioRepository; // IMPORT ADICIONADO
+import com.rpgvtt.montador_de_rpg_backend.repository.campanha.CampanhaRepository;
+import com.rpgvtt.montador_de_rpg_backend.repository.campanha.CampanhaUsuarioRepository;
+import com.rpgvtt.montador_de_rpg_backend.repository.usuario.UsuarioRepository; // IMPORT ADICIONADO
 import jakarta.persistence.EntityManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

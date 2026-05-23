@@ -1,4 +1,4 @@
-package com.rpgvtt.montador_de_rpg_backend.repository;
+package com.rpgvtt.montador_de_rpg_backend.repository.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Sessao;
 import org.springframework.data.jpa.repository.JpaRepository;
