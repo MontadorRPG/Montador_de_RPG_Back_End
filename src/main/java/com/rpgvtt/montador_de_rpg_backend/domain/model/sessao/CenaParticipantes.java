@@ -28,12 +28,12 @@ public class CenaParticipantes {
     private JsonNode posicao;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId
+    @MapsId(value = "idCena")
     @JoinColumn(name = "id_cena")
     private Cena cena;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId
+    @MapsId(value = "idInstancia")
     @JoinColumn(name = "id_instancia")
     private EntidadeInstancia entidadeInstancia;
 

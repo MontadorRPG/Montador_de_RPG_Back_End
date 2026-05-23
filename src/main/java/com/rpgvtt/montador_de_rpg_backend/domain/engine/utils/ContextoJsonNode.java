@@ -27,7 +27,7 @@ public class ContextoJsonNode implements Contexto {
 
     private Object converter(JsonNode node) {
         if (node.isNumber()) return node.numberValue();
-        if (node.isString()) return node.isString();
+        if (node.isString()) return node.asString();
         if (node.isBoolean()) return node.booleanValue();
         if (node.isArray()) {
             List<Object> lista = new ArrayList<>();

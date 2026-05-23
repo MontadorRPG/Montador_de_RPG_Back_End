@@ -36,7 +36,10 @@ public class Procedimento {
     @NotNull
     private String nome;
 
+    @SuppressWarnings("unused")
     private String descricao;
+    
+    @SuppressWarnings("unused")
     private String tipo;
 
     @NotNull

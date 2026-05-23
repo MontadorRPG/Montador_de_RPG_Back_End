@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="PersistenceUnitSettings">
-    <persistence-units>
-      <persistence-unit moduleName="montador-de-rpg-backend" name="montador-de-rpg-backend" framework="JPA" ormUnit="montador-de-rpg-backend:montador-de-rpg-backend" defaultDataSourceId="9516e3f9-2546-47ed-ba97-3726b88e5f6e" />
-    </persistence-units>
-  </component>
-</project>

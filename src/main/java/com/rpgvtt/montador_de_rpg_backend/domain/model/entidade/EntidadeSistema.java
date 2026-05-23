@@ -1,7 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.entidade;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
+// import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import jakarta.persistence.*;

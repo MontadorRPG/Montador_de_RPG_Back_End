@@ -30,12 +30,12 @@ public class EfeitosPrimitivos {
     private JsonNode parametros;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId
+    @MapsId(value = "idEfeito")
     @JoinColumn(name = "id_efeito")
     private EntidadeEfeito efeito;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @MapsId
+    @MapsId(value = "idPrimitivo")
     @JoinColumn(name = "id_primitivo")
     private Primitivo primitivo;
 }

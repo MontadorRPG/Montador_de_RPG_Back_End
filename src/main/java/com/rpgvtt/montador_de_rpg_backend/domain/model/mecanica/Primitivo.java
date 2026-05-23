@@ -29,7 +29,6 @@ public class Primitivo {
         sequenceName = "primitivo_sequence",
         allocationSize = 1
     )
-    @Column(name = "id_primitivo")
     private Long id;
 
     @NotNull

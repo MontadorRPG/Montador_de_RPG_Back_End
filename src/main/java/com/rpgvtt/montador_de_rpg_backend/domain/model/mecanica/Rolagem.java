@@ -1,6 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.enums.TipoVantagem;
+// import com.rpgvtt.montador_de_rpg_backend.domain.enums.TipoVantagem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

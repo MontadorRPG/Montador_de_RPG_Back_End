@@ -6,6 +6,10 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+// Não faz tanto sentido colcoar isso aqui.
+// O problema é que esta hardcodando a batalha.
+// a batalha ficaria a cargo dos serives de procedimento/etapas e dos servies de efeitos e entidades.
+
 @Service
 public class EngineBattleMaster {
 

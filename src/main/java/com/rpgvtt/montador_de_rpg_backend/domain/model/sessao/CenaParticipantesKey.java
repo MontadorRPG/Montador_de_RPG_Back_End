@@ -14,9 +14,9 @@ import java.io.Serializable;
 @Embeddable
 public class CenaParticipantesKey implements Serializable {
 
-    @Column (name = "id_campanha")
-    private Long idCampanha;
+    @Column (name = "id_cena")
+    private Long idCena;
 
-    @Column (name = "id_usuario")
-    private Long idusuario;
+    @Column (name = "id_instancia")
+    private Long idInstancia;
 }

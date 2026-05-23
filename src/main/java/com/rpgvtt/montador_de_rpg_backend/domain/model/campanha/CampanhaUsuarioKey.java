@@ -18,6 +18,6 @@ public class CampanhaUsuarioKey implements Serializable {
     private Long idCampanha;
 
     @Column (name = "id_usuario")
-    private Long idusuario;
+    private Long idUsuario;
 
 }

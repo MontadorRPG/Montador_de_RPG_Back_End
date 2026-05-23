@@ -1,5 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,10 @@ public class Cena {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_instancia")
+    private EntidadeInstancia entidadeInstancia;
 
     @NotNull
     @JdbcTypeCode(SqlTypes.JSON)

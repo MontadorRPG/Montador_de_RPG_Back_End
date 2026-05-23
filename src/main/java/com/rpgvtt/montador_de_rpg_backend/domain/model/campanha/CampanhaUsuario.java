@@ -27,13 +27,13 @@ public class CampanhaUsuario {
     @Column(name = "entrou_em")
     private LocalDateTime entrouEm;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @MapsId(value = "idCampanha")
     @JoinColumn(name = "id_campanha")
     private Campanha campanha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @MapsId(value = "idUsuario")
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 

@@ -5,7 +5,7 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Sessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusCampanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
+// import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import java.util.List;

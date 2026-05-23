@@ -41,10 +41,6 @@ public class Sessao {
     @Column(name = "data_fim", nullable = false, updatable = false)
     private LocalDateTime dataFim;
 
-    @CreationTimestamp
-    @Column(name = "data_agendada", nullable = false, updatable = false)
-    private LocalDateTime dataAgendada;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sessao")
     private List<Cena> cenas;
 

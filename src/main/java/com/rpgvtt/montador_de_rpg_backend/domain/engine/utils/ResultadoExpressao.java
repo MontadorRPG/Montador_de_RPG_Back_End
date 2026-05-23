@@ -6,7 +6,7 @@ import java.util.Map;
 public class ResultadoExpressao {
 
     public enum TipoResultado {
-        NUMERO, BOOLEANO, TEXTO, ALVO, INSTRUCAO, NULO, LISTA
+        NUMERO, BOOLEANO, TEXTO, ALVO, INSTRUCAO, LISTA, OBJETO, NULO
     }
 
     private final TipoResultado tipo;
@@ -45,6 +45,10 @@ public class ResultadoExpressao {
         return new ResultadoExpressao(TipoResultado.LISTA, valor);
     }
 
+    public static ResultadoExpressao objeto(Object valor) {
+        return new ResultadoExpressao(TipoResultado.OBJETO, valor);
+    }
+
     // Getters com verificação
     public double comoNumero() {
         if (tipo != TipoResultado.NUMERO)
@@ -76,16 +80,23 @@ public class ResultadoExpressao {
         return (Alvo) valor;
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> comoInstrucao() {
         if (tipo != TipoResultado.INSTRUCAO)
             throw new IllegalStateException("Resultado é " + tipo + ", não INSTRUCAO");
         return (Map<String, Object>) valor;
     }
 
+    public Object comoObjeto() {
+        if (tipo != TipoResultado.OBJETO)
+            throw new IllegalStateException("Resultado é " + tipo + ", não OBJETO");
+        return (Object) valor;
+    }
+
 
     public TipoResultado getTipo() { return tipo; }
 
-    // Talvez no futuro
+    
     public Object getValor() { return valor; }
 
     @Override

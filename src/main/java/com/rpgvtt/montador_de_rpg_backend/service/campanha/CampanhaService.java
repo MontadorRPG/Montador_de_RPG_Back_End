@@ -10,9 +10,9 @@ import com.rpgvtt.montador_de_rpg_backend.dto.campanha.AdicionarJogadorDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaCreateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaParticipanteResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaResponseDTO;
-import com.rpgvtt.montador_de_rpg_backend.repository.CampanhaRepository;
-import com.rpgvtt.montador_de_rpg_backend.repository.CampanhaUsuarioRepository;
-import com.rpgvtt.montador_de_rpg_backend.repository.UsuarioRepository; // IMPORT ADICIONADO
+import com.rpgvtt.montador_de_rpg_backend.repository.campanha.CampanhaRepository;
+import com.rpgvtt.montador_de_rpg_backend.repository.campanha.CampanhaUsuarioRepository;
+import com.rpgvtt.montador_de_rpg_backend.repository.usuario.UsuarioRepository; // IMPORT ADICIONADO
 import jakarta.persistence.EntityManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,9 +30,9 @@ public class CampanhaService {
     private final EntityManager entityManager;
 
     // CONSTRUTOR ATUALIZADO COM A INJEÇÃO DO USUARIO_REPOSITORY
-    public CampanhaService(CampanhaRepository campanhaRepository, 
-                           CampanhaUsuarioRepository campanhaUsuarioRepository, 
-                           UsuarioRepository usuarioRepository, 
+    public CampanhaService(CampanhaRepository campanhaRepository,
+                           CampanhaUsuarioRepository campanhaUsuarioRepository,
+                           UsuarioRepository usuarioRepository,
                            EntityManager entityManager) {
         this.campanhaRepository = campanhaRepository;
         this.campanhaUsuarioRepository = campanhaUsuarioRepository;
@@ -44,20 +44,20 @@ public class CampanhaService {
     public CampanhaResponseDTO criar(CampanhaCreateDTO dto) {
         Campanha campanha = new Campanha();
         campanha.setNome(dto.nome());
-        
+
         Sistema sistemaProxy = entityManager.getReference(Sistema.class, dto.sistemaId());
         campanha.setSistema(sistemaProxy);
 
         campanha = campanhaRepository.save(campanha);
 
         Usuario usuarioProxy = entityManager.getReference(Usuario.class, dto.criadorId());
-        
+
         CampanhaUsuarioKey vinculoKey = new CampanhaUsuarioKey(campanha.getId(), dto.criadorId());
         CampanhaUsuario vinculo = new CampanhaUsuario();
         vinculo.setId(vinculoKey);
         vinculo.setCampanha(campanha);
         vinculo.setUsuario(usuarioProxy);
-        vinculo.setPapel(PapeisUsuario.MESTRE); 
+        vinculo.setPapel(PapeisUsuario.MESTRE);
 
         // Alterado de entityManager.persist para usar o Repository por consistência
         campanhaUsuarioRepository.save(vinculo);
@@ -117,7 +117,7 @@ public class CampanhaService {
 
         return new CampanhaParticipanteResponseDTO(
                 novoVinculo.getId().getIdCampanha(),
-                novoVinculo.getId().getIdusuario(), // Atenção apenas se o 'u' maiúsculo não quebrar aqui
+                novoVinculo.getId().getIdUsuario(), // Atenção apenas se o 'u' maiúsculo não quebrar aqui
                 novoVinculo.getPapel().name(),
                 novoVinculo.getEntrouEm()
         );
