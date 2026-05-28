@@ -1,5 +1,5 @@
 // domain/engine/primitivos/EstadoSessao.java
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos;
+package com.rpgvtt.montador_de_rpg_backend.engine.primitivos;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.EfeitoAtivo;

@@ -1,9 +1,9 @@
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.executores;
+package com.rpgvtt.montador_de_rpg_backend.engine.primitivos.executores;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.EstadoSessao;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.PrimitivoExecutor;
+import com.rpgvtt.montador_de_rpg_backend.engine.primitivos.EstadoSessao;
+import com.rpgvtt.montador_de_rpg_backend.engine.primitivos.PrimitivoExecutor;
 // import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.Suspensao;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
 import com.fasterxml.jackson.databind.JsonNode;
 
 // Primitivo: suspende a execução e apresenta opções ao jogador

@@ -1,6 +1,9 @@
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.components;
+package com.rpgvtt.montador_de_rpg_backend.engine.components;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.*;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.*;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.Alvo;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.ResultadoExpressao;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;

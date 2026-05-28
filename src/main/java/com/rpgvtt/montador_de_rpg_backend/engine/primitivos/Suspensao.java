@@ -1,5 +1,5 @@
 // domain/engine/primitivos/Suspensao.java
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos;
+package com.rpgvtt.montador_de_rpg_backend.engine.primitivos;
 
 import lombok.Getter;
 import com.fasterxml.jackson.databind.JsonNode;

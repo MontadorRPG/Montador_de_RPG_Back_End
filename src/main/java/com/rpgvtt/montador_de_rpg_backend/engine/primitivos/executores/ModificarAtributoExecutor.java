@@ -1,11 +1,11 @@
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.executores;
+package com.rpgvtt.montador_de_rpg_backend.engine.primitivos.executores;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.components.InterpretadorJson;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.EstadoSessao;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.PrimitivoExecutor;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Contexto;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.ResultadoExpressao;
+import com.rpgvtt.montador_de_rpg_backend.engine.components.InterpretadorJson;
+import com.rpgvtt.montador_de_rpg_backend.engine.primitivos.EstadoSessao;
+import com.rpgvtt.montador_de_rpg_backend.engine.primitivos.PrimitivoExecutor;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.ResultadoExpressao;
 
 public class ModificarAtributoExecutor implements PrimitivoExecutor {
 

@@ -1,7 +1,7 @@
 // domain/engine/primitivos/PrimitivoExecutor.java
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos;
+package com.rpgvtt.montador_de_rpg_backend.engine.primitivos;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface PrimitivoExecutor {

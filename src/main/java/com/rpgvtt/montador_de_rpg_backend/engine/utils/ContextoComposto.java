@@ -1,4 +1,4 @@
-package com.rpgvtt.montador_de_rpg_backend.domain.engine.utils;
+package com.rpgvtt.montador_de_rpg_backend.engine.utils;
 
 
 import java.util.Optional;
