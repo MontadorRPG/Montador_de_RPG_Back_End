@@ -4,7 +4,7 @@ import com.rpgvtt.montador_de_rpg_backend.domain.engine.components.Interpretador
 import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.EstadoSessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.PrimitivoExecutor;
 import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Contexto;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 // Primitivo: dispara um EventoSistema para ser processado após os primitivos
 public class DispararEventoExecutor implements PrimitivoExecutor {

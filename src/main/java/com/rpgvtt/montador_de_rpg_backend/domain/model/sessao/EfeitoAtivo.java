@@ -1,7 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
+// import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Getter
 @Setter
@@ -36,9 +36,9 @@ public class EfeitoAtivo {
     @JoinColumn(name = "id_instancia")
     private EntidadeInstancia entidadeInstancia;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_efeito")
-    private EntidadeEfeito entidadeEfeito;
+//     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+//     @JoinColumn(name = "id_efeito")
+//     private EntidadeEfeito entidadeEfeito;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -41,6 +41,6 @@ public class Primitivo {
     @Column(columnDefinition = "jsonb")
     private JsonNode parametro_schemas;
 
-    @OneToMany(mappedBy = "primitivo")
-    private List<EfeitosPrimitivos> efeitos;
+    // @OneToMany(mappedBy = "primitivo")
+    // private List<EfeitosPrimitivos> efeitos;
 }

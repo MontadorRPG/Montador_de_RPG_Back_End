@@ -2,7 +2,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos;
 
 import lombok.Getter;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 // Representa uma pausa na execução que precisa de input do front.
 @Getter

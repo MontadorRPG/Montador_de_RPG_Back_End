@@ -2,15 +2,15 @@ package com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.executores;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.EstadoSessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.PrimitivoExecutor;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.Suspensao;
+// import com.rpgvtt.montador_de_rpg_backend.domain.engine.primitivos.Suspensao;
 import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Contexto;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 // Primitivo: suspende a execução e apresenta opções ao jogador
 // Parâmetros esperados:
 //   "opcoes"       -> array de opções
-//   "guardar_como" -> nome da variável onde a escolha será guardada
 public class SolicitarEscolhaExecutor implements PrimitivoExecutor {
+
 
     @Override
     public void executar(JsonNode parametros, Contexto contexto, EstadoSessao estado) {
@@ -24,8 +24,8 @@ public class SolicitarEscolhaExecutor implements PrimitivoExecutor {
             );
         }
 
-        estado.adicionarSuspensao(
-            new Suspensao(Suspensao.TipoSuspensao.ESCOLHA, guardarComoNode.asString(), opcoesNode)
-        );
+        // estado.adicionarSuspensao(
+        //     // new Suspensao(Suspensao.TipoSuspensao.ESCOLHA, guardarComoNode.asText(), opcoesNode)
+        // );
     }
 }

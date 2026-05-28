@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import tools.jackson.databind.node.*;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Getter
 public class EstadoSessao {
@@ -49,27 +50,21 @@ public class EstadoSessao {
         aplicarNoCaminho(entidade.getAtributosAtuais(), caminho, valor);
     }
 
-    // Navega pelo JsonNode e aplica o valor no caminho especificado
-    private void aplicarNoCaminho(tools.jackson.databind.JsonNode raiz, String caminho, Object valor) {
+    private void aplicarNoCaminho(JsonNode raiz, String caminho, Object valor) {
         String[] partes = caminho.split("\\.");
-
-        // Navega até o penúltimo nível
         ObjectNode atual = (ObjectNode) raiz;
         for (int i = 0; i < partes.length - 1; i++) {
             atual = (ObjectNode) atual.get(partes[i]);
             if (atual == null) {
-                throw new IllegalArgumentException(
-                    "Caminho '%s' não encontrado".formatted(caminho)
-                );
+                throw new IllegalArgumentException("Caminho '%s' não encontrado".formatted(caminho));
             }
         }
-
-        // Aplica o valor no último nível
         String ultimoCampo = partes[partes.length - 1];
-        if (valor instanceof Double d)  atual.put(ultimoCampo, d);
-        if (valor instanceof Integer i) atual.put(ultimoCampo, i);
-        if (valor instanceof Boolean b) atual.put(ultimoCampo, b);
-        if (valor instanceof String s)  atual.put(ultimoCampo, s);
+            if (valor instanceof Double d) atual.put(ultimoCampo, d);
+            else if (valor instanceof Integer i) atual.put(ultimoCampo, i);
+            else if (valor instanceof Boolean b) atual.put(ultimoCampo, b);
+            else if (valor instanceof String s) atual.put(ultimoCampo, s);
+            else atual.putPOJO(ultimoCampo, valor); // fallback
     }
 
     public void adicionarEfeito(EfeitoAtivo efeito) {

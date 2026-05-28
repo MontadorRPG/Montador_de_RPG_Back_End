@@ -1,6 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.entidade;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
+// import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -61,6 +61,6 @@ public class EntidadeSistema {
     @OneToMany(mappedBy = "entidadeSistema")
     private List<EntidadeInstancia> entidadeInstancias;
 
-    @OneToMany(mappedBy = "entidadeSistema")
-    private List<EntidadeEfeito> entidadeEfeitos;
+//     @OneToMany(mappedBy = "entidadeSistema")
+//     private List<EntidadeEfeito> entidadeEfeitos;
 }

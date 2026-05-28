@@ -1,6 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sistema;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
+// import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.List;
+// import java.util.List;
 
 @Getter
 @Setter
@@ -47,6 +47,6 @@ public class EventoSistema {
     @Column(columnDefinition = "jsonb")
     private JsonNode payloadSchema;
 
-    @OneToMany(mappedBy = "evento")
-    private List<EntidadeEfeito> efeitos;
+//     @OneToMany(mappedBy = "evento")
+//     private List<EntidadeEfeito> efeitos;
 }

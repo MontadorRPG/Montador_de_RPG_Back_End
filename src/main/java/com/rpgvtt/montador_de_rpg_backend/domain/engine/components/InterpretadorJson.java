@@ -1,22 +1,15 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.engine.components;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Contexto;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.ResultadoExpressao;
-import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.Alvo;
+import com.rpgvtt.montador_de_rpg_backend.domain.engine.utils.*;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.*;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.*;
 
 @Component
 public class InterpretadorJson {
-
-    // private final ObjectMapper objectMapper; // precisa não
-
-    // public InterpretadorJson(ObjectMapper objectMapper) {
-    //     this.objectMapper = objectMapper;
-    // }
 
     public ResultadoExpressao interpretar(JsonNode expressao, Contexto contexto) {
         if (expressao == null || !expressao.isObject()) {
@@ -25,11 +18,12 @@ public class InterpretadorJson {
         JsonNode tipoNode = expressao.get("tipo");
         if (tipoNode == null || tipoNode.isNull()) {
             throw new IllegalArgumentException("Expressão sem campo 'tipo'");
-        } 
-        String tipo = tipoNode.asString();
+        }
+        String tipo = tipoNode.asText();
         return switch (tipo) {
             case "constante"         -> resolverConstante(expressao);
             case "caminho"           -> resolverCaminho(expressao, contexto);
+            case "caminho_coringa"   -> resolverCaminhoCoringa(expressao, contexto);
             case "formula"           -> resolverFormula(expressao, contexto);
             case "formula_raw"       -> resolverFormulaRaw(expressao);
             case "condicao"          -> resolverCondicao(expressao, contexto);
@@ -50,11 +44,10 @@ public class InterpretadorJson {
         if (valorNode == null) return ResultadoExpressao.nulo();
 
         if (valorNode.isNumber()) {
-
             return ResultadoExpressao.numero(valorNode.asDouble());
-        } 
-        if (valorNode.isString()) {
-            return ResultadoExpressao.texto(valorNode.asString());
+        }
+        if (valorNode.isTextual()) {
+            return ResultadoExpressao.texto(valorNode.asText());
         }
         if (valorNode.isBoolean()) {
             return ResultadoExpressao.booleano(valorNode.asBoolean());
@@ -64,31 +57,55 @@ public class InterpretadorJson {
 
     private ResultadoExpressao resolverCaminho(JsonNode expr, Contexto ctx) {
         JsonNode caminhoNode = expr.get("caminho");
-        if (caminhoNode == null || !caminhoNode.isString()) {
+        if (caminhoNode == null || !caminhoNode.isTextual()) {
             throw new IllegalArgumentException("'caminho' é obrigatório para tipo 'caminho'");
         }
-        String caminho = caminhoNode.asString();
+        String caminho = caminhoNode.asText();
         Optional<Object> optValor = ctx.get(caminho);
         if (optValor.isEmpty()) {
-            // Suporte a valor padrão
             if (expr.has("padrao")) {
-                return resolverConstante(expr.get("padrao"));
+                return interpretar(expr.get("padrao"), ctx);
             }
             throw new IllegalArgumentException("Caminho não encontrado: " + caminho);
         }
         return converterParaResultado(optValor.get());
     }
 
+    private ResultadoExpressao resolverCaminhoCoringa(JsonNode expr, Contexto ctx) {
+        JsonNode baseNode = expr.get("base");
+        JsonNode propNode = expr.get("propriedade");
+        if (baseNode == null || !baseNode.isTextual() || propNode == null || !propNode.isTextual()) {
+            throw new IllegalArgumentException("'base' e 'propriedade' são obrigatórios em caminho_coringa");
+        }
+        Optional<Object> optBase = ctx.get(baseNode.asText());
+        if (optBase.isEmpty()) {
+            return ResultadoExpressao.lista(Collections.emptyList());
+        }
+        if (!(optBase.get() instanceof List<?> lista)) {
+            throw new IllegalArgumentException("Caminho base '" + baseNode.asText() + "' não é uma lista");
+        }
+        List<Object> resultados = new ArrayList<>();
+        for (Object item : lista) {
+            if (item instanceof Map<?, ?> map) {
+                resultados.add(map.get(propNode.asText()));
+            } else {
+                throw new UnsupportedOperationException(
+                    "Item da lista não é um Map; não é possível extrair propriedade '" + propNode.asText() + "'");
+            }
+        }
+        return ResultadoExpressao.lista(resultados);
+    }
+
     private ResultadoExpressao resolverFormula(JsonNode expr, Contexto ctx) {
         JsonNode aNode = expr.get("operandoA");
         JsonNode bNode = expr.get("operandoB");
         JsonNode opNode = expr.get("operador");
-        if (aNode == null || bNode == null || opNode == null || !opNode.isString()) {
+        if (aNode == null || bNode == null || opNode == null || !opNode.isTextual()) {
             throw new IllegalArgumentException("'operandoA', 'operandoB' e 'operador' são obrigatórios na fórmula");
         }
         double a = interpretar(aNode, ctx).comoNumero();
         double b = interpretar(bNode, ctx).comoNumero();
-        String operador = opNode.asString();
+        String operador = opNode.asText();
         double resultado = switch (operador) {
             case "+" -> a + b;
             case "-" -> a - b;
@@ -103,10 +120,10 @@ public class InterpretadorJson {
 
     private ResultadoExpressao resolverFormulaRaw(JsonNode expr) {
         JsonNode exprNode = expr.get("expressao");
-        if (exprNode == null || !exprNode.isString()) {
+        if (exprNode == null || !exprNode.isTextual()) {
             throw new IllegalArgumentException("'expressao' é obrigatório em formula_raw");
         }
-        double resultado = FormulaSolver.execute(exprNode.asString());
+        double resultado = FormulaSolver.execute(exprNode.asText());
         return ResultadoExpressao.numero(resultado);
     }
 
@@ -114,12 +131,12 @@ public class InterpretadorJson {
         JsonNode aNode = expr.get("operandoA");
         JsonNode bNode = expr.get("operandoB");
         JsonNode opNode = expr.get("operador");
-        if (aNode == null || bNode == null || opNode == null || !opNode.isString()) {
+        if (aNode == null || bNode == null || opNode == null || !opNode.isTextual()) {
             throw new IllegalArgumentException("'operandoA', 'operandoB' e 'operador' são obrigatórios na condição");
         }
         ResultadoExpressao resA = interpretar(aNode, ctx);
         ResultadoExpressao resB = interpretar(bNode, ctx);
-        String operador = opNode.asString();
+        String operador = opNode.asText();
 
         if (resA.getTipo() == ResultadoExpressao.TipoResultado.NUMERO &&
             resB.getTipo() == ResultadoExpressao.TipoResultado.NUMERO) {
@@ -158,9 +175,9 @@ public class InterpretadorJson {
         if (opNode == null || condsNode == null || !condsNode.isArray() || condsNode.size() == 0) {
             throw new IllegalArgumentException("'operador' e 'condicoes' (array não vazio) são obrigatórios");
         }
-        String operador = opNode.asString();
+        String operador = opNode.asText();
         List<JsonNode> condicoes = new ArrayList<>();
-        condsNode.forEach(condicoes::add);
+        for (JsonNode n : condsNode) condicoes.add(n);
 
         boolean resultado;
         if ("E".equals(operador)) {
@@ -191,19 +208,13 @@ public class InterpretadorJson {
             throw new IllegalArgumentException("'lista' e 'condicao' são obrigatórios no filtro");
         }
         ResultadoExpressao listaRes = interpretar(listaNode, ctx);
-
         Object rawLista = listaRes.getValor();
         if (!(rawLista instanceof List<?> lista)) {
             throw new IllegalArgumentException("Filtro requer uma lista, mas veio: " + rawLista);
         }
         List<Object> resultado = new ArrayList<>();
         for (Object item : lista) {
-            
-            Contexto itemCtx = caminho -> {
-                if ("item".equals(caminho)) return Optional.ofNullable(item);
-                
-                return Optional.empty();
-            };
+            Contexto itemCtx = criarContextoItem(item);
             ResultadoExpressao condRes = interpretar(condNode, itemCtx);
             if (condRes.comoBooleano()) {
                 resultado.add(item);
@@ -212,108 +223,138 @@ public class InterpretadorJson {
         return ResultadoExpressao.lista(resultado);
     }
 
+    private Contexto criarContextoItem(Object item) {
+        return new Contexto() {
+            @Override
+            public Optional<Object> get(String caminho) {
+                if (!caminho.startsWith("item")) {
+                    return Optional.empty();
+                }
+                if (caminho.equals("item")) {
+                    return Optional.ofNullable(item);
+                }
+                String resto = caminho.substring(5); // remove "item."
+                if (resto.isEmpty()) return Optional.ofNullable(item);
+                if (item instanceof Map<?, ?> map) {
+                    return Optional.ofNullable(resolverCaminhoEmMap(map, resto));
+                }
+                return Optional.empty();
+            }
+        };
+    }
+
+    private Object resolverCaminhoEmMap(Map<?, ?> map, String caminho) {
+        String[] partes = caminho.split("\\.");
+        Object atual = map;
+        for (String parte : partes) {
+            if (atual instanceof Map<?, ?> m) {
+                atual = m.get(parte);
+            } else {
+                return null;
+            }
+        }
+        return atual;
+    }
+
     private ResultadoExpressao resolverFuncao(JsonNode expr, Contexto ctx) {
         JsonNode nomeNode = expr.get("nome");
         JsonNode argsNode = expr.get("argumentos");
-        if (nomeNode == null || !nomeNode.isString() || argsNode == null || !argsNode.isArray()) {
+        if (nomeNode == null || !nomeNode.isTextual() || argsNode == null || !argsNode.isArray()) {
             throw new IllegalArgumentException("'nome' (texto) e 'argumentos' (array) são obrigatórios na função");
         }
-        String nome = nomeNode.asString();
+        String nome = nomeNode.asText();
         List<ResultadoExpressao> args = new ArrayList<>();
         for (JsonNode arg : argsNode) {
             args.add(interpretar(arg, ctx));
         }
-        return switch (nome) {
 
-            // Aredondar p/ baixo
-            case "ceil" -> {
-                double val = args.get(0).comoNumero();
-                yield ResultadoExpressao.numero(Math.ceil(val));
+        // Validação de aridade
+        switch (nome) {
+            case "ceil", "floor", "round", "abs", "size" -> {
+                if (args.size() < 1) throw new IllegalArgumentException(nome + " requer pelo menos 1 argumento");
             }
-
-            // Aredondar p/ cima
-            case "floor" -> {
-                double val = args.get(0).comoNumero();
-                yield ResultadoExpressao.numero(Math.floor(val));
+            case "min", "max" -> {
+                if (args.size() != 2) throw new IllegalArgumentException(nome + " requer exatamente 2 argumentos");
             }
-
-            // Aredondar p/ o mais proximo
-            case "round" -> {
-                double val = args.get(0).comoNumero();
-                yield ResultadoExpressao.numero(Math.round(val));
-            }
-
-            // Valor absoluto
-            case "abs" -> {
-                double val = args.get(0).comoNumero();
-                yield ResultadoExpressao.numero(Math.abs(val));
-            }
-            
-            // Min / Max
-
-            case "min" -> {
-                double a = args.get(0).comoNumero();
-                double b = args.get(1).comoNumero();
-                yield ResultadoExpressao.numero(Math.min(a, b));
-            }
-
-            case "max" -> {
-                double a = args.get(0).comoNumero();
-                double b = args.get(1).comoNumero();
-                yield ResultadoExpressao.numero(Math.max(a, b));
-            }
-            
-            // Limita um valor entre um minimo e um maximo
             case "clamp" -> {
-                double valor = args.get(0).comoNumero();
-                double min = args.get(1).comoNumero();
-                double max = args.get(2).comoNumero();
-                double clamped = Math.min(Math.max(valor, min), max);
-                yield ResultadoExpressao.numero(clamped);
+                if (args.size() != 3) throw new IllegalArgumentException("clamp requer 3 argumentos");
             }
+            case "if" -> {
+                if (args.size() != 3) throw new IllegalArgumentException("if requer 3 argumentos");
+            }
+            case "sumList", "averageList" -> {
+                if (args.size() != 2) throw new IllegalArgumentException(nome + " requer 2 argumentos (lista, expressão de mapeamento)");
+            }
+            case "contains" -> {
+                if (args.size() != 2) throw new IllegalArgumentException("contains requer 2 argumentos (lista, valor)");
+            }
+            case "concat" -> {
+                if (args.size() < 1) throw new IllegalArgumentException("concat requer pelo menos 1 argumento");
+            }
+            case "ifNull" -> {
+                if (args.size() != 2) throw new IllegalArgumentException("ifNull requer 2 argumentos (valor, padrao)");
+            }
+        }
 
-            // Tamanho de uma lista
+        return switch (nome) {
+            case "ceil" -> ResultadoExpressao.numero(Math.ceil(args.get(0).comoNumero()));
+            case "floor" -> ResultadoExpressao.numero(Math.floor(args.get(0).comoNumero()));
+            case "round" -> ResultadoExpressao.numero(Math.round(args.get(0).comoNumero()));
+            case "abs" -> ResultadoExpressao.numero(Math.abs(args.get(0).comoNumero()));
+            case "min" -> ResultadoExpressao.numero(Math.min(args.get(0).comoNumero(), args.get(1).comoNumero()));
+            case "max" -> ResultadoExpressao.numero(Math.max(args.get(0).comoNumero(), args.get(1).comoNumero()));
+            case "clamp" -> {
+                double v = args.get(0).comoNumero();
+                double mn = args.get(1).comoNumero();
+                double mx = args.get(2).comoNumero();
+                yield ResultadoExpressao.numero(Math.min(Math.max(v, mn), mx));
+            }
             case "size" -> {
-                if (args.size() != 1) throw new IllegalArgumentException("tamanho requer 1 argumento");
                 Object arg = args.get(0).getValor();
-                if (arg instanceof List<?> lista) {
-                    yield ResultadoExpressao.numero(lista.size());
-                }
-                throw new IllegalArgumentException("tamanho requer uma lista");
+                if (arg instanceof List<?> lista) yield ResultadoExpressao.numero(lista.size());
+                throw new IllegalArgumentException("size requer uma lista");
             }
-
-            // Soma elementos de uma lista
             case "sumList" -> {
-                if (args.size() != 1) throw new IllegalArgumentException("soma_lista requer 1 argumento");
                 List<?> lista = args.get(0).comoLista();
+                JsonNode mapExpr = argsNode.get(1);
                 double soma = 0;
                 for (Object item : lista) {
-                    if (item instanceof Number n) soma += n.doubleValue();
-                    else throw new IllegalArgumentException("Item da lista não é número: " + item);
+                    Contexto itemCtx = criarContextoItem(item);
+                    soma += interpretar(mapExpr, itemCtx).comoNumero();
                 }
                 yield ResultadoExpressao.numero(soma);
             }
-
-            // Media dos valores de uma lista
             case "averageList" -> {
                 List<?> lista = args.get(0).comoLista();
                 if (lista.isEmpty()) yield ResultadoExpressao.numero(0);
+                JsonNode mapExpr = argsNode.get(1);
                 double soma = 0;
                 for (Object item : lista) {
-                    soma += ((Number) item).doubleValue();
+                    Contexto itemCtx = criarContextoItem(item);
+                    soma += interpretar(mapExpr, itemCtx).comoNumero();
                 }
                 yield ResultadoExpressao.numero(soma / lista.size());
             }
-
-            // Talvez seja redundante, mas se precisar ta aí
             case "if" -> {
-                if (args.size() != 3) {
-                    throw new IllegalArgumentException("if requer 3 argumentos: condição, valorVerdadeiro, valorFalso");
-                }
-                    boolean cond = args.get(0).comoBooleano();
-                    yield cond ? args.get(1) : args.get(2);
+                boolean cond = args.get(0).comoBooleano();
+                yield cond ? args.get(1) : args.get(2);
             }
-                
+            case "contains" -> {
+                List<?> lista = args.get(0).comoLista();
+                yield ResultadoExpressao.booleano(lista.contains(args.get(1).getValor()));
+            }
+            case "concat" -> {
+                StringBuilder sb = new StringBuilder();
+                for (ResultadoExpressao a : args) sb.append(a.getValor().toString());
+                yield ResultadoExpressao.texto(sb.toString());
+            }
+            case "ifNull" -> {
+                if (args.get(0).getTipo() == ResultadoExpressao.TipoResultado.NULO) {
+                    yield args.get(1);
+                } else {
+                    yield args.get(0);
+                }
+            }
             default -> throw new IllegalArgumentException("Função desconhecida: " + nome);
         };
     }
@@ -321,43 +362,36 @@ public class InterpretadorJson {
     private ResultadoExpressao resolverAlvo(JsonNode expr, Contexto ctx) {
         JsonNode tipoEntNode = expr.get("tipoEntidade");
         JsonNode idNode = expr.get("id");
-
-        if (tipoEntNode == null || !tipoEntNode.isString() || idNode == null) {
-            throw new IllegalArgumentException(
-                "'tipoEntidade' (texto) e 'id' são obrigatórios no alvo"
-            );
+        if (tipoEntNode == null || !tipoEntNode.isTextual() || idNode == null) {
+            throw new IllegalArgumentException("'tipoEntidade' (texto) e 'id' são obrigatórios no alvo");
         }
-        String tipoEntidade = tipoEntNode.asString();
+        String tipoEntidade = tipoEntNode.asText();
         Object id;
-
         if (idNode.isObject() && idNode.has("tipo")) {
-
             ResultadoExpressao idRes = interpretar(idNode, ctx);
             id = idRes.getValor();
-
         } else if (idNode.isNumber()) {
             id = idNode.numberValue();
-
-        } else if (idNode.isString()) {
-            id = idNode.asString();
-
+        } else if (idNode.isTextual()) {
+            id = idNode.asText();
         } else {
             throw new IllegalArgumentException("'id' deve ser número, texto ou uma expressão");
         }
-        Alvo alvo = new Alvo(tipoEntidade, id);
-        return ResultadoExpressao.alvo(alvo);
+        return ResultadoExpressao.alvo(new Alvo(tipoEntidade, id));
     }
 
     private ResultadoExpressao resolverTexto(JsonNode expr, Contexto ctx) {
         JsonNode templateNode = expr.get("template");
-        if (templateNode == null || !templateNode.isString()) {
+        if (templateNode == null || !templateNode.isTextual()) {
             throw new IllegalArgumentException("'template' é obrigatório em texto");
         }
-        String template = templateNode.asString();
+        String template = templateNode.asText();
         JsonNode varsNode = expr.get("variaveis");
         if (varsNode != null && varsNode.isObject()) {
-            ObjectNode varsObj = (ObjectNode) varsNode;
-            for (Map.Entry<String, JsonNode> entry : varsObj.properties()) {
+            // Itera sobre as propriedades do objeto "variaveis"
+            Iterator<Map.Entry<String, JsonNode>> fields = ((ObjectNode) varsNode).fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
                 String nomeVar = entry.getKey();
                 JsonNode exprVar = entry.getValue();
                 String valor = interpretar(exprVar, ctx).getValor().toString();
@@ -368,7 +402,6 @@ public class InterpretadorJson {
     }
 
     private ResultadoExpressao resolverInstrucao(JsonNode expr) {
-        
         return ResultadoExpressao.instrucao(expr);
     }
 
@@ -377,7 +410,6 @@ public class InterpretadorJson {
         if (valorNode == null) {
             return ResultadoExpressao.nulo();
         }
-        // Converte o JsonNode para um objeto Java (Map, List, primitivo)
         Object obj = converterParaObjetoJava(valorNode);
         return ResultadoExpressao.objeto(obj);
     }
@@ -394,7 +426,7 @@ public class InterpretadorJson {
     private Object converterParaObjetoJava(JsonNode node) {
         if (node.isNull()) return null;
         if (node.isNumber()) return node.numberValue();
-        if (node.isString()) return node.asString();
+        if (node.isTextual()) return node.asText();
         if (node.isBoolean()) return node.booleanValue();
         if (node.isArray()) {
             List<Object> lista = new ArrayList<>();
@@ -405,11 +437,11 @@ public class InterpretadorJson {
         }
         if (node.isObject()) {
             Map<String, Object> mapa = new LinkedHashMap<>();
-
-            for (Map.Entry<String, JsonNode> entry : node.properties()) {
+            Iterator<Map.Entry<String, JsonNode>> fields = ((ObjectNode) node).fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
                 mapa.put(entry.getKey(), converterParaObjetoJava(entry.getValue()));
             }
-            
             return mapa;
         }
         return null;

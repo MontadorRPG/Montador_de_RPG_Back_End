@@ -4,7 +4,7 @@ package com.rpgvtt.montador_de_rpg_backend.domain.engine.components;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tools.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class FormulaReferencer {
 
