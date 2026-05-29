@@ -36,7 +36,7 @@ public class ProcedimentoContexto {
     private Long idInstanciaAtiva;
     private Long idSessao;
 
-    private String status; // "EM_ANDAMENTO" | "CONCLUIDO" | "ERRO"
+    private enum status {EM_ANDAMENTO, CONCLUIDO, ERRO}
     private List<ResultadoEtapa> historico = new ArrayList<>();
 
     private String retornoContexto;

@@ -11,27 +11,32 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  app:
-    build:
-      context: .
-      dockerfile: Backend.dockerfile
-    container_name: montador-rpg-backend
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-    restart: always
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db_rpg
-      - SPRING_DATASOURCE_USERNAME=rpguser
-      - SPRING_DATASOURCE_PASSWORD=rpgpass
-      - JWT_SECRET=SUA_CHAVE_SECRETA_SUPER_SEGURA_COM_PELO_MENOS_256_BITS_MUDAR_DEPOIS
-      - GOOGLE_CLIENT_ID=teu_google_client_id_aqui
-      - GOOGLE_CLIENT_SECRET=teu_google_client_secret_aqui
-      - DISCORD_CLIENT_ID=teu_discord_client_id_aqui
-      - DISCORD_CLIENT_SECRET=teu_discord_client_secret_aqui
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   postgres_data:
+
+# Desnecessário por enquanto. Será útil para upar na VPS bem mais para frente.
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Backend.dockerfile
+#    container_name: montador-rpg-backend
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgres
+#    restart: always
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=dev
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db_rpg
+#      - SPRING_DATASOURCE_USERNAME=rpguser
+#      - SPRING_DATASOURCE_PASSWORD=rpgpass
+#      - JWT_SECRET=SUA_CHAVE_SECRETA_SUPER_SEGURA_COM_PELO_MENOS_256_BITS_MUDAR_DEPOIS
+#      - GOOGLE_CLIENT_ID=teu_google_client_id_aqui
+#      - GOOGLE_CLIENT_SECRET=teu_google_client_secret_aqui
+#      - DISCORD_CLIENT_ID=teu_discord_client_id_aqui
+#      - DISCORD_CLIENT_SECRET=teu_discord_client_secret_aqui
+#
+#volumes:
+#  postgres_data:

@@ -3,6 +3,7 @@ package com.rpgvtt.montador_de_rpg_backend.domain.model.sistema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
