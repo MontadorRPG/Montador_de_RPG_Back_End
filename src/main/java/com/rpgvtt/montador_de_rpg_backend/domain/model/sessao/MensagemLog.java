@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,10 @@ public class MensagemLog {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "Usuarios_id_usuario")
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Campanhas_id_campanha")
+    private Campanha campanha;
 
     @NotNull
     private String conteudo;

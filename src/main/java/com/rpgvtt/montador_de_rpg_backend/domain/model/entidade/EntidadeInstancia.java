@@ -4,7 +4,6 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.CenaParticipantes;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.EfeitoAtivo;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.HistoricoAcoes;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -47,9 +46,6 @@ public class EntidadeInstancia {
     @JoinColumn (name = "id_entidade")
     private EntidadeSistema entidadeSistema;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn (name = "id_sistema")
-    private Sistema sistema;
 
     @NotNull
     private String tipo;
@@ -73,12 +69,12 @@ public class EntidadeInstancia {
     @Column(name = "criada_em")
     private LocalDateTime criadaEm;
 
-    @OneToMany(mappedBy = "entidadeInstancia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entidadeInstancia")
     private List<EfeitoAtivo> efeitosAtivos;
 
-    @OneToMany(mappedBy = "entidadeInstancia")
-    private List<CenaParticipantes> cenas;
-
-    @OneToMany(mappedBy = "entidadeInstancia")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entidadeInstancia")
     private List<HistoricoAcoes> acoes;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "entidadeInstancia")
+    private List<CenaParticipantes> cenaParticipantes;
 }

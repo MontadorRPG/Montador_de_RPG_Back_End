@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 // import org.hibernate.annotations.JdbcTypeCode;
 // import org.hibernate.type.SqlTypes;
-// import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.JsonNode;
 
 @Getter
@@ -39,17 +38,15 @@ public class Personagem {
     @JoinColumn(name = "id_instancia")
     private EntidadeInstancia instancia;
 
-//     @JdbcTypeCode(SqlTypes.JSON) Não precisa
-//     @Column(columnDefinition = "jsonb")
-//     private JsonNode atributos;
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_campanha")
-    private Campanha campanha;
+    // @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    // @JoinColumn(name = "id_campanha")
+    // private Campanha campanha;
 
     private String historia;
 
     private String aparencia;
+
+    private String urlImagem;
 
     @Column(name = "notas_jogador")
     private String notasJogador;
@@ -58,8 +55,4 @@ public class Personagem {
         throw new UnsupportedOperationException("Unimplemented method 'getAtributos'");
     }
 
-    // @OneToOne
-    // @MapsId
-    // @JoinColumn(name = "user_id")
-    // private EntidadeSistema entidade;
 }

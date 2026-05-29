@@ -55,4 +55,5 @@ public class EfeitoAtivo {
     @Column(name = "usos_restantes")
     private Integer usosRestantes;
 
+
 }

@@ -44,6 +44,9 @@ public class Usuario {
     @NotBlank
     private String apelido;
 
+    private String urlImagem; // Icone de perfil do usuário
+
+
     private boolean e_admin;
 
     // NOVOS CAMPOS PARA OAUTH2:

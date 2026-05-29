@@ -10,7 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.List;
+// import java.util.List;
 
 @Getter
 @Setter

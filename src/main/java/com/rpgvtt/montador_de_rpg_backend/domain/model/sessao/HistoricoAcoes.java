@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,10 @@ public class HistoricoAcoes {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_campanha")
+    private Campanha campanha;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entidade")

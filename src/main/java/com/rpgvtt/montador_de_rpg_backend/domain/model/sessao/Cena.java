@@ -35,10 +35,6 @@ public class Cena {
     @JoinColumn(name = "id_sessao")
     private Sessao sessao;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_instancia")
-    private EntidadeInstancia entidadeInstancia;
-
     @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
