@@ -1,6 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.personagem;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
+// import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;

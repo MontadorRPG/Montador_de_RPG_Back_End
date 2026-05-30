@@ -24,52 +24,58 @@ import java.util.List;
 @Entity
 public class Usuario {
 
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_seq"
-    )
-    @SequenceGenerator(
-            name = "user_seq",
-            sequenceName = "user_sequence",
-            allocationSize = 1
-    )
-    private Long id;
+        @Id
+        @GeneratedValue(
+                strategy = GenerationType.SEQUENCE,
+                generator = "user_seq"
+        )
+        @SequenceGenerator(
+                name = "user_seq",
+                sequenceName = "user_sequence",
+                allocationSize = 1
+        )
+        private Long id;
 
-    private String senha;
+        private String senha;
 
-    @NotBlank
-    private String email;
+        @NotBlank
+        private String email;
 
-    @NotBlank
-    private String apelido;
+        @NotBlank
+        private String apelido;
 
-    private String urlImagem; // Icone de perfil do usuário
+        private String urlImagem; // Icone de perfil do usuário
 
 
-    private boolean e_admin;
+        private boolean e_admin;
 
-    // NOVOS CAMPOS PARA OAUTH2:
-    private String provider;   // Salvará "GOOGLE" ou "DISCORD"
-    private String providerId; // ID único que o Google/Discord gera para aquele usuário
+        // NOVOS CAMPOS PARA OAUTH2:
+        private String provider;   // Salvará "GOOGLE" ou "DISCORD"
+        private String providerId; // ID único que o Google/Discord gera para aquele usuário
 
-    @CreationTimestamp
-    @Column(name="criado_em", updatable = false)
-    private LocalDateTime criadoEm;
+        @CreationTimestamp
+        @Column(name="criado_em", updatable = false)
+        private LocalDateTime criadoEm;
 
-    @UpdateTimestamp
-    @Column(name="atualizado_em")
-    private LocalDateTime atualizadoEm;
+        @UpdateTimestamp
+        @Column(name="atualizado_em")
+        private LocalDateTime atualizadoEm;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Sistema> sistema;
+        @OneToMany(mappedBy = "usuario")
+        private List<Sistema> sistema;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<Personagem> personagens;
+        @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+        private List<Personagem> personagens;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<MensagemLog> mensagens;
+        @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+        private List<MensagemLog> mensagens;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
-    private List<CampanhaUsuario> campanhas;
+        @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+        private List<CampanhaUsuario> campanhas;
+
+        @OneToMany(mappedBy = "remetente", cascade = CascadeType.ALL)
+        private List<Amizade> solicitacoesEnviadas;
+
+        @OneToMany(mappedBy = "destinatario", cascade = CascadeType.ALL)
+        private List<Amizade> solicitacoesRecebidas;
 }

@@ -34,6 +34,7 @@ public class EtapaProcedimento {
     @JoinColumn(name = "id_procedimento")
     private Procedimento procedimento;
 
+
     @NotNull
     private Integer ordem;
 

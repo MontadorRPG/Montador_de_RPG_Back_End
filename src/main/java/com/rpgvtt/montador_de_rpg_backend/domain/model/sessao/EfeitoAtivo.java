@@ -1,6 +1,8 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeProcedimento;
+
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeEfeito;
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import jakarta.persistence.*;
@@ -36,9 +38,9 @@ public class EfeitoAtivo {
     @JoinColumn(name = "id_instancia")
     private EntidadeInstancia entidadeInstancia;
 
-//     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-//     @JoinColumn(name = "id_efeito")
-//     private EntidadeEfeito entidadeEfeito;
+    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entidade_procedimento")
+    private EntidadeProcedimento entidadeProcedimento;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sessao")

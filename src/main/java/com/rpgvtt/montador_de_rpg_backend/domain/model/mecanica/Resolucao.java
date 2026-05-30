@@ -17,9 +17,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Table(name = "Resolucao")
 public class Resolucao {
     @Id
+    @GeneratedValue(
+        strategy = GenerationType.SEQUENCE, 
+        generator = "evento_sistema_seq"
+    )
+    @SequenceGenerator(
+        name = "evento_sistema_seq", 
+        sequenceName = "evento_sistema_sequence", 
+        allocationSize = 1
+    )
+    @Column(name = "id_etapa")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "Sistemas_id_sistema")
     private Sistema sistema;
 
@@ -32,5 +42,4 @@ public class Resolucao {
     @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     private JsonNode parametros;
-
 }
