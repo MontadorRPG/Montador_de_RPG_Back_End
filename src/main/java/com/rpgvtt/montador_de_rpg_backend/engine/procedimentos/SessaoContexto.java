@@ -1,9 +1,12 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.procedimentos;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class SessaoContexto {
     private final ConcurrentHashMap<Long, Deque<ProcedimentoContexto>> pilhas
             = new ConcurrentHashMap<>();

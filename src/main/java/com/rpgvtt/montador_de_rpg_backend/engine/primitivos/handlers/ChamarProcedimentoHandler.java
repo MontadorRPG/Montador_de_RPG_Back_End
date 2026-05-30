@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EtapaProcedimento;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Procedimento;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
+import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.EtapaHandler;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.ProcedimentoContexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.ResultadoEtapa;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.SessaoContexto;

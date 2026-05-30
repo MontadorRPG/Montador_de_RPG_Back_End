@@ -14,31 +14,22 @@ import java.util.Map;
 @Data
 public class ProcedimentoContexto {
 
-    // ── Structural data: load once, never mutate ──────────────────
-    // These never change during a procedure execution.
-    // Loading them once is both correct and a genuine optimization.
+    private Procedimento procedimento;
+    private List<EtapaProcedimento> etapas;
+    private Sistema sistema;
+    private List<Personagem> participantes;
 
-    private Procedimento procedimento;              // includes tipo, configs_geral
-    private List<EtapaProcedimento> etapas;         // pre-sorted by ordem
-    private Sistema sistema;                        // includes configs_geral
-    private List<Personagem> participantes;         // display info, features
-
-    // ── Execution cursor ──────────────────────────────────────────
-    private Integer etapaAtual;                         // index into etapas list
+    private Integer etapaAtual;
     private boolean aguardandoInput;
     private EtapaProcedimento etapaPendente;
+    private Map<String, Object> contexto = new HashMap<>(); // Example keys: "acao_escolhida", "iniciativa_resultado",
 
-    // Example keys: "acao_escolhida", "iniciativa_resultado",
-    //               "resultado_ataque", "dano_final", "ordem_turnos"
+    private EscopoInstancias escopo;
 
-    private Map<String, Object> contexto = new HashMap<>();
-
-    private Long idInstanciaAtiva;
     private Long idSessao;
-
-    private enum status {EM_ANDAMENTO, CONCLUIDO, ERRO}
+    public enum Status {EM_ANDAMENTO, CONCLUIDO, ERRO}
+    private Status status;
     private List<ResultadoEtapa> historico = new ArrayList<>();
-
     private String retornoContexto;
 
     public EtapaProcedimento etapaCorrente() {
@@ -51,5 +42,27 @@ public class ProcedimentoContexto {
 
     public boolean etapasConcluidas() {
         return etapaAtual >= etapas.size();
+    }
+
+    public void avancarEtapa()  { etapaAtual++; aguardandoInput = false; }
+
+    public void pularEtapa(String motivo) {
+        historico.add(ResultadoEtapa.pulada(motivo));
+        etapaAtual++;
+    }
+
+    public List<Long> idsInstancias() {
+        return switch (escopo) {
+            case EscopoInstancias.Nenhuma n      -> List.of();
+            case EscopoInstancias.Unica u        -> List.of(u.id());
+            case EscopoInstancias.Multiplas m    -> m.ids();
+        };
+    }
+
+    public Long idInstanciaAtiva() {
+        if (escopo instanceof EscopoInstancias.Unica u) return u.id();
+        throw new IllegalStateException(
+                "Procedimento '" + procedimento.getNome() + "' não tem escopo UNICA" +
+                        " — use idsInstancias() para escopo " + escopo.getClass().getSimpleName());
     }
 }

@@ -6,7 +6,7 @@ public record ResultadoEtapa(
     Object dados, // qualquer payload para o frontend
     boolean skipProximo
 ) {
-    public enum TipoResultado { CONCLUIDA, AGUARDANDO_INPUT, PULADA, ERRO}
+    public enum TipoResultado { CONCLUIDA, AGUARDANDO_INPUT, PULADA, SUB_PROCEDIMENTO_INICIADO, ERRO}
 
     public static ResultadoEtapa concluida(Object dados) {
         return new ResultadoEtapa(TipoResultado.CONCLUIDA, null, dados, false);

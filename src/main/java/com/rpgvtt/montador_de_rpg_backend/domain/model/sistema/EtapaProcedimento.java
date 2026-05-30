@@ -50,4 +50,6 @@ public class EtapaProcedimento {
 
     @NotNull
     private Boolean obrigatorio;
+
+    public Boolean isObrigatorio() {return obrigatorio;}
 }
