@@ -1,11 +1,15 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.procedimentos;
 
+import jakarta.validation.constraints.NotNull;
+
 public record ResultadoEtapa(
     TipoResultado tipo,
     String mensagem,
     Object dados, // qualquer payload para o frontend
     boolean skipProximo
 ) {
+
+
     public enum TipoResultado { CONCLUIDA, AGUARDANDO_INPUT, PULADA, SUB_PROCEDIMENTO_INICIADO, ERRO}
 
     public static ResultadoEtapa concluida(Object dados) {
@@ -19,5 +23,9 @@ public record ResultadoEtapa(
     }
     public static ResultadoEtapa erro(String msg) {
         return new ResultadoEtapa(TipoResultado.ERRO, msg, null, false);
+    }
+
+    public static ResultadoEtapa subProcedimentoIniciado(String nome) {
+        return new ResultadoEtapa(TipoResultado.SUB_PROCEDIMENTO_INICIADO, nome, null, false);
     }
 }

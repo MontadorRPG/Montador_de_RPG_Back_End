@@ -13,7 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,7 +45,6 @@ public class EntidadeInstancia {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn (name = "id_entidade")
     private EntidadeSistema entidadeSistema;
-
 
     @NotNull
     private String tipo;

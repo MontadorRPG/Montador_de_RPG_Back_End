@@ -1,12 +1,12 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.procedimentos;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EtapaProcedimento;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.ProcedimentoContexto.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +19,8 @@ public class ProcedimentoEngine {
     private final ProcedimentoLoader loader;
     private final Map<String, EtapaHandler> handlers;
     private final InstanciaResolver instanciaResolver;
+    private final ObjectMapper mapper;
 
-    /** Start a procedure that has a single actor — most combat turns */
     public ProcedimentoContexto iniciarComInstancia(Long idProcedimento,
                                                     Long idSessao,
                                                     Long idInstancia) {
@@ -31,10 +31,9 @@ public class ProcedimentoEngine {
                 )
         );
         sessaoCtx.empurrar(idSessao, raiz);
-        return avancar(idSessao, null);
+        return avancar(idSessao);
     }
 
-    /** Start a procedure that affects multiple instances — area effects, initiative */
     public ProcedimentoContexto iniciarComMultiplos(Long idProcedimento,
                                                   Long idSessao,
                                                   List<Long> ids) {
@@ -45,20 +44,30 @@ public class ProcedimentoEngine {
                 )
         );
         sessaoCtx.empurrar(idSessao, raiz);
-        return avancar(idSessao, null);
+        return avancar(idSessao);
     }
 
-    /** Start a procedure with no instance scope — session setup, cleanup */
     public ProcedimentoContexto iniciarSemInstancia(Long idProcedimento,
                                                   Long idSessao) {
         ProcedimentoContexto raiz = loader.carregar(
                 LoadRequest.semInstancia(idProcedimento, idSessao)
         );
         sessaoCtx.empurrar(idSessao, raiz);
-        return avancar(idSessao, null);
+        return avancar(idSessao);
     }
 
-    private ProcedimentoContexto avancar(Long idSessao, Map<String, Object> input) {
+    public ProcedimentoContexto responder(Long idSessao,
+                                          Map<String, Object> inputJogador) {
+        ProcedimentoContexto frame = sessaoCtx.frameAtivo(idSessao);
+
+        frame.getContexto().putAll(inputJogador);
+        frame.setAguardandoInput(false);
+        frame.setEtapaPendente(null);
+
+        return avancar(idSessao);
+    }
+
+    private ProcedimentoContexto avancar(Long idSessao) {
 
         while (sessaoCtx.temProcedimentoAtivo(idSessao)) {
             ProcedimentoContexto frame = sessaoCtx.frameAtivo(idSessao);
@@ -83,7 +92,6 @@ public class ProcedimentoEngine {
 
                 // Advance parent past the CHAMAR_PROCEDIMENTO etapa
                 pai.avancarEtapa();
-                input = null; // parent resumes without input
                 continue;     // loop again with parent now on top
             }
 
@@ -101,21 +109,19 @@ public class ProcedimentoEngine {
                 continue;
             }
 
-            ResultadoEtapa resultado = handler.executar(etapa, frame, input);
+            ResultadoEtapa resultado = handler.executar(etapa, frame);
             frame.getHistorico().add(resultado);
 
             switch (resultado.tipo()) {
 
                 case CONCLUIDA -> {
                     frame.avancarEtapa();
-                    input = null;
                 }
 
                 case SUB_PROCEDIMENTO_INICIADO -> {
                     // ChamarProcedimentoHandler already pushed the child.
                     // Loop again — next iteration picks up the child from stack top.
                     // Parent cursor stays where it is until child completes.
-                    input = null;
                 }
 
                 case AGUARDANDO_INPUT -> {
@@ -137,20 +143,19 @@ public class ProcedimentoEngine {
     }
 
     private boolean naoDisponivel(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> params = mapper.convertValue(
-                etapa.getParametros_etapa(), new TypeReference<>() {});
-        if (!params.containsKey("requer_recurso")) return false;
+        Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>(){});
 
-        String recurso = (String) params.get("requer_recurso");
+        String recursoNecessario = (String) params.get("recurso_necessario");
+        if (recursoNecessario == null) return false;
 
-        List<EntidadeInstancia> instancias = instanciaResolver.retornarTodas(ctx);
+        if (ctx.getEscopo() instanceof EscopoInstancias.Nenhuma) return true;
 
-        Map<String, Object> attrs = ;
-        Object val = attrs.get(recurso);
+        EntidadeInstancia instancia = instanciaResolver.retornarAtiva(ctx);
+        Object val = instancia.getAtributosAtuais().get(recursoNecessario);
 
-        if (val instanceof Boolean b) return !b;
-        if (val instanceof Number n)  return n.intValue() <= 0;
-        return true; // recurso ausente = não disponível
+        if (val == null)              return true;  // resource absent
+        if (val instanceof Boolean b) return !b;    // false = not available
+        if (val instanceof Number n)  return n.longValue() <= 0; // zero = exhausted
+        return true; // unknown type = treat as not available
     }
 }

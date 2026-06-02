@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.EntidadeProcedimento;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 

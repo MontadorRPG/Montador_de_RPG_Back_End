@@ -1,5 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusSessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
+import java.sql.SQLType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,6 +45,12 @@ public class Sessao {
     @CreationTimestamp
     @Column(name = "data_fim", nullable = false, updatable = false)
     private LocalDateTime dataFim;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private JsonNode sessaoSnapshot;
+
+    private StatusSessao status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sessao")
     private List<Cena> cenas;

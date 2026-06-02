@@ -1,13 +1,10 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.components;
 
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.*;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.Alvo;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.ResultadoExpressao;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
 
 import java.util.*;
 
@@ -22,7 +19,7 @@ public class InterpretadorJson {
         if (tipoNode == null || tipoNode.isNull()) {
             throw new IllegalArgumentException("Expressão sem campo 'tipo'");
         }
-        String tipo = tipoNode.asText();
+        String tipo = tipoNode.asString();
         return switch (tipo) {
             case "constante"         -> resolverConstante(expressao);
             case "caminho"           -> resolverCaminho(expressao, contexto);
@@ -49,8 +46,8 @@ public class InterpretadorJson {
         if (valorNode.isNumber()) {
             return ResultadoExpressao.numero(valorNode.asDouble());
         }
-        if (valorNode.isTextual()) {
-            return ResultadoExpressao.texto(valorNode.asText());
+        if (valorNode.isString()) {
+            return ResultadoExpressao.texto(valorNode.asString());
         }
         if (valorNode.isBoolean()) {
             return ResultadoExpressao.booleano(valorNode.asBoolean());
@@ -60,10 +57,10 @@ public class InterpretadorJson {
 
     private ResultadoExpressao resolverCaminho(JsonNode expr, Contexto ctx) {
         JsonNode caminhoNode = expr.get("caminho");
-        if (caminhoNode == null || !caminhoNode.isTextual()) {
+        if (caminhoNode == null || !caminhoNode.isString()) {
             throw new IllegalArgumentException("'caminho' é obrigatório para tipo 'caminho'");
         }
-        String caminho = caminhoNode.asText();
+        String caminho = caminhoNode.asString();
         Optional<Object> optValor = ctx.get(caminho);
         if (optValor.isEmpty()) {
             if (expr.has("padrao")) {
@@ -77,23 +74,23 @@ public class InterpretadorJson {
     private ResultadoExpressao resolverCaminhoCoringa(JsonNode expr, Contexto ctx) {
         JsonNode baseNode = expr.get("base");
         JsonNode propNode = expr.get("propriedade");
-        if (baseNode == null || !baseNode.isTextual() || propNode == null || !propNode.isTextual()) {
+        if (baseNode == null || !baseNode.isString() || propNode == null || !propNode.isString()) {
             throw new IllegalArgumentException("'base' e 'propriedade' são obrigatórios em caminho_coringa");
         }
-        Optional<Object> optBase = ctx.get(baseNode.asText());
+        Optional<Object> optBase = ctx.get(baseNode.asString());
         if (optBase.isEmpty()) {
             return ResultadoExpressao.lista(Collections.emptyList());
         }
         if (!(optBase.get() instanceof List<?> lista)) {
-            throw new IllegalArgumentException("Caminho base '" + baseNode.asText() + "' não é uma lista");
+            throw new IllegalArgumentException("Caminho base '" + baseNode.asString() + "' não é uma lista");
         }
         List<Object> resultados = new ArrayList<>();
         for (Object item : lista) {
             if (item instanceof Map<?, ?> map) {
-                resultados.add(map.get(propNode.asText()));
+                resultados.add(map.get(propNode.asString()));
             } else {
                 throw new UnsupportedOperationException(
-                    "Item da lista não é um Map; não é possível extrair propriedade '" + propNode.asText() + "'");
+                    "Item da lista não é um Map; não é possível extrair propriedade '" + propNode.asString() + "'");
             }
         }
         return ResultadoExpressao.lista(resultados);
@@ -103,12 +100,12 @@ public class InterpretadorJson {
         JsonNode aNode = expr.get("operandoA");
         JsonNode bNode = expr.get("operandoB");
         JsonNode opNode = expr.get("operador");
-        if (aNode == null || bNode == null || opNode == null || !opNode.isTextual()) {
+        if (aNode == null || bNode == null || opNode == null || !opNode.isString()) {
             throw new IllegalArgumentException("'operandoA', 'operandoB' e 'operador' são obrigatórios na fórmula");
         }
         double a = interpretar(aNode, ctx).comoNumero();
         double b = interpretar(bNode, ctx).comoNumero();
-        String operador = opNode.asText();
+        String operador = opNode.asString();
         double resultado = switch (operador) {
             case "+" -> a + b;
             case "-" -> a - b;
@@ -123,10 +120,10 @@ public class InterpretadorJson {
 
     private ResultadoExpressao resolverFormulaRaw(JsonNode expr) {
         JsonNode exprNode = expr.get("expressao");
-        if (exprNode == null || !exprNode.isTextual()) {
+        if (exprNode == null || !exprNode.isString()) {
             throw new IllegalArgumentException("'expressao' é obrigatório em formula_raw");
         }
-        double resultado = FormulaSolver.execute(exprNode.asText());
+        double resultado = FormulaSolver.execute(exprNode.asString());
         return ResultadoExpressao.numero(resultado);
     }
 
@@ -134,12 +131,12 @@ public class InterpretadorJson {
         JsonNode aNode = expr.get("operandoA");
         JsonNode bNode = expr.get("operandoB");
         JsonNode opNode = expr.get("operador");
-        if (aNode == null || bNode == null || opNode == null || !opNode.isTextual()) {
+        if (aNode == null || bNode == null || opNode == null || !opNode.isString()) {
             throw new IllegalArgumentException("'operandoA', 'operandoB' e 'operador' são obrigatórios na condição");
         }
         ResultadoExpressao resA = interpretar(aNode, ctx);
         ResultadoExpressao resB = interpretar(bNode, ctx);
-        String operador = opNode.asText();
+        String operador = opNode.asString();
 
         if (resA.getTipo() == ResultadoExpressao.TipoResultado.NUMERO &&
             resB.getTipo() == ResultadoExpressao.TipoResultado.NUMERO) {
@@ -178,7 +175,7 @@ public class InterpretadorJson {
         if (opNode == null || condsNode == null || !condsNode.isArray() || condsNode.size() == 0) {
             throw new IllegalArgumentException("'operador' e 'condicoes' (array não vazio) são obrigatórios");
         }
-        String operador = opNode.asText();
+        String operador = opNode.asString();
         List<JsonNode> condicoes = new ArrayList<>();
         for (JsonNode n : condsNode) condicoes.add(n);
 
@@ -262,10 +259,10 @@ public class InterpretadorJson {
     private ResultadoExpressao resolverFuncao(JsonNode expr, Contexto ctx) {
         JsonNode nomeNode = expr.get("nome");
         JsonNode argsNode = expr.get("argumentos");
-        if (nomeNode == null || !nomeNode.isTextual() || argsNode == null || !argsNode.isArray()) {
+        if (nomeNode == null || !nomeNode.isString() || argsNode == null || !argsNode.isArray()) {
             throw new IllegalArgumentException("'nome' (texto) e 'argumentos' (array) são obrigatórios na função");
         }
-        String nome = nomeNode.asText();
+        String nome = nomeNode.asString();
         List<ResultadoExpressao> args = new ArrayList<>();
         for (JsonNode arg : argsNode) {
             args.add(interpretar(arg, ctx));
@@ -310,7 +307,7 @@ public class InterpretadorJson {
                 double v = args.get(0).comoNumero();
                 double mn = args.get(1).comoNumero();
                 double mx = args.get(2).comoNumero();
-                yield ResultadoExpressao.numero(Math.min(Math.max(v, mn), mx));
+                yield ResultadoExpressao.numero(Math.clamp(v, mn, mx));
             }
             case "size" -> {
                 Object arg = args.get(0).getValor();
@@ -365,18 +362,18 @@ public class InterpretadorJson {
     private ResultadoExpressao resolverAlvo(JsonNode expr, Contexto ctx) {
         JsonNode tipoEntNode = expr.get("tipoEntidade");
         JsonNode idNode = expr.get("id");
-        if (tipoEntNode == null || !tipoEntNode.isTextual() || idNode == null) {
+        if (tipoEntNode == null || !tipoEntNode.isString() || idNode == null) {
             throw new IllegalArgumentException("'tipoEntidade' (texto) e 'id' são obrigatórios no alvo");
         }
-        String tipoEntidade = tipoEntNode.asText();
+        String tipoEntidade = tipoEntNode.asString();
         Object id;
         if (idNode.isObject() && idNode.has("tipo")) {
             ResultadoExpressao idRes = interpretar(idNode, ctx);
             id = idRes.getValor();
         } else if (idNode.isNumber()) {
             id = idNode.numberValue();
-        } else if (idNode.isTextual()) {
-            id = idNode.asText();
+        } else if (idNode.isString()) {
+            id = idNode.asString();
         } else {
             throw new IllegalArgumentException("'id' deve ser número, texto ou uma expressão");
         }
@@ -385,16 +382,14 @@ public class InterpretadorJson {
 
     private ResultadoExpressao resolverTexto(JsonNode expr, Contexto ctx) {
         JsonNode templateNode = expr.get("template");
-        if (templateNode == null || !templateNode.isTextual()) {
+        if (templateNode == null || !templateNode.isString()) {
             throw new IllegalArgumentException("'template' é obrigatório em texto");
         }
-        String template = templateNode.asText();
+        String template = templateNode.asString();
         JsonNode varsNode = expr.get("variaveis");
         if (varsNode != null && varsNode.isObject()) {
             // Itera sobre as propriedades do objeto "variaveis"
-            Iterator<Map.Entry<String, JsonNode>> fields = ((ObjectNode) varsNode).fields();
-            while (fields.hasNext()) {
-                Map.Entry<String, JsonNode> entry = fields.next();
+            for (Map.Entry<String, JsonNode> entry : varsNode.properties()) {
                 String nomeVar = entry.getKey();
                 JsonNode exprVar = entry.getValue();
                 String valor = interpretar(exprVar, ctx).getValor().toString();
@@ -429,7 +424,7 @@ public class InterpretadorJson {
     private Object converterParaObjetoJava(JsonNode node) {
         if (node.isNull()) return null;
         if (node.isNumber()) return node.numberValue();
-        if (node.isTextual()) return node.asText();
+        if (node.isString()) return node.asString();
         if (node.isBoolean()) return node.booleanValue();
         if (node.isArray()) {
             List<Object> lista = new ArrayList<>();
@@ -440,9 +435,7 @@ public class InterpretadorJson {
         }
         if (node.isObject()) {
             Map<String, Object> mapa = new LinkedHashMap<>();
-            Iterator<Map.Entry<String, JsonNode>> fields = ((ObjectNode) node).fields();
-            while (fields.hasNext()) {
-                Map.Entry<String, JsonNode> entry = fields.next();
+            for (Map.Entry<String, JsonNode> entry : node.properties()) {
                 mapa.put(entry.getKey(), converterParaObjetoJava(entry.getValue()));
             }
             return mapa;

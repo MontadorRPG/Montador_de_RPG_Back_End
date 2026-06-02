@@ -1,10 +1,10 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.components;
 
 // import java.util.Map;
+import tools.jackson.databind.JsonNode;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class FormulaReferencer {
 

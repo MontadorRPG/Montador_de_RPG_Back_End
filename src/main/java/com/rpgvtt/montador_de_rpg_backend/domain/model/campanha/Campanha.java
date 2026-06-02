@@ -48,7 +48,6 @@ public class Campanha {
     @NotNull
     private StatusCampanha Status;
 
-
     @CreationTimestamp
     @Column(name = "criada_em")
     private LocalDateTime criadaEm;

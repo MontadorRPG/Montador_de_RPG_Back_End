@@ -10,7 +10,6 @@ public interface EtapaHandler {
 
     ResultadoEtapa executar(
             EtapaProcedimento etapa,
-            ProcedimentoContexto estado,
-            Map<String, Object> input
+            ProcedimentoContexto estado
     );
 }
