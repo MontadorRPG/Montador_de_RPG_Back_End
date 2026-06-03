@@ -26,10 +26,10 @@ public class ModificarAtributoExecutor implements PrimitivoExecutor {
 
         // Pega o caminho
         JsonNode caminhoNode = parametros.get("caminho");
-        if (caminhoNode == null || !caminhoNode.isTextual()) {   // <-- alterado
+        if (caminhoNode == null || !caminhoNode.isString()) {   // <-- alterado
             throw new IllegalArgumentException("modificar_atributo requer 'caminho' como string");
         }
-        String caminho = caminhoNode.asText();   // <-- alterado
+        String caminho = caminhoNode.asString();   // <-- alterado
 
         // Resolve o valor
         JsonNode valorNode = parametros.get("valor");
