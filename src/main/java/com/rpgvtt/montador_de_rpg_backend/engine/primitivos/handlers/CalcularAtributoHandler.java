@@ -38,6 +38,8 @@ public class CalcularAtributoHandler implements EtapaHandler {
     public ResultadoEtapa executar(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
 
         Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>() {});
+        String sourceKey = params.get("source_key").toString();
+        String ctxKey = params.get("salvar_em").toString();
         JsonNode expressao = (JsonNode) params.get("expressao");
         Long idEntidade = (Long) params.get("id_entidade"); // opcional
 
@@ -52,14 +54,16 @@ public class CalcularAtributoHandler implements EtapaHandler {
 
         Map<String, Object> execCtx = new HashMap<>();
 
-        Integer resultadoAnterior = (Integer) ctx.getContexto().get("resultado_dado");
+        Integer resultadoAnterior = (Integer) ctx.getContexto().get(sourceKey);
 
         execCtx.put("atributos", inst.getAtributosAtuais());
         execCtx.put("resultado", resultadoAnterior);
 
         ContextoJsonNode ctxFinal = new ContextoJsonNode(mapper.valueToTree(execCtx));
 
-        ResultadoExpressao resultadoExpressao = interpretadorJson.interpretar(expressao, ctxFinal);
+        double val = interpretadorJson.interpretar(expressao, ctxFinal).comoNumero();
+
+        ctx.getContexto().put(ctxKey, val);
 
         return null;
     }

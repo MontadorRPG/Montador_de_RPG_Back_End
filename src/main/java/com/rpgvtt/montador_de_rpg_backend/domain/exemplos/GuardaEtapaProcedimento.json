@@ -1,0 +1,48 @@
+{
+  "ordem": 0,
+  "tipo": "CALCULAR_ATRIBUTO",
+  "params_etapa": {
+    "expressao": {
+      "tipo": "ternario",
+      "condicao": {
+        "tipo": "condicao",
+        "operandoA": {"tipo": "caminho", "caminho": "resultado.rolagem"},
+        "operador": ">",
+        "operandoB": {"tipo": "caminho", "caminho": "atributos.armadura"}
+      },
+      "entao": {
+        "tipo": "ternario",
+        "condicao": {
+          "tipo": "condicao",
+          "operandoA": {"tipo": "caminho", "caminho": "resultado.rolagem"},
+          "operador": "<",
+          "operandoB": {
+            "tipo": "formula",
+            "operandoA": {"tipo": "caminho", "caminho": "atributos.guarda"},
+            "operador": "+",
+            "operandoB": {"tipo": "caminho", "caminho": "atributos.armadura"}
+          }
+        },
+        "entao": {
+          "tipo": "formula",
+          "operandoA": {
+            "tipo": "formula",
+            "operandoA": {"tipo": "caminho", "caminho": "atributos.guarda"},
+            "operador": "+",
+            "operandoB": {"tipo": "caminho", "caminho": "atributos.armadura"}
+          },
+          "operador": "-",
+          "operandoB": {"tipo": "caminho", "caminho": "resultado.rolagem"}
+        },
+        "senao": {"tipo": "constante", "valor": 0}
+      },
+      "senao": { "tipo": "caminho", "caminho": "atributos.guarda" }
+    },
+    "id_entidade": 80,
+    "source_key": "resultado_dado",
+    "salvar_em": "resultado_guarda"
+  }
+
+
+
+}
