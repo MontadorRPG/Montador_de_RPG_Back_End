@@ -77,14 +77,14 @@ public class SessaoRehydrator {
                         frameAbaixo,
                         escopo,
                         snap.getContextoRetorno(),
-                        snap.getContexto() // restored from snapshot
+                        snap.getContexto().dados() // restored from snapshot
                 ));
             }
 
             // Restore cursor and pipeline state
             ctx.setEtapaAtual(snap.getEtapaAtual());
             ctx.setStatus(snap.getStatus());
-            ctx.setContexto(snap.getContexto());
+            ctx.setContextoMap(snap.getContexto().dados());
             ctx.setHistorico(snap.getHistorico());
 
             pilha.push(ctx); // push builds stack top-to-bottom

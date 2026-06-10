@@ -1,4 +1,5 @@
 {
+  "nome": "Calcular guarda de acordo com resultado",
   "ordem": 0,
   "tipo": "CALCULAR_ATRIBUTO",
   "params_etapa": {

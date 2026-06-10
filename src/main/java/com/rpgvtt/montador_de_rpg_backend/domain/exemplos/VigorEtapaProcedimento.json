@@ -1,4 +1,5 @@
 {
+  "nome": "Calcular vigor de acordo com resultado",
   "ordem": 2,
   "tipo": "CALCULAR_ATRIBUTO",
   "params_etapa": {

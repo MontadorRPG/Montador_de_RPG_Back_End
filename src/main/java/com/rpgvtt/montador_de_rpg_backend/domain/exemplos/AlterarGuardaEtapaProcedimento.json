@@ -1,6 +1,9 @@
 {
+  "nome": "Alterar guarda no banco de dados de acordo com o cálculo feito",
   "ordem": 1,
   "tipo": "ALTERAR_ATRIBUTO",
-  "source_key": "resultado_guarda",
-  "atributo": "guarda"
+  "params_etapa": {
+    "source_key": "resultado_guarda",
+    "atributo": "guarda"
+  }
 }

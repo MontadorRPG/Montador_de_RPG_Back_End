@@ -63,7 +63,7 @@ public class ProcedimentoLoader {
         ctx.setRetornoContexto(req.retornoContexto());
         ctx.setEtapaAtual(0);
         ctx.setStatus(Status.EM_ANDAMENTO);
-        ctx.setContexto(new HashMap<>(req.contextoInicial())); // copy, not ref
+        ctx.setContextoMap(new HashMap<>(req.contextoInicial())); // copy, not ref
 
         return ctx;
     }

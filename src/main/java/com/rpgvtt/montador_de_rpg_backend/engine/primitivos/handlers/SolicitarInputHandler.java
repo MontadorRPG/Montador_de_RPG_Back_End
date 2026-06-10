@@ -30,7 +30,7 @@ public class SolicitarInputHandler implements EtapaHandler {
 
     @Override
     public ResultadoEtapa executar(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
-        Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>() {});
+        Map<String, Object> params = mapper.convertValue(etapa.getParametrosEtapa(), new TypeReference<>() {});
         String ctxKey = params.get("salvar_em").toString();
         String campoPedido =  params.get("campo_pedido").toString();
         boolean podePassar = (boolean) params.getOrDefault("pode_passar", true);
@@ -57,8 +57,7 @@ public class SolicitarInputHandler implements EtapaHandler {
             ));
         }
 
-        Object escolha = ctx.getContexto().get(ctxKey);
-
+        String escolha = ctx.getContexto().getStringOrThrow(ctxKey);
 
         // Muito simples por enquanto, estrutura básica
         if ("PASSAR".equals(escolha) && podePassar) {
@@ -92,7 +91,7 @@ public class SolicitarInputHandler implements EtapaHandler {
 
         if (fonte.startsWith("contexto.")) {
             String chave = fonte.substring("contexto.".length());
-            Object raw = ctx.getContexto().get(chave);
+            Object raw = ctx.getContexto().get(chave, List.class);
             if (raw == null) {
                 log.warn("Chave '{}' não encontrada no contexto do procedimento", chave);
                 return List.of();

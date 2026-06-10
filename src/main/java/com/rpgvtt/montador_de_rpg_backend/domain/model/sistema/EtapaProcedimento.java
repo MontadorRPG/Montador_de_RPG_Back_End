@@ -47,7 +47,7 @@ public class EtapaProcedimento {
     @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private JsonNode parametros_etapa;
+    private JsonNode parametrosEtapa;
 
     @NotNull
     private Boolean obrigatorio;

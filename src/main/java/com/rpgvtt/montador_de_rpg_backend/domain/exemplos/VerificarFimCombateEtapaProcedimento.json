@@ -1,0 +1,22 @@
+{
+  "nome": "Verificar se o combate terminou (nesse caso, todos as entidades de um lado foram mortas)",
+  "ordem": 4,
+  "tipo": "VERIFICAR_REPETICAO",
+  "params_etapa": {
+    "condicao": {
+      "tipo": "condicao",
+      "operandoA": {"tipo": "caminho", "caminho": "atributos.vigor"},
+      "operador": "<=",
+      "operandoB": {"tipo": "constante", "valor": 0}
+    },
+    "entidade_alvo": "TODAS",
+    "voltar_para_ordem": 0,
+    "limpar_contexto": [
+      "resultado_guarda",
+      "resultado_vigor",
+      "resultado_dado"
+    ],
+    "max_iteracoes": 500
+  }
+
+}

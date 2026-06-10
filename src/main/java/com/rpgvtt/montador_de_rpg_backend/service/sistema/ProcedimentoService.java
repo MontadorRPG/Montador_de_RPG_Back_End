@@ -100,7 +100,7 @@ public class ProcedimentoService {
         etapa.setOrdem(dto.ordem());
         etapa.setNome(dto.nome());
         etapa.setTipoEtapa(dto.tipoEtapa());
-        etapa.setParametros_etapa(dto.parametrosEtapa());
+        etapa.setParametrosEtapa(dto.parametrosEtapa());
         etapa.setObrigatorio(dto.obrigatorio());
 
         return mapearEtapaParaDTO(etapaRepository.save(etapa));
@@ -124,7 +124,7 @@ public class ProcedimentoService {
 
         if (dto.nome() != null)           etapa.setNome(dto.nome());
         if (dto.tipoEtapa() != null)      etapa.setTipoEtapa(dto.tipoEtapa());
-        if (dto.parametrosEtapa() != null) etapa.setParametros_etapa(dto.parametrosEtapa());
+        if (dto.parametrosEtapa() != null) etapa.setParametrosEtapa(dto.parametrosEtapa());
         if (dto.obrigatorio() != null)    etapa.setObrigatorio(dto.obrigatorio());
 
         return mapearEtapaParaDTO(etapaRepository.save(etapa));
@@ -167,7 +167,7 @@ public class ProcedimentoService {
                 etapa.getOrdem(),
                 etapa.getNome(),
                 etapa.getTipoEtapa(),
-                etapa.getParametros_etapa(),
+                etapa.getParametrosEtapa(),
                 etapa.getObrigatorio()
         );
     }

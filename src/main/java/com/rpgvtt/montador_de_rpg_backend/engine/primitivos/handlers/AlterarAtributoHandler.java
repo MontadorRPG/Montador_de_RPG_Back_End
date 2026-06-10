@@ -38,7 +38,7 @@ public class AlterarAtributoHandler implements EtapaHandler {
     @Override
     public ResultadoEtapa executar(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
 
-        Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>() {});
+        Map<String, Object> params = mapper.convertValue(etapa.getParametrosEtapa(), new TypeReference<>() {});
 
         String atributo = params.get("atributo").toString();
 
@@ -46,7 +46,9 @@ public class AlterarAtributoHandler implements EtapaHandler {
 
         if (params.containsKey("source_key")){
             String sourceKey = params.get("source_key").toString();
-            qtd = (Integer) ctx.getContexto().get(sourceKey);
+            qtd = ctx.getContexto().getInt(sourceKey).orElseThrow(
+                    () -> new JsonFieldNotFoundException("Source key", etapa.getNome())
+            );
         } else if (params.containsKey("quantidade") ){
             qtd = (Integer) params.get("quantidade");
         } else {

@@ -7,6 +7,7 @@ import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.Procedim
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collections;
@@ -182,7 +183,7 @@ public class ProcedimentoEngine {
     }
 
     private boolean naoDisponivel(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
-        Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>(){});
+        Map<String, Object> params = mapper.convertValue(etapa.getParametrosEtapa(), new TypeReference<>(){});
 
         String recursoNecessario = (String) params.get("recurso_necessario");
         if (recursoNecessario == null) return false;
@@ -190,11 +191,11 @@ public class ProcedimentoEngine {
         if (ctx.getEscopo() instanceof EscopoInstancias.Nenhuma) return true;
 
         EntidadeInstancia instancia = instanciaResolver.retornarAtiva(ctx);
-        Object val = instancia.getAtributosAtuais().get(recursoNecessario);
+        JsonNode val = instancia.getAtributosAtuais().get(recursoNecessario);
 
-        if (val == null)              return true;  // resource absent
-        if (val instanceof Boolean b) return !b;    // false = not available
-        if (val instanceof Number n)  return n.longValue() <= 0; // zero = exhausted
+        if (val == null || val.isNull()) return true;  // resource absent
+        if (val.isBoolean()) return !val.asBoolean();  // false = not available
+        if (val.isNumber()) return val.longValue() <= 0; // zero = exhausted
         return true; // unknown type = treat as not available
     }
 }

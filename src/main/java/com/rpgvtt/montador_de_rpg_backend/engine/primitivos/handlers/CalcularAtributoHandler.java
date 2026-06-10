@@ -4,12 +4,12 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstanci
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EtapaProcedimento;
 import com.rpgvtt.montador_de_rpg_backend.engine.components.InterpretadorJson;
 import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.EntityNotFoundException;
+import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.JsonFieldNotFoundException;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.EtapaHandler;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.InstanciaResolver;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ResultadoEtapa;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.ContextoJsonNode;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.ResultadoExpressao;
 import com.rpgvtt.montador_de_rpg_backend.repository.entidade.EntidadeInstanciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public class CalcularAtributoHandler implements EtapaHandler {
     @Override
     public ResultadoEtapa executar(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
 
-        Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>() {});
+        Map<String, Object> params = mapper.convertValue(etapa.getParametrosEtapa(), new TypeReference<>() {});
         String sourceKey = params.get("source_key").toString();
         String ctxKey = params.get("salvar_em").toString();
         JsonNode expressao = (JsonNode) params.get("expressao");
@@ -54,7 +54,9 @@ public class CalcularAtributoHandler implements EtapaHandler {
 
         Map<String, Object> execCtx = new HashMap<>();
 
-        Integer resultadoAnterior = (Integer) ctx.getContexto().get(sourceKey);
+        Integer resultadoAnterior = ctx.getContexto().getInt(sourceKey).orElseThrow(
+                () -> new JsonFieldNotFoundException("source_key", etapa.getNome())
+        );
 
         execCtx.put("atributos", inst.getAtributosAtuais());
         execCtx.put("resultado", resultadoAnterior);

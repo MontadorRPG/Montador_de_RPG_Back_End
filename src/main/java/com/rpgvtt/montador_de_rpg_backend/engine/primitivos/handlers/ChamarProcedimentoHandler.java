@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.primitivos.handlers;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EtapaProcedimento;
+import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.JsonFieldNotFoundException;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.*;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.*;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class ChamarProcedimentoHandler implements EtapaHandler {
     public ResultadoEtapa executar(EtapaProcedimento etapa,
                                    ProcedimentoContexto procedimentoCtx) {
 
-        Map<String, Object> params = mapper.convertValue(etapa.getParametros_etapa(), new TypeReference<>() {});
+        Map<String, Object> params = mapper.convertValue(etapa.getParametrosEtapa(), new TypeReference<>() {});
 
         Long idFilho  = (Long) params.get("id_procedimento");
         String salvarEm  = (String) params.get("salvar_em");
@@ -35,15 +36,19 @@ public class ChamarProcedimentoHandler implements EtapaHandler {
 
         EscopoInstancias escopoFilho = resolverEscopo(escopoTipo, params, procedimentoCtx);
 
-        @SuppressWarnings("unchecked")
-        List<String> passarContexto = (List<String>)
-                params.getOrDefault("passar_contexto", List.of());
-
-        Map<String, Object> ctxFilho = new HashMap<>();
-        for (String chave : passarContexto) {
-            Object val = procedimentoCtx.getContexto().get(chave);
-            if (val != null) ctxFilho.put(chave, val);
+        List<String> passarContexto;
+        Object raw = params.get("passar_contexto");
+        if (raw == null) {
+            passarContexto = List.of();
+        } else if (raw instanceof List<?>) {
+            passarContexto = ((List<?>) raw).stream()
+                    .map(Object::toString)
+                    .toList();
+        } else {
+            passarContexto = List.of(raw.toString());
         }
+
+        Map<String, Object> ctxFilho = procedimentoCtx.getContexto().copyKeys(passarContexto);
 
         ProcedimentoContexto filho = loader.carregar(
                 LoadRequest.filho(idFilho, procedimentoCtx, escopoFilho, salvarEm, ctxFilho)
@@ -72,13 +77,14 @@ public class ChamarProcedimentoHandler implements EtapaHandler {
             case "NENHUMA"      -> EscopoInstancias.nenhuma();
             case "UNICA" -> {
                 String chave = (String) params.get("escopo_contexto_chave");
-                Long id   = (Long) pai.getContexto().get(chave);
+                Long id   = pai.getContexto().getLong(chave).orElseThrow(
+                        () -> new JsonFieldNotFoundException("escopo_contexto_chave", "CHAMAR_PROCEDIMENTO")
+                );
                 yield EscopoInstancias.unica(id);
             }
             case "CONTEXTO_IDS" -> {
                 String chave = (String) params.get("escopo_contexto_chave");
-                @SuppressWarnings("unchecked")
-                List<Long> ids = (List<Long>) pai.getContexto().get(chave);
+                List<Long> ids = pai.getContexto().getListaIds(chave);
                 yield EscopoInstancias.multiplas(ids != null ? ids : List.of());
             }
             case "TODOS" -> {

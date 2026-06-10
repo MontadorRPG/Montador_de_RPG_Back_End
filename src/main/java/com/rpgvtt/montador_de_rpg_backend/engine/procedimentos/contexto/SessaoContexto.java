@@ -104,7 +104,7 @@ public class SessaoContexto {
         snap.setEtapaAtual(ctx.getEtapaAtual());
         snap.setStatus(ctx.getStatus());
         snap.setContextoRetorno(ctx.getRetornoContexto());
-        snap.setContexto(ctx.getContexto());
+        snap.setContextoMap(ctx.getContexto().dados());
         snap.setHistorico(ctx.getHistorico());
 
         // Serialize scope
