@@ -97,9 +97,9 @@
           "ordem": 3,
           "nome": "Aplicar VIG",
           "tipoEtapa": "ALTERAR_ATRIBUTO",
+          "obrigatorio": true,
 
           "_comentario_2": " JSON DA CLASSE ",
-          "obrigatorio": true,
           "parametrosEtapa": {
             "atributo": "VIG",
             "source_key": "valor_vig",
@@ -400,7 +400,7 @@
       "procedimento": {
         "_comentario": " ATRIBUTOS DA CLASSE ",
         "sistemaId": "<ID_DO_SISTEMA>",
-        "nome": "Combate -> Verificar Surpresa",
+        "nome": "Combate (Verificar Surpresa)",
         "descricao": "Personagens que não estavam preparados para o combate devem passar uma Salvaguarda de CLA ou perder o primeiro turno.",
         "tipo": "COMBATE_SUB",
 
@@ -452,7 +452,7 @@
       "procedimento": {
         "_comentario": " ATRIBUTOS DA CLASSE ",
         "sistemaId": "<ID_DO_SISTEMA>",
-        "nome": "Combate -> Turno do Jogador",
+        "nome": "Combate (Turno do Jogador)",
         "descricao": "Gerencia o turno completo de um Knight: Mover + Ação (Atacar ou outra ação). Inclui uso opcional de Feats (Smite/Focus/Deny) e Gambits.",
         "tipo": "COMBATE_SUB",
 
@@ -673,7 +673,7 @@
       "procedimento": {
         "_comentario": " ATRIBUTOS DA CLASSE ",
         "sistemaId": "<ID_DO_SISTEMA>",
-        "nome": "Combate -> Aplicar Dano",
+        "nome": "Combate (Aplicar Dano)",
         "descricao": "Aplica o dano líquido ao alvo seguindo a cascata: GD - Cicatriz (se GD = 0) - VIG (excesso). Verifica Ferimento Mortal e Morte.",
         "tipo": "COMBATE_SUB",
 
@@ -852,7 +852,7 @@
         "_comentario*": "Talvez não precise no nosse MVP, porque é muito burocratico",
         "_comentario": " ATRIBUTOS DA CLASSE ",
         "sistemaId": "<ID_DO_SISTEMA>",
-        "nome": "Combate -> Verificar Moral",
+        "nome": "Combate (Verificar Moral)",
         "descricao": "Indivíduos Feridos ou grupos que perderam metade dos membros devem passar Salvaguarda de SPI ou recuar/render.",
         "tipo": "COMBATE_SUB",
 
