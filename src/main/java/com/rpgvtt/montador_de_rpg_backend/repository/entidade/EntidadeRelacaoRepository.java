@@ -11,5 +11,6 @@ import java.util.List;
 public interface EntidadeRelacaoRepository extends JpaRepository<EntidadeRelacao, EntidadeRelacaoKey> {
 
     List<EntidadeRelacao> findByIdEntidadePaiId(Long idPai);
+    EntidadeRelacao findByIdEntidadePaiAndIdEntidadeFilho(Long idPai, Long idFilho);
 
 }

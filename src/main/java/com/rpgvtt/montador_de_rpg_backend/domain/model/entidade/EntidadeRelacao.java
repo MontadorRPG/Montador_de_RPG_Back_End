@@ -23,12 +23,12 @@ public class EntidadeRelacao {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idEntidadePai") 
     @JoinColumn(name = "id_entidade_pai")
-    private EntidadeSistema idEntidadePai;
+    private EntidadeInstancia idEntidadePai;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idEntidadeFilha") 
     @JoinColumn(name = "id_entidade_filha")
-    private EntidadeSistema idEntidadeFilha;
+    private EntidadeInstancia idEntidadeFilha;
 
     @NotNull
     private Integer quantidade;
