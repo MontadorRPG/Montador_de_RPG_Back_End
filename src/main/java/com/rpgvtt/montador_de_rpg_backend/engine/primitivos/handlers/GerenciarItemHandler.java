@@ -37,25 +37,29 @@ public class GerenciarItemHandler implements EtapaHandler {
     public ResultadoEtapa executar(EtapaProcedimento etapa, ProcedimentoContexto ctx) {
         Map<String, Object> params = mapper.convertValue(etapa.getParametrosEtapa(), new TypeReference<>() {});
         String tipo = (String) params.get("tipo");
-        String fonteItem = (String) params.get("opcoes_fonte_item"); //  "estatico", "contexto.<chave>"
-        String opcaoItem = (String) params.get("opcoes_item");
-        String fontePersonagem = (String) params.get("opcoes_fonte_personagem"); // "instancia_ativa", "batalha.aliados", "batalha.inimigos", "todos"
+        String fonteItem = (String) params.get("opcao_fonte_item"); //  "estatico", "contexto"
+        String opcaoItem = (String) params.get("opcao_item"); // idItem direto se for estatico, chave do contexto se for contexto
+        String fonteQtd = (String) params.get("fonte_qtd"); // "estatico", "contexto"
+        String opcaoQtd = (String) params.get("opcao_qtd");
+        String fontePersonagem = (String) params.get("opcao_fonte_personagem"); // "instancia_ativa", "batalha.aliados", "batalha.inimigos", "todos"
 
-        long idItem;
+        Long idItem = null;
 
         if (fonteItem.startsWith("estatico")) idItem = Long.parseLong(opcaoItem);
-        if (fonteItem.startsWith("contexto.")) {
-            String chaveContexto = fonteItem.substring("contexto.".length());
-            idItem = ctx.getContexto().getLong(chaveContexto).orElseThrow();
-        } else {
-            throw new RuntimeException();
-        }
+        if (fonteItem.startsWith("contexto")) idItem = ctx.getContexto().getLong(opcaoItem).orElseThrow();
+        if (idItem == null) throw new RuntimeException();
 
         List<EntidadeInstancia> personagens = new ArrayList<>();
 
-        if (fonteItem.startsWith("instancia_ativa")) personagens = List.of(instanciaResolver.retornarAtiva(ctx));
-        if (fonteItem.startsWith("batalha.")) personagens = instanciaResolver.resolverDeFonte(fontePersonagem, ctx);
+        if (fontePersonagem.startsWith("instancia_ativa")) personagens = List.of(instanciaResolver.retornarAtiva(ctx));
+        if (fontePersonagem.startsWith("batalha.")) personagens = instanciaResolver.resolverDeFonte(fontePersonagem, ctx);
         if (personagens.isEmpty()) throw new RuntimeException();
+
+        Integer qtd = null;
+
+        if (fonteQtd.startsWith("estatico")) qtd = Integer.parseInt(opcaoQtd);
+        if (fonteQtd.startsWith("contexto")) qtd = ctx.getContexto().getInt(opcaoQtd).orElseThrow();
+        if (qtd == null) throw new RuntimeException();
 
         switch (tipo) {
             case "CRIAR" -> {
@@ -64,6 +68,7 @@ public class GerenciarItemHandler implements EtapaHandler {
                     EntidadeRelacao entidadeRelacao = new EntidadeRelacao();
                     entidadeRelacao.setIdEntidadeFilha(instanciaItem);
                     entidadeRelacao.setIdEntidadePai(personagem);
+                    entidadeRelacao.setQuantidade(qtd);
                     entidadeRelacaoRepo.save(entidadeRelacao);
                 }
             }

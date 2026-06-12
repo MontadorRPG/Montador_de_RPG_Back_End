@@ -213,72 +213,51 @@
           }
         },
         {
-          "_comentario*": "Não sei se o tipo 'SOLICITAR_INPUT' é o mais correto aqui",
           "_comentario": " ATRIBUTOS DA CLASSE ",
           "ordem": 11,
           "nome": "Registrar Propriedade do Knight",
-          "tipoEtapa": "SOLICITAR_INPUT",
+          "tipoEtapa": "GERENCIAR_ITEM",
           "obrigatorio": true,
 
           "_comentario_2": " JSON DA CLASSE ",
           "parametrosEtapa": {
-            "campo_pedido": "Informe a Propriedade (Property) concedida pelo seu tipo de Knight.",
-            "salvar_em": "propriedade_knight",
-            "pode_passar": false,
-            "opcoes_fonte": "estatico",
-            "opcoes_estatico": []
+            "tipo": "CRIAR",
+            "opcao_fonte": "contexto",
+            "opcao_item": "knight.propriedade",
+            "opcao_fonte_personagem": "instancia_ativa",
+            "qtd": "1"
           }
         },
         {
-          "_comentario*": "Não sei se o tipo 'SOLICITAR_INPUT' é o mais correto aqui",
           "_comentario": " ATRIBUTOS DA CLASSE ",
           "ordem": 12,
           "nome": "Registrar Habilidade do Knight",
-          "tipoEtapa": "SOLICITAR_INPUT",
+          "tipoEtapa": "GERENCIAR_ITEM",
           "obrigatorio": true,
 
           "_comentario_2": " JSON DA CLASSE ",
           "parametrosEtapa": {
-            "campo_pedido": "Informe a Habilidade (Ability) única do seu tipo de Knight.",
-            "salvar_em": "habilidade_knight",
-            "pode_passar": false,
-            "opcoes_fonte": "estatico",
-            "opcoes_estatico": []
+            "tipo": "CRIAR",
+            "opcao_fonte": "contexto",
+            "opcao_item": "knight.habilidade",
+            "opcao_fonte_personagem": "instancia_ativa",
+            "qtd": "1"
           }
         },
         {
-          "_comentario*": "Não sei se o tipo 'SOLICITAR_INPUT' é o mais correto aqui",
           "_comentario": " ATRIBUTOS DA CLASSE ",
           "ordem": 13,
           "nome": "Registrar Paixão do Knight",
-          "tipoEtapa": "SOLICITAR_INPUT",
+          "tipoEtapa": "GERENCIAR_ITEM",
           "obrigatorio": true,
 
           "_comentario_2": " JSON DA CLASSE ",
           "parametrosEtapa": {
-            "campo_pedido": "Informe a Paixão (Passion) do seu Knight -> o meio especial de restaurar SPI.",
-            "salvar_em": "paixao_knight",
-            "pode_passar": false,
-            "opcoes_fonte": "estatico",
-            "opcoes_estatico": []
-          }
-        },
-        {
-          "_comentario*": [
-            "Isso esta errado",
-            "Habilidades/Propriedades seriam entidades"
-          ],
-          "_comentario": " ATRIBUTOS DA CLASSE ",
-          "ordem": 14,
-          "nome": "Aplicar Atributos de Habilidade/Propriedade ao Personagem",
-          "tipoEtapa": "ALTERAR_ATRIBUTO",
-          "obrigatorio": true,
-
-          "_comentario_2": " JSON DA CLASSE ",
-          "parametrosEtapa": {
-            "atributo": "propriedade",
-            "source_key": "propriedade_knight",
-            "operacao": ""
+            "tipo": "CRIAR",
+            "opcao_fonte": "contexto",
+            "opcao_item": "knight.paixao",
+            "opcao_fonte_personagem": "instancia_ativa",
+            "qtd": "1"
           }
         },
         {
