@@ -1,12 +1,14 @@
 package com.rpgvtt.montador_de_rpg_backend.controller.sessao;
 
-import com.rpgvtt.montador_de_rpg_backend.dto.sessao.SessaoCreateDTO;
-import com.rpgvtt.montador_de_rpg_backend.dto.sessao.SessaoResponseDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.AtributoAlteradoDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.ConviteDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.EntradaSessaoDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.SessaoDTO;
+import com.rpgvtt.montador_de_rpg_backend.security.UsuarioPrincipal;
 import com.rpgvtt.montador_de_rpg_backend.service.sessao.SessaoService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,29 +19,92 @@ public class SessaoController {
     private final SessaoService sessaoService;
 
     /**
-     * POST /api/sessoes - Abre/Cria uma nova sessão.
+     * POST /api/sessoes/campanhas/{idCampanha}/iniciar
+     * Master starts a session.
      */
-    @PostMapping
-    public ResponseEntity<SessaoResponseDTO> criarSessao(@RequestBody @Valid SessaoCreateDTO dto) {
-        SessaoResponseDTO novaSessao = sessaoService.criarSessao(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaSessao);
+    @PostMapping("/campanhas/{idCampanha}/iniciar")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SessaoDTO iniciar(@PathVariable Long idCampanha,
+                             @AuthenticationPrincipal UsuarioPrincipal principal) {
+        return sessaoService.iniciarSessao(idCampanha, principal.getId());
     }
 
     /**
-     * GET /api/sessoes/{id} - Obtém os detalhes de uma sessão.
+     * POST /api/sessoes/{idSessao}/encerrar
+     * Master ends the session.
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<SessaoResponseDTO> buscarPorId(@PathVariable Long id) {
-        SessaoResponseDTO sessao = sessaoService.buscarPorId(id);
-        return ResponseEntity.ok(sessao);
+    @PostMapping("/{idSessao}/encerrar")
+    public void encerrar(@PathVariable Long idSessao,
+                         @AuthenticationPrincipal UsuarioPrincipal principal) {
+        sessaoService.encerrarSessao(idSessao, principal.getId());
     }
 
     /**
-     * PUT /api/sessoes/{id}/encerrar - Finaliza uma sessão de jogo em andamento.
+     * POST /api/sessoes/{idSessao}/entrar
+     * Player (or master) joins the session room.
+     * Optional body: { "tokenConvite": "..." }
      */
-    @PutMapping("/{id}/encerrar")
-    public ResponseEntity<SessaoResponseDTO> encerrarSessao(@PathVariable Long id) {
-        SessaoResponseDTO sessaoEncerrada = sessaoService.encerrarSessao(id);
-        return ResponseEntity.ok(sessaoEncerrada);
+    @PostMapping("/{idSessao}/entrar")
+    public EntradaSessaoDTO entrar(@PathVariable Long idSessao,
+                                   @RequestBody(required = false) EntrarRequest req,
+                                   @AuthenticationPrincipal UsuarioPrincipal principal) {
+        String token = req != null ? req.tokenConvite() : null;
+        return sessaoService.entrarNaSessao(idSessao, principal.getId(), token);
     }
+
+    /**
+     * POST /api/sessoes/{idSessao}/convite
+     * Master invites a specific user. Body: { "idUsuarioAlvo": 42 }
+     */
+    @PostMapping("/{idSessao}/convite")
+    public ConviteDTO convidar(@PathVariable Long idSessao,
+                               @RequestBody ConviteRequest req,
+                               @AuthenticationPrincipal UsuarioPrincipal principal) {
+        return sessaoService.gerarConvite(
+                idSessao, req.idUsuarioAlvo(), principal.getId());
+    }
+
+    /**
+     * PATCH /api/sessoes/{idSessao}/instancias/{idInstancia}/atributos
+     * Master changes any attribute on any instance.
+     * Body: { "atributo": "hp", "valor": 25 }
+     */
+    @PatchMapping("/{idSessao}/instancias/{idInstancia}/atributos")
+    public AtributoAlteradoDTO alterarAtributoMestre(
+            @PathVariable Long idSessao,
+            @PathVariable Long idInstancia,
+            @RequestBody AlterarAtributoRequest req,
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        return sessaoService.alterarAtributoInstancia(
+                idSessao, idInstancia,
+                req.atributo(), req.valor(),
+                principal.getId()
+        );
+    }
+
+    /**
+     * PATCH /api/sessoes/{idSessao}/meu-personagem/atributos
+     * Player changes their own non-combat attributes.
+     */
+    @PatchMapping("/{idSessao}/meu-personagem/atributos")
+    public AtributoAlteradoDTO alterarAtributoJogador(
+            @PathVariable Long idSessao,
+            @RequestBody AlterarAtributoRequest req,
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+
+        // Resolve idInstancia from the player's active character
+        Long idInstancia = sessaoService.resolverInstanciaDoJogador(
+                idSessao, principal.getId());
+
+        return sessaoService.alterarAtributoPersonagem(
+                idSessao, idInstancia,
+                req.atributo(), req.valor(),
+                principal.getId()
+        );
+    }
+
+    // Request/response records
+    public record EntrarRequest(String tokenConvite) {}
+    public record ConviteRequest(Long idUsuarioAlvo) {}
+    public record AlterarAtributoRequest(String atributo, Object valor) {}
 }

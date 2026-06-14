@@ -33,7 +33,7 @@ public class SessaoRehydrator {
     @EventListener(ApplicationReadyEvent.class)
     public void rehidratar(){
         List<Sessao> sessoesAtivas = sessaoRepo
-                .findByStatusAndProcedimentoAtivoIsNotNull(StatusSessao.EM_ANDAMENTO);
+                .findByStatusAndProcedimentoAtivoIsNotNull(StatusSessao.ATIVA);
 
         log.info("Retornando {} sessões ativas após reinício", sessoesAtivas.size());
 

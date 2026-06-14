@@ -39,6 +39,6 @@ public class Primitivo {
     @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private JsonNode parametro_schemas;
+    private JsonNode parametroSchemas;
 
 }

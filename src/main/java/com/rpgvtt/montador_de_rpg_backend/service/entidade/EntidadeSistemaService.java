@@ -99,73 +99,73 @@ public class EntidadeSistemaService {
 
     // [ ---------------- EntidadeRelacao ---------------- ]
 
-    @Transactional
-    public EntidadeRelacaoResponseDTO adicionarRelacao(EntidadeRelacaoCreateDTO dto) {
-
-        if (dto.idEntidadePai().equals(dto.idEntidadeFilha())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uma entidade não pode se relacionar consigo mesma.");
-        }
-
-        EntidadeSistema pai = entidadeRepository.findById(dto.idEntidadePai())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade pai não encontrada."));
-        EntidadeSistema filha = entidadeRepository.findById(dto.idEntidadeFilha())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade filha não encontrada."));
-
-        // Verifica se as duas entidades pertencem ao mesmo sistema
-        if (!pai.getSistema().getId().equals(filha.getSistema().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "As entidades devem pertencer ao mesmo sistema.");
-        }
-
-        EntidadeRelacaoKey key = new EntidadeRelacaoKey(dto.idEntidadePai(), dto.idEntidadeFilha());
-
-        if (relacaoRepository.existsById(key)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta relação já existe.");
-        }
-
-        EntidadeRelacao relacao = new EntidadeRelacao();
-        relacao.setId(key);
-        relacao.setIdEntidadePai(pai);
-        relacao.setIdEntidadeFilha(filha);
-        relacao.setQuantidade(dto.quantidade());
-        relacao.setCustomizacoes(dto.customizacoes());
-        relacao.setOrigem(dto.origem());
-
-        return mapearRelacaoParaDTO(relacaoRepository.save(relacao));
-    }
-
-    @Transactional
-    public EntidadeRelacaoResponseDTO atualizarRelacao(Long idPai, Long idFilha,
-                                                        EntidadeRelacaoUpdateDTO dto) {
-        EntidadeRelacaoKey key = new EntidadeRelacaoKey(idPai, idFilha);
-        EntidadeRelacao relacao = relacaoRepository.findById(key)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Relação não encontrada."));
-
-        if (dto.quantidade() != null)    relacao.setQuantidade(dto.quantidade());
-        if (dto.customizacoes() != null) relacao.setCustomizacoes(dto.customizacoes());
-        if (dto.origem() != null)        relacao.setOrigem(dto.origem());
-
-        return mapearRelacaoParaDTO(relacaoRepository.save(relacao));
-    }
-
-    @Transactional
-    public void removerRelacao(Long idPai, Long idFilha) {
-        EntidadeRelacaoKey key = new EntidadeRelacaoKey(idPai, idFilha);
-        if (!relacaoRepository.existsById(key)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Relação não encontrada.");
-        }
-        relacaoRepository.deleteById(key);
-    }
-
-    @Transactional(readOnly = true)
-    public List<EntidadeRelacaoResponseDTO> listarRelacoesDaEntidade(Long entidadeId) {
-        if (!entidadeRepository.existsById(entidadeId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade não encontrada.");
-        }
-        return relacaoRepository.findByIdEntidadePaiId(entidadeId)
-                .stream()
-                .map(this::mapearRelacaoParaDTO)
-                .toList();
-    }
+//    @Transactional
+//    public EntidadeRelacaoResponseDTO adicionarRelacao(EntidadeRelacaoCreateDTO dto) {
+//
+//        if (dto.idEntidadePai().equals(dto.idEntidadeFilha())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uma entidade não pode se relacionar consigo mesma.");
+//        }
+//
+//        EntidadeSistema pai = entidadeRepository.findById(dto.idEntidadePai())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade pai não encontrada."));
+//        EntidadeSistema filha = entidadeRepository.findById(dto.idEntidadeFilha())
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade filha não encontrada."));
+//
+//        // Verifica se as duas entidades pertencem ao mesmo sistema
+//        if (!pai.getSistema().getId().equals(filha.getSistema().getId())) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "As entidades devem pertencer ao mesmo sistema.");
+//        }
+//
+//        EntidadeRelacaoKey key = new EntidadeRelacaoKey(dto.idEntidadePai(), dto.idEntidadeFilha());
+//
+//        if (relacaoRepository.existsById(key)) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta relação já existe.");
+//        }
+//
+//        EntidadeRelacao relacao = new EntidadeRelacao();
+//        relacao.setId(key);
+//        relacao.setIdEntidadePai(pai);
+//        relacao.setIdEntidadeFilha(filha);
+//        relacao.setQuantidade(dto.quantidade());
+//        relacao.setCustomizacoes(dto.customizacoes());
+//        relacao.setOrigem(dto.origem());
+//
+//        return mapearRelacaoParaDTO(relacaoRepository.save(relacao));
+//    }
+//
+//    @Transactional
+//    public EntidadeRelacaoResponseDTO atualizarRelacao(Long idPai, Long idFilha,
+//                                                        EntidadeRelacaoUpdateDTO dto) {
+//        EntidadeRelacaoKey key = new EntidadeRelacaoKey(idPai, idFilha);
+//        EntidadeRelacao relacao = relacaoRepository.findById(key)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Relação não encontrada."));
+//
+//        if (dto.quantidade() != null)    relacao.setQuantidade(dto.quantidade());
+//        if (dto.customizacoes() != null) relacao.setCustomizacoes(dto.customizacoes());
+//        if (dto.origem() != null)        relacao.setOrigem(dto.origem());
+//
+//        return mapearRelacaoParaDTO(relacaoRepository.save(relacao));
+//    }
+//
+//    @Transactional
+//    public void removerRelacao(Long idPai, Long idFilha) {
+//        EntidadeRelacaoKey key = new EntidadeRelacaoKey(idPai, idFilha);
+//        if (!relacaoRepository.existsById(key)) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Relação não encontrada.");
+//        }
+//        relacaoRepository.deleteById(key);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public List<EntidadeRelacaoResponseDTO> listarRelacoesDaEntidade(Long entidadeId) {
+//        if (!entidadeRepository.existsById(entidadeId)) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade não encontrada.");
+//        }
+//        return relacaoRepository.findByIdEntidadePaiId(entidadeId)
+//                .stream()
+//                .map(this::mapearRelacaoParaDTO)
+//                .toList();
+//    }
 
     // [ ---------------- EntidadeProcedimento ---------------- ]
 

@@ -52,6 +52,8 @@ public class Sessao {
 
     private StatusSessao status;
 
+    private int ordem;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sessao")
     private List<Cena> cenas;
 

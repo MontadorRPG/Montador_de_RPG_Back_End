@@ -41,7 +41,7 @@ public class ProcedimentoLoader {
                 ));
 
         List<EtapaProcedimento> etapas = etapaRepo
-                .findByIdProcedimentoOrderByOrdem(req.idProcedimento());
+                .findByProcedimentoIdOrderByOrdem(req.idProcedimento());
 
         etapas.sort(Comparator.comparing(EtapaProcedimento::getOrdem));
         

@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface EtapaProcedimentoRepository extends JpaRepository<EtapaProcedimento, Long> {
 
-    List<EtapaProcedimento> findByIdProcedimentoOrderByOrdem(Long idFilho);
+    List<EtapaProcedimento> findByProcedimentoIdOrderByOrdem(Long idFilho);
     boolean existsByProcedimentoIdAndOrdem(Long procedimentoId, Integer ordem);
 }

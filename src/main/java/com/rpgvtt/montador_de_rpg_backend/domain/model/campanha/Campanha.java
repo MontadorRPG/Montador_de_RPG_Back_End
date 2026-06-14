@@ -1,9 +1,9 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.campanha;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Sessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusCampanha;
-// import com.rpgvtt.montador_de_rpg_backend.domain.model.personagem.Personagem;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
@@ -59,12 +59,12 @@ public class Campanha {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
     private List<Sessao> sessoes;
 
-//     @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
-//     private List<Personagem> personagens;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
+    private List<Personagem> personagens;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
     private List<CampanhaUsuario> usuarios;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "campanha")
-    private List<EntidadeInstancia> entidadesInstanciadas;
+    private List<EntidadeInstancia> entidadeInstancias;
 }

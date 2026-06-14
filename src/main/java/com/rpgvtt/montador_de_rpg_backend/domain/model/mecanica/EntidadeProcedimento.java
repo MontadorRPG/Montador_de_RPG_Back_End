@@ -28,7 +28,7 @@ public class EntidadeProcedimento {
         generator = "entidade_procedimento_seq"
     )
     @SequenceGenerator(
-        name = "etapa_procedimento_seq", 
+        name = "entidade_procedimento_seq",
         sequenceName = "entidade_procedimento_sequence", 
         allocationSize = 1
     )

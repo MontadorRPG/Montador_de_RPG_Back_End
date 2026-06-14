@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.personagem;
 
 // import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import jakarta.persistence.*;
@@ -34,15 +35,16 @@ public class Personagem {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_instancia")
+    @OneToOne(mappedBy = "personagem")
     private EntidadeInstancia instancia;
 
-    // @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    // @JoinColumn(name = "id_campanha")
-    // private Campanha campanha;
+     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+     @JoinColumn(name = "id_campanha")
+     private Campanha campanha;
 
     private String historia;
+
+    private boolean ativo;
 
     private String aparencia;
 

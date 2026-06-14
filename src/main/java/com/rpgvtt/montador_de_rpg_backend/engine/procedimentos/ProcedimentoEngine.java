@@ -142,7 +142,6 @@ public class ProcedimentoEngine {
                 continue;
             }
 
-
             EtapaHandler handler = handlers.get(etapa.getTipoEtapa());
             if (handler == null) {
                 frame.pularEtapa("handler não encontrado: " + etapa.getTipoEtapa());
@@ -158,15 +157,7 @@ public class ProcedimentoEngine {
                     frame.avancarEtapa();
                 }
 
-                case SUB_PROCEDIMENTO_INICIADO -> {
-                    // ChamarProcedimentoHandler already pushed the child.
-                    // Loop again — next iteration picks up the child from stack top.
-                    // Parent cursor stays where it is until child completes.
-                }
-
                 case AGUARDANDO_INPUT -> {
-                    // Stop here and return the frame asking for input.
-                    // The frame is still on the stack — next responder() call resumes it.
                     frame.setAguardandoInput(true);
                     frame.setEtapaPendente(etapa);
                     return frame;
@@ -193,9 +184,9 @@ public class ProcedimentoEngine {
         EntidadeInstancia instancia = instanciaResolver.retornarAtiva(ctx);
         JsonNode val = instancia.getAtributosAtuais().get(recursoNecessario);
 
-        if (val == null || val.isNull()) return true;  // resource absent
-        if (val.isBoolean()) return !val.asBoolean();  // false = not available
-        if (val.isNumber()) return val.longValue() <= 0; // zero = exhausted
-        return true; // unknown type = treat as not available
+        if (val == null || val.isNull()) return true;
+        if (val.isBoolean()) return !val.asBoolean();
+        if (val.isNumber()) return val.longValue() <= 0;
+        return true;
     }
 }

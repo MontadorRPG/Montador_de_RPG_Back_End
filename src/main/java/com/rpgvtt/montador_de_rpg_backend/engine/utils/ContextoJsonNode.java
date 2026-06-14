@@ -23,7 +23,7 @@ public class ContextoJsonNode implements Contexto {
         if (node.isMissingNode()) {
             return Optional.empty();
         }
-        return Optional.of(converter(node));
+        return Optional.ofNullable(converter(node));
     }
 
     private Object converter(JsonNode node) {

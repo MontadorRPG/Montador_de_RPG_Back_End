@@ -1,5 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.domain.model.sistema;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusProcedimento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -39,19 +40,19 @@ public class Procedimento {
     @NotNull
     private String nome;
 
-
     private String descricao;
 
-    private String tipo;
+    @Enumerated(value = EnumType.STRING)
+    private StatusProcedimento status;
 
     @NotNull
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private JsonNode confgsGeral;
+    private JsonNode configsGeral;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "procedimento")
     private List<EtapaProcedimento> etapas;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "procedimento")
-    private List<EntidadeProcedimento> entidadeProcedimentos;
+    private List<EntidadeProcedimento> procedimentos;
 }
