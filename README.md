@@ -1,13 +1,30 @@
 # Montador de RPG Back-End
 
-API backend para o projeto de RPG de mesa. Este serviço fornece a infraestrutura para criar campanhas, iniciar sessões de jogo, gerenciar participantes e executar procedimentos de regras do sistema em tempo real.
+API backend para um projeto semestral (matéria BRAAOOB) com o objetivo de criar um **ambiente unificado para rodar RPGs de mesa**. Este serviço não apenas fornece CRUD, mas também interpreta regras, executa procedimentos de sistemas e entrega respostas contextualizadas para o front-end.
 
-## Visão geral
+## O que é este projeto?
 
-- Backend focado em jogos de RPG de mesa.
-- Suporta múltiplos sistemas ou regras customizadas.
-- Não é apenas CRUD: interpreta regras, processa procedimentos e entrega respostas para o front-end.
-- Arquitetura schema-driven: modelos, DTOs e contratos definem o comportamento e os dados da API.
+O **Montador de RPG Back-End** é um servidor que:
+
+1. **Permite criar campanhas** com qualquer sistema de RPG — D&D, Pathfinder, Mythas Bastionland, ou qualquer outro.
+2. **Interpreta e processa regras** — não armazena apenas dados; o backend sabe como ler e aplicar as regras de cada sistema.
+3. **Executa procedimentos de jogo** — através de um engine customizável que entende ações, testes, combates e outros eventos.
+4. **Gerencia sessões em tempo real** via WebSocket STOMP, permitindo comunicação bidirecional entre mestres e jogadores.
+5. **Autoriza participantes** com OAuth2 (Google, Discord) e JWT, garantindo que apenas usuários autenticados possam jogar.
+
+### Exemplo de fluxo
+
+- Um mestre cria uma campanha de D&D 5e e convida 4 jogadores.
+- Ao iniciar a sessão, o backend carrega as regras do D&D 5e.
+- Um jogador clica em "Atacar" com a espada; o backend interpreta a ação, aplica modificadores e retorna o resultado.
+- Tudo acontece em tempo real através do WebSocket.
+
+## Visão geral técnica
+
+- **Backend focado em jogos de RPG de mesa** com suporte a múltiplos sistemas e extensível.
+- **Schema-driven**: modelos, DTOs e contratos definem como dados e comportamentos fluem pela API.
+- **Não é apenas CRUD**: há uma camada de interpretação e execução de procedimentos de jogo.
+- **Engine configurável** para suportar diferentes sistemas de regras sem reescrita de código.
 
 ## Tecnologias
 
