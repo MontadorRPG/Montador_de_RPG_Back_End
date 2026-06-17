@@ -131,7 +131,7 @@ public final class TestFixtures {
         p.setSistema(sistema);
         p.setNome("Turno de Combate Test");
         p.setTipo("TURNO_COMBATE");
-        p.setConfgsGeral(jsonb(Map.of()));
+        p.setConfigsGeral(jsonb(Map.of()));
         em.persist(p);
 
         etapa(p, 1, "Início turno", "APLICAR_EFEITOS_ATIVOS",

@@ -36,7 +36,7 @@ public class ProcedimentoService {
         procedimento.setNome(dto.nome());
         procedimento.setDescricao(dto.descricao());
         procedimento.setTipo(dto.tipo());
-        procedimento.setConfgsGeral(dto.confgsGeral());
+        procedimento.setConfigsGeral(dto.confgsGeral());
 
         return mapearParaDTO(procedimentoRepository.save(procedimento));
     }
@@ -67,7 +67,7 @@ public class ProcedimentoService {
         if (dto.nome() != null)        procedimento.setNome(dto.nome());
         if (dto.descricao() != null)   procedimento.setDescricao(dto.descricao());
         if (dto.tipo() != null)        procedimento.setTipo(dto.tipo());
-        if (dto.confgsGeral() != null) procedimento.setConfgsGeral(dto.confgsGeral());
+        if (dto.confgsGeral() != null) procedimento.setConfigsGeral(dto.confgsGeral());
 
         return mapearParaDTO(procedimentoRepository.save(procedimento));
     }
@@ -143,7 +143,7 @@ public class ProcedimentoService {
     private ProcedimentoResponseDTO mapearParaDTO(Procedimento procedimento) {
 
         List<EtapaProcedimentoResponseDTO> etapas = etapaRepository
-                .findByIdProcedimentoOrderByOrdem(procedimento.getId())
+                .findByProcedimentoIdOrderByOrdem(procedimento.getId())
                 .stream()
                 .map(this::mapearEtapaParaDTO)
                 .toList();
@@ -155,7 +155,7 @@ public class ProcedimentoService {
                 procedimento.getNome(),
                 procedimento.getDescricao(),
                 procedimento.getTipo(),
-                procedimento.getConfgsGeral(),
+                procedimento.getConfigsGeral(),
                 etapas
         );
     }
