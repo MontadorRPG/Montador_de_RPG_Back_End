@@ -28,6 +28,14 @@ public class ResolutionEvaluator {
             Integer target = null;
             String sourceDesc = "";
 
+            int roll;
+            JsonNode rollNode = contexto.path("roll");
+            if (rollNode.isInt()) {
+                roll = rollNode.asInt();
+            } else {
+                roll = randomProvider.rollD20();
+            }
+
             if (params != null && params.has("valor") && !params.get("valor").isNull()) {
                 JsonNode v = params.get("valor");
                 if (v.isNumber()) target = v.asInt();
@@ -78,7 +86,7 @@ public class ResolutionEvaluator {
                 sourceDesc = "contexto:atributo(" + atributoPath + ")";
             }
 
-            int roll = randomProvider.rollD20();
+            roll = randomProvider.rollD20();
             boolean success = roll <= target;
 
             JsonNode detalhes = params;
