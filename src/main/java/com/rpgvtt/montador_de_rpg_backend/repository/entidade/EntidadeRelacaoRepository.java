@@ -9,8 +9,11 @@ import java.util.List;
 
 @Repository
 public interface EntidadeRelacaoRepository extends JpaRepository<EntidadeRelacao, EntidadeRelacaoKey> {
+    
+// Busca todas as relações onde o id da chave tem idEntidadePai = :idPai
+    List<EntidadeRelacao> findById_IdEntidadePai(Long idPai);
 
-    List<EntidadeRelacao> findByIdEntidadePaiId(Long idPai);
-    EntidadeRelacao findByIdEntidadePaiAndIdEntidadeFilho(Long idPai, Long idFilho);
+    // Busca a relação exata usando os dois campos da chave
+    EntidadeRelacao findById_IdEntidadePaiAndId_IdEntidadeFilha(Long idPai, Long idFilha);
 
 }

@@ -115,7 +115,7 @@ public class EntidadeInstanciaService {
         EntidadeInstancia instancia = instanciaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instância não encontrada."));
 
-        List<EntidadeRelacao> relacoesPai = entidadeRelacaoRepository.findByIdEntidadePaiId(id);
+        List<EntidadeRelacao> relacoesPai = entidadeRelacaoRepository.findById_IdEntidadePai(id);
         if (!relacoesPai.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Não é possível excluir a instância enquanto existirem relações dependentes.");

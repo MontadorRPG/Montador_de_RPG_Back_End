@@ -30,5 +30,5 @@ public interface AmizadeRepository extends JpaRepository<Amizade, AmizadeKey> {
                                          @Param("status") StatusAmizade status);
 
 
-    List<Amizade> findByIdDestinatarioAndStatus(Long idDestinatario, StatusAmizade status);
+    List<Amizade> findById_IdDestinatarioAndStatus(Long idDestinatario, StatusAmizade status);
 }

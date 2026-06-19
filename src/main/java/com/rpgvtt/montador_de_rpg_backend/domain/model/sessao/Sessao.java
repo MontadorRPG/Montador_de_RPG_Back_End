@@ -2,6 +2,8 @@ package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusSessao;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Procedimento;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
 
-import java.sql.SQLType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,6 +54,10 @@ public class Sessao {
     private StatusSessao status;
 
     private int ordem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_procedimento_ativo")
+    private Procedimento procedimentoAtivo;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sessao")
     private List<Cena> cenas;

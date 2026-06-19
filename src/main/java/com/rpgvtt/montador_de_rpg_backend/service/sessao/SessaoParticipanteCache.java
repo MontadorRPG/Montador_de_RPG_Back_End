@@ -65,11 +65,12 @@ public class SessaoParticipanteCache {
         salas.remove(idSessao);
         convites.remove(idSessao);
     }
-}
+
     /**
      * Returns the IDs of known session rooms in the cache.
      */
     public java.util.Set<Long> listarIds() {
         return java.util.Set.copyOf(salas.keySet());
     }
+}
 

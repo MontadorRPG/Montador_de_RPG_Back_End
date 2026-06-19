@@ -75,7 +75,7 @@ public class GerenciarItemHandler implements EtapaHandler {
             case "REMOVER" -> {
                 for (EntidadeInstancia personagem : personagens) {
                     EntidadeRelacao entidadeRelacao = entidadeRelacaoRepo
-                            .findByIdEntidadePaiAndIdEntidadeFilho(personagem.getId(), idItem);
+                            .findById_IdEntidadePaiAndId_IdEntidadeFilha(personagem.getId(), idItem);
                     entidadeRelacaoRepo.delete(entidadeRelacao);
                 }
             }

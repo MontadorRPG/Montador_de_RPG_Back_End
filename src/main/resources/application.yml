@@ -1,22 +1,17 @@
 spring:
   application:
     name: montador-de-rpg-backend
+  profiles:
+    active: dev
   datasource:
-    # Cole aqui a URL JDBC que o Supabase te fornece (mude o host e a porta se necessário)
-    url: ${SUPABASE_DB_URL:jdbc:postgresql://db.xxxxxxxxxxxxxxxxxxxx.supabase.co:5432/postgres}
-    username: ${SUPABASE_DB_USER:postgres}
-    # Substitua pela senha que você criou ao criar o projeto no Supabase
-    password: ${SUPABASE_DB_PASSWORD:SUA_SENHA_DO_BANCO_SUPABASE}
+    url: jdbc:postgresql://localhost:5432/db_rpg
+    username: rpguser
+    password: rpgpass
     driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      # 'update' cria/atualiza as tabelas automaticamente no Supabase. 
-      # Quando o projeto for para produção, o ideal é mudar para 'validate'.
       ddl-auto: update
     show-sql: true
-
-  # Configuração de Login Social (OAuth2)
   security:
     oauth2:
       client:
@@ -42,13 +37,16 @@ spring:
             token-uri: https://discord.com/api/oauth2/token
             user-info-uri: https://discord.com/api/users/@me
             user-name-attribute: id
-  profiles:
-    active: dev
 
-# Configurações customizadas do Token JWT e Redirecionamento para o React (Vite)
 app:
   jwt:
     secret: ${JWT_SECRET:SUA_CHAVE_SECRETA_SUPER_SEGURA_COM_PELO_MENOS_256_BITS_MUDAR_DEPOIS}
-    expirationInMs: 86400000 # 1 dia de validade para o token
+    expirationInMs: 86400000
   oauth2:
     authorizedRedirectUri: http://localhost:5173/oauth2/redirect
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://localhost:3000
+      - https://*.githubpreview.dev
+      - https://*.app.github.dev

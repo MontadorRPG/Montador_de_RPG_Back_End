@@ -31,8 +31,8 @@ public class ResolutionEvaluator {
             if (params != null && params.has("valor") && !params.get("valor").isNull()) {
                 JsonNode v = params.get("valor");
                 if (v.isNumber()) target = v.asInt();
-                else if (v.isTextual()) {
-                    try { target = Integer.parseInt(v.asText()); } catch (NumberFormatException ignored) {}
+                else if (v.isString()) {
+                    try { target = Integer.parseInt(v.asString()); } catch (NumberFormatException ignored) {}
                 }
                 sourceDesc = "literal:valor";
             }
@@ -44,15 +44,15 @@ public class ResolutionEvaluator {
                 for (JsonNode el : arr) {
                     Integer n = null;
                     if (el.isNumber()) n = el.asInt();
-                    else if (el.isTextual()) {
-                        try { n = Integer.parseInt(el.asText()); } catch (NumberFormatException ignored) {}
+                    else if (el.isString()) {
+                        try { n = Integer.parseInt(el.asString()); } catch (NumberFormatException ignored) {}
                     }
                     if (n != null) {
                         best = Math.max(best, n);
                         worst = Math.min(worst, n);
                     }
                 }
-                String modo = params.has("modo") ? params.get("modo").asText("maior") : "maior";
+                String modo = params.has("modo") ? params.get("modo").asString("maior") : "maior";
                 if (best != Integer.MIN_VALUE) {
                     target = modo.equalsIgnoreCase("menor") ? worst : best;
                     sourceDesc = "array:valores[modo=" + modo + "]";
@@ -62,9 +62,9 @@ public class ResolutionEvaluator {
             if (target == null) {
                 String atributoPath = null;
                 if (params != null) {
-                    if (params.has("atributo")) atributoPath = params.get("atributo").asText(null);
-                    else if (params.has("caminho")) atributoPath = params.get("caminho").asText(null);
-                    else if (params.has("atributoCaminho")) atributoPath = params.get("atributoCaminho").asText(null);
+                    if (params.has("atributo")) atributoPath = params.get("atributo").asString(null);
+                    else if (params.has("caminho")) atributoPath = params.get("caminho").asString(null);
+                    else if (params.has("atributoCaminho")) atributoPath = params.get("atributoCaminho").asString(null);
                 }
 
                 if (atributoPath == null || atributoPath.isBlank()) {
@@ -100,8 +100,8 @@ public class ResolutionEvaluator {
             else return null;
         }
         if (node.isInt() || node.isLong()) return node.asInt();
-        if (node.isTextual()) {
-            try { return Integer.parseInt(node.asText()); } catch (NumberFormatException ex) { return null; }
+        if (node.isString()) {
+            try { return Integer.parseInt(node.asString()); } catch (NumberFormatException ex) { return null; }
         }
         if (node.isNumber()) return node.asInt();
         if (node.has("atual")) { // support structures like { "atual": 5 }

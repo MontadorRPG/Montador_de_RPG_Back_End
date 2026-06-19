@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.type.SqlTypes;
 import tools.jackson.databind.JsonNode;
+import org.hibernate.annotations.JdbcTypeCode;
 
 @Getter
 @Setter

@@ -189,4 +189,9 @@ public class ProcedimentoEngine {
         if (val.isNumber()) return val.longValue() <= 0;
         return true;
     }
+
+    public ProcedimentoContexto getContextoAtivo(Long idSessao) {
+        return sessaoCtx.frameAtivo(idSessao);
+    }
+
 }

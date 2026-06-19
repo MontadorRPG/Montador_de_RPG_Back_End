@@ -88,7 +88,7 @@ public class AmizadeService {
 
     @Transactional(readOnly = true)
     public List<AmizadeResponseDTO> listarSolicitacoesPendentes(Long idUsuario) {
-        return amizadeRepository.findByIdDestinatarioAndStatus(idUsuario, StatusAmizade.PENDENTE)
+        return amizadeRepository.findById_IdDestinatarioAndStatus(idUsuario, StatusAmizade.PENDENTE)
                 .stream()
                 .map(this::mapearParaDTO)
                 .toList();

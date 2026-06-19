@@ -344,9 +344,12 @@ public class SessaoService {
                 () -> new EntityNotFoundException(Personagem.class, campanha.getId())
         );
 
-        EntidadeInstancia inst = instanciaRepo.findByPersonagemId(personagem.getId()).orElseThrow(
-                () -> new EntityNotFoundException(EntidadeInstancia.class, personagem.getId())
-        );
+        // EntidadeInstancia inst = instanciaRepo.findByPersonagemId(personagem.getId()).orElseThrow(
+        //         () -> new EntityNotFoundException(EntidadeInstancia.class, personagem.getId())
+        // );
+
+        EntidadeInstancia inst = personagem.getInstancia();
+        if (inst == null) throw new EntityNotFoundException(EntidadeInstancia.class, personagem.getId());
 
         return inst.getId();
     }

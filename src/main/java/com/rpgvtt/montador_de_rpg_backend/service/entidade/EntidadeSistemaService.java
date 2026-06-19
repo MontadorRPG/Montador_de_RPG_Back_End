@@ -165,61 +165,61 @@ public class EntidadeSistemaService {
 
     // [ ---------------- EntidadeProcedimento ---------------- ]
 
-    @Transactional
-    public EntidadeProcedimentoResponseDTO vincularProcedimento(EntidadeProcedimentoCreateDTO dto) {
-        EntidadeSistema entidade = entidadeRepository.findById(dto.entidadeId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade não encontrada."));
-        Procedimento procedimento = procedimentoRepository.findById(dto.procedimentoId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Procedimento não encontrado."));
+    // @Transactional
+    // public EntidadeProcedimentoResponseDTO vincularProcedimento(EntidadeProcedimentoCreateDTO dto) {
+    //     EntidadeSistema entidade = entidadeRepository.findById(dto.entidadeId())
+    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade não encontrada."));
+    //     Procedimento procedimento = procedimentoRepository.findById(dto.procedimentoId())
+    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Procedimento não encontrado."));
 
-        if (!entidade.getSistema().getId().equals(procedimento.getSistema().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A entidade e o procedimento devem pertencer ao mesmo sistema.");
-        }
+    //     if (!entidade.getSistema().getId().equals(procedimento.getSistema().getId())) {
+    //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+    //                 "A entidade e o procedimento devem pertencer ao mesmo sistema.");
+    //     }
 
-        EntidadeProcedimento ep = new EntidadeProcedimento();
-        ep.setSistema(entidade.getSistema());
-        ep.setEntidadeSistema(entidade);
-        ep.setProcedimento(procedimento);
-        ep.setProcessamento(dto.processamento());
-        ep.setCondicao(dto.condicao());
-        ep.setEReativo(dto.eReativo());
-        ep.setOrdem(dto.ordem());
+    //     EntidadeProcedimento ep = new EntidadeProcedimento();
+    //     ep.setSistema(entidade.getSistema());
+    //     ep.setEntidadeSistema(entidade);
+    //     ep.setProcedimento(procedimento);
+    //     ep.setProcessamento(dto.processamento());
+    //     ep.setCondicao(dto.condicao());
+    //     ep.setEReativo(dto.eReativo());
+    //     ep.setOrdem(dto.ordem());
 
-        return mapearEpParaDTO(entidadeProcedimentoRepository.save(ep));
-    }
+    //     return mapearEpParaDTO(entidadeProcedimentoRepository.save(ep));
+    // }
 
-    @Transactional
-    public EntidadeProcedimentoResponseDTO atualizarVinculo(Long id, EntidadeProcedimentoUpdateDTO dto) {
-        EntidadeProcedimento ep = entidadeProcedimentoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vínculo não encontrado."));
+    // @Transactional
+    // public EntidadeProcedimentoResponseDTO atualizarVinculo(Long id, EntidadeProcedimentoUpdateDTO dto) {
+    //     EntidadeProcedimento ep = entidadeProcedimentoRepository.findById(id)
+    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vínculo não encontrado."));
 
-        if (dto.processamento() != null) ep.setProcessamento(dto.processamento());
-        if (dto.condicao() != null)      ep.setCondicao(dto.condicao());
-        if (dto.eReativo() != null)      ep.setEReativo(dto.eReativo());
-        if (dto.ordem() != null)         ep.setOrdem(dto.ordem());
+    //     if (dto.processamento() != null) ep.setProcessamento(dto.processamento());
+    //     if (dto.condicao() != null)      ep.setCondicao(dto.condicao());
+    //     if (dto.eReativo() != null)      ep.setEReativo(dto.eReativo());
+    //     if (dto.ordem() != null)         ep.setOrdem(dto.ordem());
 
-        return mapearEpParaDTO(entidadeProcedimentoRepository.save(ep));
-    }
+    //     return mapearEpParaDTO(entidadeProcedimentoRepository.save(ep));
+    // }
 
-    @Transactional
-    public void removerVinculo(Long id) {
-        if (!entidadeProcedimentoRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vínculo não encontrado.");
-        }
-        entidadeProcedimentoRepository.deleteById(id);
-    }
+    // @Transactional
+    // public void removerVinculo(Long id) {
+    //     if (!entidadeProcedimentoRepository.existsById(id)) {
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vínculo não encontrado.");
+    //     }
+    //     entidadeProcedimentoRepository.deleteById(id);
+    // }
 
-    @Transactional(readOnly = true)
-    public List<EntidadeProcedimentoResponseDTO> listarVinculosDaEntidade(Long entidadeId) {
-        if (!entidadeRepository.existsById(entidadeId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade não encontrada.");
-        }
-        return entidadeProcedimentoRepository.findByEntidadeSistemaId(entidadeId)
-                .stream()
-                .map(this::mapearEpParaDTO)
-                .toList();
-    }
+    // @Transactional(readOnly = true)
+    // public List<EntidadeProcedimentoResponseDTO> listarVinculosDaEntidade(Long entidadeId) {
+    //     if (!entidadeRepository.existsById(entidadeId)) {
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade não encontrada.");
+    //     }
+    //     return entidadeProcedimentoRepository.findByEntidadeSistemaId(entidadeId)
+    //             .stream()
+    //             .map(this::mapearEpParaDTO)
+    //             .toList();
+    // }
 
     // [ ---------------- Mapeadores ---------------- ]
 

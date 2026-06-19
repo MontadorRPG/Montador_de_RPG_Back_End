@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface EntidadeInstanciaRepository extends JpaRepository<EntidadeInstancia, Long> {
 
-    Optional<EntidadeInstancia> findBySessaoIdAndUsuarioId();
+    // Optional<EntidadeInstancia> findBySessaoIdAndUsuarioId();
 
-    Optional<EntidadeInstancia> findByPersonagemId(Long personagemId);
+    // Optional<EntidadeInstancia> findByPersonagemId(Long personagemId);
 }

@@ -51,7 +51,7 @@ public class ProcedimentoLoader {
         // query DB only for root procedures
         List<Personagem> participantes = req.participantesHerdados() != null
                 ? req.participantesHerdados()
-                : personagemRepo.findBySessaoId(req.idSessao());
+                : personagemRepo.findByCampanha_Sessoes_Id(req.idSessao());
 
         ProcedimentoContexto ctx = new ProcedimentoContexto();
         ctx.setProcedimento(proc);

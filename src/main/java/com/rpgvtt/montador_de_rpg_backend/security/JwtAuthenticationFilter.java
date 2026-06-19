@@ -9,10 +9,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
+import com.rpgvtt.montador_de_rpg_backend.repository.usuario.UsuarioRepository;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -22,6 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, 
@@ -32,23 +38,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             // 2. Valida o token e verifica se o utilizador já não está autenticado nesta requisição
+            // if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            //     String email = tokenProvider.getEmailFromJWT(jwt);
+
+            //     // 3. Cria um objeto UserDetails simples do Spring Security usando o e-mail extraído
+            //     // Como usamos JWT e OAuth2, não precisamos da password aqui no contexto do filtro
+            //     UserDetails userDetails = User.withUsername(email)
+            //             .password("")
+            //             .authorities(Collections.emptyList()) // Adicione permissões/roles aqui no futuro, se necessário
+            //             .build();
+
+            //     // 4. Cria o objeto de autenticação do Spring Security
+            //     UsernamePasswordAuthenticationToken authentication = 
+            //             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                
+            //     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            //     // 5. Define o utilizador como autenticado no contexto global do Spring para esta requisição
+            //     SecurityContextHolder.getContext().setAuthentication(authentication);
+            // }
+
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 String email = tokenProvider.getEmailFromJWT(jwt);
 
-                // 3. Cria um objeto UserDetails simples do Spring Security usando o e-mail extraído
-                // Como usamos JWT e OAuth2, não precisamos da password aqui no contexto do filtro
-                UserDetails userDetails = User.withUsername(email)
-                        .password("")
-                        .authorities(Collections.emptyList()) // Adicione permissões/roles aqui no futuro, se necessário
-                        .build();
+                // Carrega o usuário real do banco
+                Usuario usuario = usuarioRepository.findByEmail(email)
+                        .orElseThrow(() -> new UsernameNotFoundException(email));
 
-                // 4. Cria o objeto de autenticação do Spring Security
-                UsernamePasswordAuthenticationToken authentication = 
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                
+                UsuarioPrincipal principal = new UsuarioPrincipal(usuario);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // 5. Define o utilizador como autenticado no contexto global do Spring para esta requisição
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {

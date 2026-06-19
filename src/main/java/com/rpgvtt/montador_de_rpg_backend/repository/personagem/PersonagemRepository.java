@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PersonagemRepository extends JpaRepository<Personagem, Long> {
 
-    List<Personagem> findBySessaoId(Long aLong);
+    List<Personagem> findByCampanha_Sessoes_Id(Long sessaoId);
 
     Optional<Personagem> findAtivoByCampanhaIdAndUsuarioId(Long idCampanha, Long idUsuario);
 
