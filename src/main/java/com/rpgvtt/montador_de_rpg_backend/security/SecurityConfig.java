@@ -3,6 +3,7 @@ package com.rpgvtt.montador_de_rpg_backend.security;
 import org.springframework.beans.factory.annotation.Value; // IMPORTANTE
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,9 +27,8 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    // Injeta a lista dinâmica definida no seu application.yml / application-dev.yml
-    @Value("${app.cors.allowed-origins:#{T(java.util.List).of('http://localhost:5173','http://localhost:3000','https://*.githubpreview.dev','https://*.app.github.dev')}}")
-    private List<String> allowedOrigins;
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomOAuth2UserService customOAuth2UserService,
@@ -51,6 +52,7 @@ public class SecurityConfig {
             
             // 4. Define as regras de autorização das rotas da API
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Permite acesso livre a recursos estáticos comuns se necessário
                 .requestMatchers("/", "/error", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
                 // Permite os endpoints de autenticação e os callbacks do OAuth2
@@ -90,23 +92,21 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Alterado de setAllowedOrigins para setAllowedOriginPatterns para aceitar as URLs com "*" do Codespaces
-        configuration.setAllowedOriginPatterns(allowedOrigins);
+        List<String> origins = Arrays.asList(allowedOrigins.split(","));
         
-        // Métodos HTTP aceitos pela API
+        // Se tiver só "*", usa allowedOriginPatterns com coringa
+        if (origins.size() == 1 && origins.get(0).trim().equals("*")) {
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            configuration.setAllowedOriginPatterns(origins);
+        }
+        
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        
-        // Cabeçalhos permitidos. O "Authorization" é crucial para o envio do Bearer Token JWT
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control", "X-Requested-With", "Accept"));
-        
-        // Permite o envio de credenciais/cookies se necessário
         configuration.setAllowCredentials(true);
-        
-        // Cache pré-flight por 1 hora
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Aplica estas regras a todos os endpoints da aplicação
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }

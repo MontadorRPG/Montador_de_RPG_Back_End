@@ -45,8 +45,4 @@ app:
   oauth2:
     authorizedRedirectUri: http://localhost:5173/oauth2/redirect
   cors:
-    allowed-origins:
-      - http://localhost:5173
-      - http://localhost:3000
-      - https://*.githubpreview.dev
-      - https://*.app.github.dev
+    allowed-origins: http://localhost:5173,http://localhost:3000,https://obscure-journey-4j6w795rgx74f7w74-5173.app.github.dev
