@@ -34,7 +34,25 @@ public class AuthController {
         String token = jwtTokenProvider.generateToken(usuario.getEmail());
         return ResponseEntity.ok(Map.of("token", token));
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, String>> registrar(@RequestBody RegistroRequest request) {
+        if (usuarioRepository.findByEmail(request.email()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado.");
+        }
+        Usuario usuario = new Usuario();
+        usuario.setEmail(request.email());
+        usuario.setApelido(request.apelido());
+        usuario.setSenha(passwordEncoder.encode(request.senha()));
+        usuario.setE_admin(false);
+        usuarioRepository.save(usuario);
+
+        String token = jwtTokenProvider.generateToken(usuario.getEmail());
+        return ResponseEntity.ok(Map.of("token", token));
+    }
 }
 
 // DTO interno (pode ficar no mesmo arquivo ou em um package dto)
 record LoginRequest(String email, String senha) {}
+
+record RegistroRequest(String email, String apelido, String senha) {}

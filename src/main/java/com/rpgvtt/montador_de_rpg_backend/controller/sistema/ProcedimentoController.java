@@ -1,10 +1,22 @@
 package com.rpgvtt.montador_de_rpg_backend.controller.sistema;
 
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.EtapaProcedimentoCreateDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.EtapaProcedimentoResponseDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.EtapaProcedimentoUpdateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoContextoDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoCreateDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoResponseDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoUpdateDTO;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.ProcedimentoEngine;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
+import com.rpgvtt.montador_de_rpg_backend.service.sistema.ProcedimentoService;
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +26,63 @@ import org.springframework.web.bind.annotation.*;
 public class ProcedimentoController {
 
     private final ProcedimentoEngine engine;
+    private final ProcedimentoService service;
+
+    // ---------- CRUD ----------
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProcedimentoResponseDTO criar(@Valid @RequestBody ProcedimentoCreateDTO dto) {
+        return service.criar(dto);
+    }
+
+    @GetMapping("/{id}")
+    public ProcedimentoResponseDTO buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id);
+    }
+
+    @GetMapping
+    public List<ProcedimentoResponseDTO> listar(
+        @RequestParam(required = false) Long sistemaId) {
+        return service.listar(sistemaId);
+    }
+
+    @PutMapping("/{id}")
+    public ProcedimentoResponseDTO atualizar(@PathVariable Long id,
+                                             @Valid @RequestBody ProcedimentoUpdateDTO dto) {
+        return service.atualizar(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long id) {
+        service.deletar(id);
+    }
+
+    // ------------------ Etapas ---‑-----------------
+
+    @PostMapping("/{procedimentoId}/etapas")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EtapaProcedimentoResponseDTO adicionarEtapa(
+            @PathVariable Long procedimentoId,
+            @Valid @RequestBody EtapaProcedimentoCreateDTO dto) {
+        return service.adicionarEtapa(procedimentoId, dto);
+    }
+
+    @PutMapping("/{procedimentoId}/etapas/{etapaId}")
+    public EtapaProcedimentoResponseDTO atualizarEtapa(
+            @PathVariable Long procedimentoId,
+            @PathVariable Long etapaId,
+            @Valid @RequestBody EtapaProcedimentoUpdateDTO dto) {
+        return service.atualizarEtapa(etapaId, dto);
+    }
+
+    @DeleteMapping("/{procedimentoId}/etapas/{etapaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarEtapa(
+            @PathVariable Long procedimentoId,
+            @PathVariable Long etapaId) {
+        service.deletarEtapa(etapaId);
+    }
 
     /**
      * Inicia um procedimento já persistido com um escopo de instância único.

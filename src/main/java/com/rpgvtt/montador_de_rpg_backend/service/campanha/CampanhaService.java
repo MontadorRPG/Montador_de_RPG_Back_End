@@ -1,6 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.service.campanha;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.enums.PapeisUsuario;
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusCampanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.Campanha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.CampanhaUsuario;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.campanha.CampanhaUsuarioKey;
@@ -47,6 +48,7 @@ public class CampanhaService {
 
         Sistema sistemaProxy = entityManager.getReference(Sistema.class, dto.sistemaId());
         campanha.setSistema(sistemaProxy);
+        campanha.setStatus(StatusCampanha.ATIVA);
 
         campanha = campanhaRepository.save(campanha);
 
@@ -58,6 +60,7 @@ public class CampanhaService {
         vinculo.setCampanha(campanha);
         vinculo.setUsuario(usuarioProxy);
         vinculo.setPapel(PapeisUsuario.MESTRE);
+        
 
         // Alterado de entityManager.persist para usar o Repository por consistência
         campanhaUsuarioRepository.save(vinculo);

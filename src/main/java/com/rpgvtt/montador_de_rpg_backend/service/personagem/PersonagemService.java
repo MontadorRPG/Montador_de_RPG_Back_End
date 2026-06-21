@@ -40,8 +40,11 @@ public class PersonagemService {
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
 
-        Campanha campanha = campanhaRepository.findById(dto.campanhaId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada."));
+        Campanha campanha = null;
+        if (dto.campanhaId() != null) {
+            campanha = campanhaRepository.findById(dto.campanhaId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada."));
+        }
 
         EntidadeInstancia instancia = entidadeInstanciaRepository.findById(dto.instanciaId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Instância não encontrada."));
@@ -70,8 +73,10 @@ public class PersonagemService {
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
 
-        Campanha campanha = campanhaRepository.findById(dto.campanhaId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada."));
+        Campanha campanha = dto.campanhaId() != null
+        ? campanhaRepository.findById(dto.campanhaId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada."))
+        : null;
 
         EntidadeSistema entidadeSistema = entidadeSistemaRepository.findById(dto.entidadeSistemaId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entidade do sistema não encontrada."));
@@ -123,7 +128,7 @@ public class PersonagemService {
         }
 
         return personagemRepository.findAll().stream()
-                .filter(personagem -> personagem.getCampanha().getId().equals(campanhaId))
+                .filter(p -> p.getCampanha() != null && p.getCampanha().getId().equals(campanhaId))
                 .map(this::mapearParaDTO)
                 .toList();
     }
@@ -179,20 +184,23 @@ public class PersonagemService {
     }
 
     private PersonagemResponseDTO mapearParaDTO(Personagem personagem) {
+    Long campanhaId = personagem.getCampanha() != null ? personagem.getCampanha().getId() : null;
+    String campanhaNome = personagem.getCampanha() != null ? personagem.getCampanha().getNome() : null;
+
         return new PersonagemResponseDTO(
-                personagem.getId(),
-                personagem.getUsuario().getId(),
-                personagem.getUsuario().getEmail(),
-                personagem.getCampanha().getId(),
-                personagem.getCampanha().getNome(),
-                personagem.getInstancia().getId(),
-                personagem.getInstancia().getNome(),
-                personagem.getHistoria(),
-                personagem.getAparencia(),
-                personagem.getUrlImagem(),
-                personagem.getNotasJogador(),
-                personagem.isAtivo(),
-                personagem.getCriadoEm() // Precisamos adicionar este campo à classe Personagem
+            personagem.getId(),
+            personagem.getUsuario().getId(),
+            personagem.getUsuario().getEmail(),
+            campanhaId,
+            campanhaNome,
+            personagem.getInstancia().getId(),
+            personagem.getInstancia().getNome(),
+            personagem.getHistoria(),
+            personagem.getAparencia(),
+            personagem.getUrlImagem(),
+            personagem.getNotasJogador(),
+            personagem.isAtivo(),
+            personagem.getCriadoEm()
         );
     }
 }

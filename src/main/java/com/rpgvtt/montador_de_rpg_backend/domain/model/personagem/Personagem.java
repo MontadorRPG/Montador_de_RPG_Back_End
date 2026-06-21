@@ -41,7 +41,7 @@ public class Personagem {
     @JoinColumn
     private EntidadeInstancia instancia;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_campanha")
     private Campanha campanha;
 

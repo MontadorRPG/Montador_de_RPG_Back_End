@@ -8,7 +8,7 @@ import tools.jackson.databind.JsonNode;
 
 public record EntidadeInstanciaCreateDTO(
 
-    @NotNull(message = "O ID da campanha é obrigatorio")Long campanhaId,
+    Long campanhaId,
     @NotNull(message = "O ID do sistema é obrigatorio") Long entidadeSistemaId,
     @NotBlank(message = "O Tipo é obrigatorio") String tipo,
     @NotBlank(message = "O nome é obrigatorio") String nome,

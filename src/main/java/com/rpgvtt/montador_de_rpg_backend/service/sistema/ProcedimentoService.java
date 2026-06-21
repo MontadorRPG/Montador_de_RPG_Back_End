@@ -1,6 +1,7 @@
 // ProcedimentoService.java
 package com.rpgvtt.montador_de_rpg_backend.service.sistema;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusProcedimento;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EtapaProcedimento;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Procedimento;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
@@ -37,6 +38,7 @@ public class ProcedimentoService {
         procedimento.setDescricao(dto.descricao());
         procedimento.setTipo(dto.tipo());
         procedimento.setConfigsGeral(dto.confgsGeral());
+        procedimento.setStatus(StatusProcedimento.SESSAO_ATIVA);
 
         return mapearParaDTO(procedimentoRepository.save(procedimento));
     }
@@ -49,12 +51,20 @@ public class ProcedimentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProcedimentoResponseDTO> listarPorSistema(Long sistemaId) {
-        if (!sistemaRepository.existsById(sistemaId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sistema não encontrado.");
+    public List<ProcedimentoResponseDTO> listar(Long sistemaId) {
+        List<Procedimento> procedimentos;
+
+        if (sistemaId != null) {
+            if (!sistemaRepository.existsById(sistemaId)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sistema não encontrado.");
+            }
+            procedimentos = procedimentoRepository.findBySistemaId(sistemaId);
+        } else {
+            // Se não informar sistemaId, traz todos os procedimentos
+            procedimentos = procedimentoRepository.findAll();
         }
-        return procedimentoRepository.findBySistemaId(sistemaId)
-                .stream()
+
+        return procedimentos.stream()
                 .map(this::mapearParaDTO)
                 .toList();
     }

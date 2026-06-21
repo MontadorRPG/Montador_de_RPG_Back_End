@@ -9,7 +9,7 @@ public record PersonagemCompletoCreateDTO(
         @NotNull(message = "O ID do usuário é obrigatório") Long usuarioId,
 
         // Dados da campanha
-        @NotNull(message = "O ID da campanha é obrigatório") Long campanhaId,
+        Long campanhaId,
 
         // Dados da entidade sistema (para criar a instância)
         @NotNull(message = "O ID da entidade sistema é obrigatório") Long entidadeSistemaId,
