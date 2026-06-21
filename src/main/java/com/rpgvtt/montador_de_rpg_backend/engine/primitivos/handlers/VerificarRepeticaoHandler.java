@@ -9,8 +9,8 @@ import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.Interpre
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ResultadoEtapa;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.ResultadoExpressao;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.ResultadoExpressao;
 import com.rpgvtt.montador_de_rpg_backend.repository.batalha.BatalhaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

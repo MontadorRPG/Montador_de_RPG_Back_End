@@ -77,7 +77,7 @@ public class ForEachHandler implements EtapaHandler {
 
             resultadosPorId.put(instancia.getId(), resultado.dados());
 
-            if (resultado.tipo() == ResultadoEtapa.TipoResultado.CONCLUIDA) {
+            if (resultado.tipo() == ResultadoEtapa.Tipo.CONCLUIDA) {
                 idsPasaram.add(instancia.getId());
             }
         }

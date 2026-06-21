@@ -7,7 +7,7 @@ import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.*;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.EtapaExecutavel;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.EtapaHandler;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.RolagemEngine;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.rolagemEngine.RolagemEngine;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;

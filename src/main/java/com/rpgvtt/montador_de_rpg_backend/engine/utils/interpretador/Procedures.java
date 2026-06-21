@@ -1,4 +1,4 @@
-package com.rpgvtt.montador_de_rpg_backend.engine.utils;
+package com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador;
 
 import java.util.ArrayList;
 import java.util.List;

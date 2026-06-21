@@ -67,7 +67,7 @@ public class SessaoContexto {
         return pilha == null ? 0 : pilha.size();
     }
 
-    private void persistirSnapshot(Long idSessao,
+    public void persistirSnapshot(Long idSessao,
                                    Deque<ProcedimentoContexto> pilha) {
         try {
             SessaoSnapshot snapshot = new SessaoSnapshot();

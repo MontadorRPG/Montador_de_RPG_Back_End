@@ -1,11 +1,10 @@
-package com.rpgvtt.montador_de_rpg_backend.engine.utils;
+package com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto;
 
 import tools.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import tools.jackson.databind.JsonNode;
 
 public class ContextoJsonNode implements Contexto {
 

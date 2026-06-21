@@ -14,14 +14,11 @@ public record LoadRequest(
         Map<String, Object> contextoInicial,      // keys to seed from parent
         List<Personagem> participantesHerdados // null = query DB
 ) {
-    // Compact constructor — normalize nulls
     public LoadRequest {
         contextoInicial = contextoInicial != null ? contextoInicial : Map.of();
     }
 
-    // ── Factory methods for common cases ─────────────────────
 
-    /** Root procedure started by engine — queries participants from DB */
     public static LoadRequest raiz(Long idProcedimento,
                                    Long idSessao,
                                    EscopoInstancias escopo) {
@@ -31,7 +28,16 @@ public record LoadRequest(
         );
     }
 
-    /** Root with no instance scope (INICIO_COMBATE, ENCERRAR_SESSAO) */
+    public static LoadRequest raiz(Long idProcedimento,
+                                   Long idSessao,
+                                   EscopoInstancias escopo,
+                                   Map<String, Object> contextoInicial) {
+        return new LoadRequest(
+                idProcedimento, idSessao, escopo,
+                null, contextoInicial, null
+        );
+    }
+
     public static LoadRequest semInstancia(Long idProcedimento,
                                            Long idSessao) {
         return new LoadRequest(
@@ -41,7 +47,6 @@ public record LoadRequest(
         );
     }
 
-    /** Child procedure called by CHAMAR_PROCEDIMENTO handler */
     public static LoadRequest filho(Long idProcedimento,
                                     ProcedimentoContexto paiCtx,
                                     EscopoInstancias escopo,

@@ -3,6 +3,7 @@ package com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.batalha.BatalhaParticipantes;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.batalha.Batalha;
+import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.EntityNotFoundException;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
 import com.rpgvtt.montador_de_rpg_backend.repository.batalha.BatalhaParticipantesRepository;
 import com.rpgvtt.montador_de_rpg_backend.repository.batalha.BatalhaRepository;
@@ -41,6 +42,12 @@ public class InstanciaResolver {
                 .map(porId::get)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public EntidadeInstancia buscarPorId(Long id) {
+        return instanciaRepo
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(EntidadeInstancia.class, id));
     }
 
     public EntidadeInstancia retornarAtiva(ExecucaoContexto ctx) {

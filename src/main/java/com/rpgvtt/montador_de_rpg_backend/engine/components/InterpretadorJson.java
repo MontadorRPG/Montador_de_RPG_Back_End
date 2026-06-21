@@ -1,8 +1,8 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.components;
 
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.Alvo;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.ResultadoExpressao;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Alvo;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.ResultadoExpressao;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.mecanica.Resolucao;
 import com.rpgvtt.montador_de_rpg_backend.repository.mecanica.ResolucaoRepository;
 import com.rpgvtt.montador_de_rpg_backend.service.mecanica.ResolutionEvaluator;

@@ -21,24 +21,22 @@ public class ProcedimentoContextoDTO {
     String erro;
 
     public static ProcedimentoContextoDTO from(ProcedimentoContexto ctx) {
-        if (ctx == null) {
-            return new ProcedimentoContextoDTO(Status.CONCLUIDO, null, 0, null, List.of(), null);
-        }
+        if (ctx == null) return new ProcedimentoContextoDTO(Status.CONCLUIDO, null, 0, null, List.of(), null);
 
-        // Collect dados from every ResultadoEtapa produced in this advance cycle.
-        // "This cycle" = everything added to historico since the last AGUARDANDO_INPUT.
-        // We track this by finding entries after the last null-dados entry.
         List<Object> resultadosCiclo = ctx.getHistorico().stream()
                 .map(ResultadoEtapa::dados)
                 .filter(Objects::nonNull)
                 .toList();
 
-        // The pending input request is the dados of the last AGUARDANDO_INPUT entry
+        boolean aguardando = ctx.getStatus() == Status.AGUARDANDO_INPUT
+                || ctx.getStatus() == Status.AGUARDANDO_INPUT_MULTIPLO ;
+
         Object inputSolicitado = null;
-        if (ctx.getStatus() == Status.CONCLUIDO && ctx.getEtapaPendente() != null) {
+        if (aguardando && ctx.getEtapaPendente() != null) {
             inputSolicitado = ctx.getHistorico().stream()
-                    .filter(r -> r.tipo() == ResultadoEtapa.TipoResultado.AGUARDANDO_INPUT)
-                    .reduce((first, second) -> second) // last one
+                    .filter(r -> r.tipo() == ResultadoEtapa.Tipo.AGUARDANDO_INPUT
+                            || r.tipo() == ResultadoEtapa.Tipo.AGUARDANDO_INPUT_MULTIPLO)
+                    .reduce((first, second) -> second)
                     .map(ResultadoEtapa::dados)
                     .orElse(null);
         }

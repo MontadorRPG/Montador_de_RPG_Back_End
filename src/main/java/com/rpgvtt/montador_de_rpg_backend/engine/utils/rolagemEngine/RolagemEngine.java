@@ -1,4 +1,4 @@
-package com.rpgvtt.montador_de_rpg_backend.engine.utils;
+package com.rpgvtt.montador_de_rpg_backend.engine.utils.rolagemEngine;
 
 import com.rpgvtt.montador_de_rpg_backend.dto.mecanica.ResultadoPoolDTO;
 import org.springframework.stereotype.Service;

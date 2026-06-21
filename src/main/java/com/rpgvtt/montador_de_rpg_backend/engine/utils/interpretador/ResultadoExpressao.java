@@ -1,4 +1,6 @@
-package com.rpgvtt.montador_de_rpg_backend.engine.utils;
+package com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador;
+
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Alvo;
 
 import java.util.List;
 import java.util.Map;

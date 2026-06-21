@@ -52,6 +52,28 @@ public class ParametroResolver {
         };
     }
 
+    public String resolverTexto(JsonNode origem, ExecucaoContexto ctx) {
+        if (origem == null || origem.isMissingNode() || origem.isNull()) return null;
+
+        // Compatibilidade: aceita string literal direta ("d6") sem exigir o envelope {fonte,chave}.
+        if (origem.isString()) return origem.asString();
+
+        String fonte = origem.path("fonte").asString("ausente");
+        return switch (fonte) {
+            case "ausente" -> null;
+            case "fixo"     -> origem.path("chave").asString();
+            case "atributo" -> resolverInstancia(origem, ctx)
+                    .getAtributosAtuais().path(origem.path("chave").asString()).asString(null);
+            case "item_equipado" -> {
+                Long idInst = origem.has("id_entidade") ? origem.get("id_entidade").asLong() : ctx.idInstanciaAtiva();
+                JsonNode val = itemResolver.atributoDoEquipado(
+                        idInst, origem.path("slot").asString(), origem.path("chave").asString());
+                yield val != null ? val.asString(null) : null;
+            }
+            default -> throw new IllegalArgumentException("fonte de texto desconhecida: " + fonte);
+        };
+    }
+
     /**
      * Soma um conjunto de atributos da instância — usado por pools de dados
      * (Forca + Briga em VtM, ou qualquer combinação de atributos por sistema).

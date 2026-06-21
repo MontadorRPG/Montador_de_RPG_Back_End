@@ -1,26 +1,22 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.primitivos.handlers;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
-import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.EtapaProcedimento;
 import com.rpgvtt.montador_de_rpg_backend.engine.components.InterpretadorJson;
 import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.EntityNotFoundException;
 import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.JsonFieldNotFoundException;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.EtapaExecutavel;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.EtapaHandler;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.InstanciaResolver;
-import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ResultadoEtapa;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.ContextoJsonNode;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.ContextoJsonNode;
 import com.rpgvtt.montador_de_rpg_backend.repository.entidade.EntidadeInstanciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Component

@@ -52,7 +52,14 @@ public class EfeitoAtivo {
     private JsonNode parametros;
 
     @NotNull
+    @Column(name = "momento_aplicacao")
+    private String momento;
+
+    @NotNull
     private Integer expiraEm;
+
+    @NotNull
+    private boolean ativo;
 
     @Column(name = "usos_restantes")
     private Integer usosRestantes;

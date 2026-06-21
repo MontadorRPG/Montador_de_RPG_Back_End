@@ -2,7 +2,7 @@ package com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.batalha.Batalha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Contexto;
 import com.rpgvtt.montador_de_rpg_backend.repository.batalha.BatalhaRepository;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.core.type.TypeReference;

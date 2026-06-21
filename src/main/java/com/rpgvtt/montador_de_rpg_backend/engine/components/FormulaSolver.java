@@ -1,7 +1,7 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.components;
 
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.Operations;
-import com.rpgvtt.montador_de_rpg_backend.engine.utils.Procedures;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.Operations;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.Procedures;
 
 import java.util.ArrayList;
 import java.util.List;
