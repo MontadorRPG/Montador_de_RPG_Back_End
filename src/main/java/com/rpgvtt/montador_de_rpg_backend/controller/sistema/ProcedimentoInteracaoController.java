@@ -21,10 +21,10 @@ public class ProcedimentoInteracaoController {
         return ProcedimentoContextoDTO.from(ctx);
     }
 
-    @PostMapping("/{idSessao}/responder")
-    public ProcedimentoContextoDTO responder(@PathVariable Long idSessao,
-                                             @RequestBody Map<String, Object> resposta) {
-        ProcedimentoContexto ctx = engine.responder(idSessao, resposta);
-        return ProcedimentoContextoDTO.from(ctx);
-    }
+    // @PostMapping("/{idSessao}/responder")
+    // public ProcedimentoContextoDTO responder(@PathVariable Long idSessao,
+    //                                          @RequestBody Map<String, Object> resposta) {
+    //     ProcedimentoContexto ctx = engine.responder(idSessao, resposta);
+    //     return ProcedimentoContextoDTO.from(ctx);
+    // }
 }

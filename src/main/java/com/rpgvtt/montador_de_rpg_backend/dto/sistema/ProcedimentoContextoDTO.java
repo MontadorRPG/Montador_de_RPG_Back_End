@@ -14,9 +14,7 @@ public class ProcedimentoContextoDTO {
     Status status;
     String nomeProcedimento;
     int etapaAtual;
-    
     Object inputSolicitado;
-
     List<Object> resultadosCiclo;
     String erro;
 
@@ -25,22 +23,28 @@ public class ProcedimentoContextoDTO {
             return new ProcedimentoContextoDTO(Status.CONCLUIDO, null, 0, null, List.of(), null);
         }
 
-        // Collect dados from every ResultadoEtapa produced in this advance cycle.
-        // "This cycle" = everything added to historico since the last AGUARDANDO_INPUT.
-        // We track this by finding entries after the last null-dados entry.
+        // Todos os dados do histórico deste ciclo
         List<Object> resultadosCiclo = ctx.getHistorico().stream()
                 .map(ResultadoEtapa::dados)
                 .filter(Objects::nonNull)
                 .toList();
 
-        // The pending input request is the dados of the last AGUARDANDO_INPUT entry
-        Object inputSolicitado = null;
-        if (ctx.getStatus() == Status.CONCLUIDO && ctx.getEtapaPendente() != null) {
-            inputSolicitado = ctx.getHistorico().stream()
-                    .filter(r -> r.tipo() == ResultadoEtapa.TipoResultado.AGUARDANDO_INPUT)
-                    .reduce((first, second) -> second) // last one
-                    .map(ResultadoEtapa::dados)
-                    .orElse(null);
+        // inputSolicitado: dados do último AGUARDANDO_INPUT no histórico
+        // (funciona para AGUARDANDO_INPUT e também se status for ERRO após aguardar)
+        Object inputSolicitado = ctx.getHistorico().stream()
+                .filter(r -> r.tipo() == ResultadoEtapa.TipoResultado.AGUARDANDO_INPUT)
+                .reduce((first, second) -> second) // pega o último
+                .map(ResultadoEtapa::dados)
+                .orElse(null);
+
+        // Mensagem de erro: tenta pegar do histórico, depois do status ERRO
+        String erro = null;
+        if (ctx.getStatus() == Status.ERRO) {
+            erro = ctx.getHistorico().stream()
+                    .filter(r -> r.tipo() == ResultadoEtapa.TipoResultado.ERRO)
+                    .reduce((first, second) -> second)
+                    .map(ResultadoEtapa::mensagem)
+                    .orElse("Erro desconhecido no procedimento");
         }
 
         return new ProcedimentoContextoDTO(
@@ -49,9 +53,7 @@ public class ProcedimentoContextoDTO {
                 ctx.getEtapaAtual(),
                 inputSolicitado,
                 resultadosCiclo,
-                ctx.getStatus() == Status.ERRO
-                        ? ctx.getHistorico().getLast().mensagem()
-                        : null
+                erro
         );
     }
 }

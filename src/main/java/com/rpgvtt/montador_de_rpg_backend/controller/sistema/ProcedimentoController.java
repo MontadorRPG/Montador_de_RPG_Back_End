@@ -7,6 +7,7 @@ import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoContextoDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoCreateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoUpdateDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sistema.RespostaEtapaDTO;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.ProcedimentoEngine;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
 import com.rpgvtt.montador_de_rpg_backend.service.sistema.ProcedimentoService;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -56,6 +58,15 @@ public class ProcedimentoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {
         service.deletar(id);
+    }
+
+    @PostMapping("/{id}/responder")
+    @Transactional
+    public ProcedimentoContextoDTO responder(@PathVariable Long id,
+                                            @RequestParam @NotNull Long idSessao,
+                                            @Valid @RequestBody RespostaEtapaDTO dto) {
+        ProcedimentoContexto ctx = engine.responder(idSessao, dto.getValor());
+        return ProcedimentoContextoDTO.from(ctx);
     }
 
     // ------------------ Etapas ---‑-----------------

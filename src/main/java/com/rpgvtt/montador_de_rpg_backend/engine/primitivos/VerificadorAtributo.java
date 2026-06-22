@@ -19,8 +19,8 @@ public class VerificadorAtributo {
         Sistema sistema = sistemaRepo.findById(idSistema)
                 .orElseThrow(() -> new EntityNotFoundException(Sistema.class, idSistema));
         JsonNode schemaAtributo = sistema.getSchemaAtributos().get(atributo);
-        int min = schemaAtributo.get("max").asInt();
-        int max = schemaAtributo.get("min").asInt();
+        int min = schemaAtributo.get("min").asInt();
+        int max = schemaAtributo.get("max").asInt();
         return !(valor < min) && !(valor > max);
     }
 }

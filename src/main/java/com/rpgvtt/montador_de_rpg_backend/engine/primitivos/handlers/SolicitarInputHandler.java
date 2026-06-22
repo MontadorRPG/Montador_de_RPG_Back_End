@@ -60,7 +60,8 @@ public class SolicitarInputHandler implements EtapaHandler {
             ));
         }
 
-        String escolha = ctx.getContexto().getStringOrThrow(ctxKey);
+        Object raw = ctx.getContexto().get(ctxKey, Object.class).orElse(null);
+        String escolha = raw != null ? raw.toString() : null;
 
         if ("PASSAR".equals(escolha) && podePassar) {
             return ResultadoEtapa.concluida(Map.of("campoPedido", campoPedido, "status", "passou"));
@@ -119,7 +120,15 @@ public class SolicitarInputHandler implements EtapaHandler {
     private List<String> jsonArrayParaLista(JsonNode node) {
         if (node == null || !node.isArray()) return List.of();
         List<String> out = new ArrayList<>();
-        node.forEach(n -> out.add(n.asString()));
+        node.forEach(n -> {
+            if (n.isObject()) {
+                // Tenta extrair o campo "valor"; se não existir, usa "label"
+                String valor = n.has("valor") ? n.get("valor").asString() : n.path("label").asString(null);
+                out.add(valor != null ? valor : n.toString());
+            } else {
+                out.add(n.asString());
+            }
+        });
         return out;
     }
 }

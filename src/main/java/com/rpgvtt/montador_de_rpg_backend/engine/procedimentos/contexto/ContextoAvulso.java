@@ -4,6 +4,7 @@ import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.Escopo
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Procedimento;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,8 @@ public class ContextoAvulso implements ExecucaoContexto {
     @Override public void setEscopo(EscopoInstancias escopo) {this.escopo = escopo; }
     @Override public boolean semInstancias()        { return false; }
     @Override public boolean temInstanciaUnica()    { return true; }
-
+    @Override public Procedimento getProcedimento() { return null; }
+    
     @Override
     public Long idInstanciaAtiva() {
         return ((EscopoInstancias.Unica) escopo).id();

@@ -47,6 +47,11 @@ public class ProcedimentoContexto implements ExecucaoContexto {
         this.contexto = new ContextoAccessor(contextoMap);
     }
 
+    @Override
+    public Procedimento getProcedimento() {
+        return this.procedimento;
+    }
+
     public ContextoAccessor getContexto() {
         if (contexto == null) contexto = new ContextoAccessor(contextoMap);
         return contexto;

@@ -43,7 +43,7 @@ public class Campanha {
 
     private String descricao;
 
-    private String urlImagem; // Icone de campanha
+    private String urlImagem;
 
     @NotNull
     private StatusCampanha Status;

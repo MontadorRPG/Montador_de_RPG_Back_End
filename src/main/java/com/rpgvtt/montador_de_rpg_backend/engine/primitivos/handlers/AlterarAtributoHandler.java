@@ -20,6 +20,7 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -93,14 +94,24 @@ public class AlterarAtributoHandler implements EtapaHandler {
     private double resolverQuantidade(JsonNode params, ExecucaoContexto ctx, EtapaExecutavel etapa) {
         if (params.has("source_key")) {
             String sourceKey = params.get("source_key").asString();
-            return ctx.getContexto().getInt(sourceKey)
-                    .orElseThrow(() -> new JsonFieldNotFoundException("source_key", etapa.getNome()))
-                    .doubleValue();
+    
+            // Lê como Object — aceita Integer, Double, String, Long etc.
+            Object raw = ctx.getContexto().get(sourceKey, Object.class).orElse(null);
+            if (raw == null) {
+                throw new JsonFieldNotFoundException(sourceKey, etapa.getNome());
+            }
+            try {
+                return Double.parseDouble(raw.toString().trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                    "Valor '" + raw + "' em '" + sourceKey + "' não é numérico (etapa: " + etapa.getNome() + ")"
+                );
+            }
         }
         if (params.has("quantidade")) {
             return params.get("quantidade").asDouble();
         }
-        throw new JsonFieldNotFoundException("quantidade", etapa.getNome());
+        throw new JsonFieldNotFoundException("quantidade ou source_key", etapa.getNome());
     }
 
     private EntidadeInstancia resolverInstancia(JsonNode params, ExecucaoContexto ctx) {

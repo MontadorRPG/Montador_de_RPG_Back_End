@@ -76,16 +76,25 @@ public class ProcedimentoEngine {
         return avancar(idSessao);
     }
 
-    public ProcedimentoContexto responder(Long idSessao,
-                                          Map<String, Object> inputJogador) {
+    public ProcedimentoContexto responder(Long idSessao, Object valor) {
         ProcedimentoContexto frame = sessaoCtx.frameAtivo(idSessao);
+        EtapaProcedimento etapaPendente = frame.getEtapaPendente();
+        if (etapaPendente == null) {
+            throw new IllegalStateException("Nenhuma etapa aguardando input");
+        }
 
-        frame.getContexto().putAll(inputJogador);
+        JsonNode params = etapaPendente.getParametrosEtapa();
+        String chave = params.get("salvar_em").asString();
+
+        // Armazena o valor como veio (String, Integer etc.)
+        frame.getContexto().put(chave, valor);
         frame.setAguardandoInput(false);
         frame.setEtapaPendente(null);
 
+        // NÃO avança manualmente – o avancar() fará isso ao reprocessar a etapa
         return avancar(idSessao);
     }
+
 
     private ProcedimentoContexto avancar(Long idSessao) {
 

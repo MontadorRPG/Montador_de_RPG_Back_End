@@ -6,4 +6,5 @@ public interface EtapaExecutavel {
     String getNome();
     String getTipoEtapa();
     JsonNode getParametrosEtapa();
+    
 }
