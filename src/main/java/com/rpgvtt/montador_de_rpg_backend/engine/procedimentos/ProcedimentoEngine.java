@@ -22,6 +22,11 @@ public class ProcedimentoEngine {
     private final HandlerRegistry registry;
     private final InstanciaResolver instanciaResolver;
 
+    public ProcedimentoContexto getContextoAtivo(Long idSessao) {
+        
+        return null;
+    }
+
     public ProcedimentoContexto iniciarComInstancia(Long idProcedimento, Long idSessao, Long idInstancia) {
         ProcedimentoContexto raiz = loader.carregar(
                 LoadRequest.raiz(idProcedimento, idSessao, EscopoInstancias.unica(idInstancia)));
@@ -71,6 +76,7 @@ public class ProcedimentoEngine {
         // NÃO avança manualmente – o avancar() fará isso ao reprocessar a etapa
         return avancar(idSessao);
     }
+
 
     // public ProcedimentoContexto responder(Long idSessao, Long idPersonagem, Map<String, Object> input) {
     //     ProcedimentoContexto frame = sessaoContexto.frameAtivo(idSessao);
