@@ -148,6 +148,14 @@ public class CampanhaService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public List<CampanhaResponseDTO> listarPorUsuario(Long usuarioId) {
+        return campanhaRepository.findByUsuarioId(usuarioId)
+                .stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
     private CampanhaResponseDTO mapToResponseDTO(Campanha campanha) {
         return new CampanhaResponseDTO(
                 campanha.getId(),

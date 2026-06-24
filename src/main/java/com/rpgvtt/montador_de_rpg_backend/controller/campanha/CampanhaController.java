@@ -60,4 +60,10 @@ public class CampanhaController {
         campanhaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<CampanhaResponseDTO>> listarPorUsuario(
+            @PathVariable Long usuarioId) {
+        return ResponseEntity.ok(campanhaService.listarPorUsuario(usuarioId));
+    }
 }
