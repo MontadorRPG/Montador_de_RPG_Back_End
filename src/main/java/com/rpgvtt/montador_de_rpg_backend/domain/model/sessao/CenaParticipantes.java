@@ -2,7 +2,9 @@ package com.rpgvtt.montador_de_rpg_backend.domain.model.sessao;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -13,6 +15,7 @@ import tools.jackson.databind.JsonNode;
 // Tabela de relação entre entidades instanciadas e cena.
 // talvez mude para ser da sessão ao inves da cena.
 
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,6 +34,9 @@ public class CenaParticipantes {
     @MapsId(value = "idCena")
     @JoinColumn(name = "id_cena")
     private Cena cena;
+
+    @NotNull
+    private Integer lado;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @MapsId(value = "idInstancia")

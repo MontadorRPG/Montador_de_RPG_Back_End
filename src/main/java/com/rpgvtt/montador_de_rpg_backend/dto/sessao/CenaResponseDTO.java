@@ -1,19 +1,15 @@
 package com.rpgvtt.montador_de_rpg_backend.dto.sessao;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import tools.jackson.databind.JsonNode;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CenaResponseDTO {
-    private Long id;
-    private Long sessaoId;
-    private JsonNode mapaJson;
-    private String urlMapa;
-    private Integer ordem;
+public record CenaResponseDTO(
+    Long id,
+    Long sessaoId,
+    JsonNode mapaJson,
+    String urlMapa,
+    Integer ordem,
+    String tipo,
+    JsonNode estado
+) {
+
+    
 }

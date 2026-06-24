@@ -1,8 +1,13 @@
 package com.rpgvtt.montador_de_rpg_backend.websocket;
 
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.MensagemCreateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoContextoDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.websocket.ChatEventDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.websocket.ChatMessageDTO;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.ProcedimentoEngine;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
+import com.rpgvtt.montador_de_rpg_backend.service.sessao.CenaService;
+import com.rpgvtt.montador_de_rpg_backend.service.sessao.MensagemLogService;
 import com.rpgvtt.montador_de_rpg_backend.service.sessao.SessaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.security.Principal;
+import java.time.Instant;
 import java.util.Map;
 
 import static com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto.Status.AGUARDANDO_INPUT_MULTIPLO;
@@ -25,7 +31,9 @@ public class SessaoWebSocketController {
 
     private final ProcedimentoEngine engine;
     private final SessaoService sessaoService;
+    private final CenaService cenaService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final MensagemLogService mensagemLogService;
 
     /**
      * Player sends an action or responds to an input request.
@@ -82,6 +90,54 @@ public class SessaoWebSocketController {
             messagingTemplate.convertAndSend(
                     "/topic/sessao/" + idSessao, resposta);
         }
+    }
+
+    @MessageMapping("/sessao/{idSessao}/mover")
+    public void moverToken(@DestinationVariable Long idSessao,
+                        @Payload Map<String, Object> payload,
+                        Principal principal) {
+        Long idUsuario = Long.parseLong(principal.getName());
+        Long idInstancia = sessaoService.resolverInstanciaDoJogador(idSessao, idUsuario);
+
+        // payload: { "x": 10, "y": 20 }
+        double x = Double.parseDouble(payload.get("x").toString());
+        double y = Double.parseDouble(payload.get("y").toString());
+
+        // Atualiza posição do token na cena (ex.: guarda no JSON da CenaParticipantes)
+        cenaService.atualizarPosicaoToken(idSessao, idInstancia, x, y);
+
+        // Broadcast da nova posição para TODOS na sessão
+        Map<String, Object> update = Map.of(
+            "tipo", "MOVIMENTO",
+            "idInstancia", idInstancia,
+            "x", x, "y", y
+        );
+        messagingTemplate.convertAndSend("/topic/sessao/" + idSessao, (Object) update);
+    }
+
+    @MessageMapping("/sessao/{idSessao}/chat")
+    public void enviarMensagem(@DestinationVariable Long idSessao,
+                            @Payload ChatMessageDTO mensagem,
+                            Principal principal) {
+        Long idUsuario = Long.parseLong(principal.getName());
+        String apelido = sessaoService.buscarApelidoDoUsuario(idUsuario);
+
+        // Salvar no banco...
+        MensagemCreateDTO dto = new MensagemCreateDTO();
+        dto.setSessaoId(idSessao);
+        dto.setUsuarioId(idUsuario);
+        dto.setConteudo(mensagem.content());
+        mensagemLogService.criar(dto);
+
+        // Broadcast
+        ChatEventDTO evento = new ChatEventDTO(
+            apelido,
+            mensagem.content(),
+            "CHAT",
+            Instant.now()
+        );
+        messagingTemplate.convertAndSend(
+            "/topic/sessao/" + idSessao + "/chat", (Object) evento);
     }
 
     /**

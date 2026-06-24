@@ -11,6 +11,6 @@ public record ProcedimentoResponseDTO(
         String nome,
         String descricao,
         String tipo,
-        JsonNode confgsGeral,
+        JsonNode configsGeral,
         List<EtapaProcedimentoResponseDTO> etapas  // sempre retorna as etapas junto
 ) {}

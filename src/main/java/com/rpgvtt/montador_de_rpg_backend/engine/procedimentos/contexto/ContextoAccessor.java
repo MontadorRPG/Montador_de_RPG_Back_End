@@ -85,6 +85,34 @@ public class ContextoAccessor {
         throw new ContextoTipoException(chave, "List<Long>", v);
     }
 
+    @SuppressWarnings ("unchecked")
+    public List<Object> getList(String chave) {
+        Object v = dados.get(chave);
+
+        if (v == null) {
+            List<Object> novaLista = new ArrayList<>();
+            dados.put(chave, novaLista);
+            return novaLista;
+        }
+
+        if (v instanceof List<?> l) {
+
+            if (l instanceof ArrayList) {
+                return (List<Object>) l;
+            }
+            
+            List<Object> listaMutavel = new ArrayList<>(l);
+            dados.put(chave, listaMutavel);
+            return listaMutavel;
+        }
+
+        throw new IllegalStateException("O campo '" + chave + "' não é uma lista. Tipo encontrado: " + v.getClass().getName());
+    }
+
+    public Set<String> keySet() {
+        return this.dados.keySet();
+    }
+
     public <T> Optional<T> get(String chave, Class<T> tipo) {
         Object v = dados.get(chave);
         if (v == null)          return Optional.empty();

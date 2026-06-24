@@ -9,5 +9,5 @@ public record ProcedimentoCreateDTO(
         @NotBlank(message = "O nome é obrigatório") String nome,
         String descricao,
         String tipo,
-        @NotNull(message = "As configurações gerais são obrigatórias") JsonNode confgsGeral
+        @NotNull(message = "As configurações gerais são obrigatórias") JsonNode configsGeral
 ) {}

@@ -53,16 +53,16 @@ public class InterpretadorJson {
     private ResultadoExpressao resolverConstante(JsonNode expr) {
         JsonNode valorNode = expr.get("valor");
         if (valorNode == null) return ResultadoExpressao.nulo();
-
-        if (valorNode.isNumber()) {
-            return ResultadoExpressao.numero(valorNode.asDouble());
+        if (valorNode.isArray()) {
+            List<Object> lista = new ArrayList<>();
+            for (JsonNode item : valorNode) {
+                lista.add(converterParaObjetoJava(item));
+            }
+            return ResultadoExpressao.lista(lista);
         }
-        if (valorNode.isString()) {
-            return ResultadoExpressao.texto(valorNode.asString());
-        }
-        if (valorNode.isBoolean()) {
-            return ResultadoExpressao.booleano(valorNode.asBoolean());
-        }
+        if (valorNode.isNumber()) return ResultadoExpressao.numero(valorNode.asDouble());
+        if (valorNode.isString()) return ResultadoExpressao.texto(valorNode.asString());
+        if (valorNode.isBoolean()) return ResultadoExpressao.booleano(valorNode.asBoolean());
         return ResultadoExpressao.nulo();
     }
 

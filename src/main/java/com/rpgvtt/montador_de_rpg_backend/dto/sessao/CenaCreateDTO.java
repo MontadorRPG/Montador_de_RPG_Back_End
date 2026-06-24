@@ -15,4 +15,6 @@ public class CenaCreateDTO {
     private JsonNode mapaJson;
     private String urlMapa;
     private Integer ordem;
+    private String tipo;
+    private JsonNode estado;
 }

@@ -11,7 +11,10 @@ import tools.jackson.databind.JsonNode;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CenaUpdateDTO {
+    private Long sessaoId;
     private JsonNode mapaJson;
     private String urlMapa;
     private Integer ordem;
+    private String tipo;
+    private JsonNode estado;
 }

@@ -1,13 +1,15 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto;
 
-import com.rpgvtt.montador_de_rpg_backend.domain.model.batalha.Batalha;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Cena;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Contexto;
-import com.rpgvtt.montador_de_rpg_backend.repository.batalha.BatalhaRepository;
+import com.rpgvtt.montador_de_rpg_backend.repository.sessao.CenaRepository;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,13 +19,14 @@ public class InterpretadorContexto implements Contexto {
 
     private final ProcedimentoContexto ctx;
     private final InstanciaResolver    instanciaResolver;
-    private final BatalhaRepository    batalhaRepo;
-    private final JsonMapper mapper;
+    private final CenaRepository       cenaRepo;
+    private final JsonMapper           mapper;
 
     // Lazy caches
     private List<EntidadeInstancia> inimigosCache;
     private List<EntidadeInstancia> aliadosCache;
     private List<EntidadeInstancia> participantesCache;
+
 
     /**
      * Paths exposed:
@@ -60,8 +63,8 @@ public class InterpretadorContexto implements Contexto {
             return ctx.getIteracaoAtual();
         }
 
-        if (caminho.startsWith("batalha.")) {
-            return resolverBatalha(caminho.substring("batalha.".length()));
+        if (caminho.startsWith("cena.")) {
+            return resolverCena(caminho.substring("cena.".length()));
         }
 
         if (caminho.startsWith("contexto.")) {
@@ -76,8 +79,6 @@ public class InterpretadorContexto implements Contexto {
             return inst.getAtributosAtuais().get(atributo);
         }
 
-        // Plain list names — used by caminho_coringa (ctx.get("inimigos"))
-        // and also by filtro's lista when written as caminho "inimigos"
         if ("inimigos".equals(caminho) || "inimigos.*".equals(caminho)) {
             return asAtributosMap(getInimigos());
         }
@@ -92,45 +93,73 @@ public class InterpretadorContexto implements Contexto {
     }
 
     /**
-     * Converts instances to a list of their atributos_atuais maps.
-     * This is what filtro and caminho_coringa iterate over —
-     * each "item" inside a condition is a Map<String, Object> of attributes.
-     */
+      * Converts instances to a list of their atributos_atuais maps.
+      * This is what filtro and caminho_coringa iterate over —
+      * each "item" inside a condition is a Map<String, Object> of attributes.
+      */
     private List<Map<String, Object>> asAtributosMap(List<EntidadeInstancia> instancias) {
         return instancias.stream()
                 .map(i -> mapper.convertValue(
-                        i.getAtributosAtuais(), new TypeReference<Map<String, Object>>() {}
-                ))
+                        i.getAtributosAtuais(), new TypeReference<Map<String, Object>>() {}))
                 .toList();
     }
 
-    private Object resolverBatalha(String sub) {
-        Long idBatalha = ctx.getContexto().getLong("id_batalha").orElse(null);
-        if (idBatalha == null) return null;
-        Batalha batalha = batalhaRepo.findById(idBatalha).orElse(null);
-        if (batalha == null) return null;
+    private Object resolverCena(String sub) {
+        Long idCena = ctx.getContexto().getLong("id_cena").orElse(null);
+        if (idCena == null) return null;
+        Cena cena = cenaRepo.findById(idCena).orElse(null);
+        if (cena == null) return null;
+        JsonNode estado = cena.getEstado();
+        if (estado == null) return null;
+
         return switch (sub) {
-            case "rodada" -> batalha.getRodadaAtual();
-            case "status" -> batalha.getStatus().name();
-            default       -> null;
+            case "rodada" -> estado.has("rodada") ? estado.get("rodada").asInt() : null;
+            case "status" -> {
+                if (estado.has("status")) {
+                    yield estado.get("status").asText();
+                }
+                if (estado.has("combateAtivo")) {
+                    yield estado.get("combateAtivo").asBoolean() ? "EM_ANDAMENTO" : "CONCLUIDO";
+                }
+                yield null;
+            }
+            // 🆕 Novos campos
+            case "turnoAtualId" -> estado.has("turnoAtualId") && !estado.get("turnoAtualId").isNull()
+                    ? estado.get("turnoAtualId").asLong() : null;
+            case "jaAgiramIds" -> estado.has("jaAgiramIds")
+                    ? converterJsonArrayParaListaDeLong(estado.get("jaAgiramIds")) : null;
+            case "dadosDisponiveis" -> estado.has("dadosDisponiveis")
+                    ? estado.get("dadosDisponiveis") : null;
+            default -> null;
         };
+    }
+
+    // Método auxiliar para converter um JsonNode array em List<Long>
+    private List<Long> converterJsonArrayParaListaDeLong(JsonNode arrayNode) {
+        List<Long> lista = new ArrayList<>();
+        if (arrayNode != null && arrayNode.isArray()) {
+            for (JsonNode n : arrayNode) {
+                if (n.isNumber()) lista.add(n.asLong());
+            }
+        }
+        return lista;
     }
 
     private List<EntidadeInstancia> getInimigos() {
         if (inimigosCache == null)
-            inimigosCache = instanciaResolver.resolverDeFonte("batalha.inimigos", ctx);
+            inimigosCache = instanciaResolver.resolverDeFonte("cena.inimigos", ctx);
         return inimigosCache;
     }
 
     private List<EntidadeInstancia> getAliados() {
         if (aliadosCache == null)
-            aliadosCache = instanciaResolver.resolverDeFonte("batalha.aliados", ctx);
+            aliadosCache = instanciaResolver.resolverDeFonte("cena.aliados", ctx);
         return aliadosCache;
     }
 
     private List<EntidadeInstancia> getParticipantes() {
         if (participantesCache == null)
-            participantesCache = instanciaResolver.resolverDeFonte("batalha.todos", ctx);
+            participantesCache = instanciaResolver.resolverDeFonte("cena.todos", ctx);
         return participantesCache;
     }
 }

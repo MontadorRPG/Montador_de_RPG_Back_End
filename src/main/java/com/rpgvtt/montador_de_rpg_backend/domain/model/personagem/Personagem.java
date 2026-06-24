@@ -60,8 +60,8 @@ public class Personagem {
     @Column(name = "criado_em")
     private LocalDateTime criadoEm;
 
-    public JsonNode getAtributos() {
-        throw new UnsupportedOperationException("Unimplemented method 'getAtributos'");
-    }
+    // public JsonNode getAtributos() {
+    //     throw new UnsupportedOperationException("Unimplemented method 'getAtributos'");
+    // }
 
 }

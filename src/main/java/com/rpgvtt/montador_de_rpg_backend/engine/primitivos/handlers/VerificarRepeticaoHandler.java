@@ -10,8 +10,9 @@ import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.Procedim
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ResultadoEtapa;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.contexto.Contexto;
+import com.rpgvtt.montador_de_rpg_backend.repository.sessao.CenaRepository;
 import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.ResultadoExpressao;
-import com.rpgvtt.montador_de_rpg_backend.repository.batalha.BatalhaRepository;
+// import com.rpgvtt.montador_de_rpg_backend.repository.batalha.cenaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
@@ -25,7 +26,7 @@ public class VerificarRepeticaoHandler implements EtapaHandler {
 
     private final InterpretadorJson interpretador;
     private final InstanciaResolver instanciaResolver;
-    private final BatalhaRepository batalhaRepo;
+    private final CenaRepository cenaRepo;
     private final JsonMapper mapper;
 
     @Override
@@ -54,7 +55,7 @@ public class VerificarRepeticaoHandler implements EtapaHandler {
             return ResultadoEtapa.erro("REPETIR_SE sem campo 'condicao'");
         }
 
-        Contexto contexto = new InterpretadorContexto(ctx, instanciaResolver, batalhaRepo, mapper);
+        Contexto contexto = new InterpretadorContexto(ctx, instanciaResolver, cenaRepo, mapper);
         ResultadoExpressao resultado = interpretador.interpretar(expressaoCondicao, contexto);
 
         if (resultado.getTipo() != ResultadoExpressao.TipoResultado.BOOLEANO) {

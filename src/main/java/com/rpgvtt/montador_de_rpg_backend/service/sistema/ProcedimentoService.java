@@ -37,7 +37,7 @@ public class ProcedimentoService {
         procedimento.setNome(dto.nome());
         procedimento.setDescricao(dto.descricao());
         procedimento.setTipo(dto.tipo());
-        procedimento.setConfigsGeral(dto.confgsGeral());
+        procedimento.setConfigsGeral(dto.configsGeral());
         procedimento.setStatus(StatusProcedimento.SESSAO_ATIVA);
 
         return mapearParaDTO(procedimentoRepository.save(procedimento));
@@ -77,7 +77,7 @@ public class ProcedimentoService {
         if (dto.nome() != null)        procedimento.setNome(dto.nome());
         if (dto.descricao() != null)   procedimento.setDescricao(dto.descricao());
         if (dto.tipo() != null)        procedimento.setTipo(dto.tipo());
-        if (dto.confgsGeral() != null) procedimento.setConfigsGeral(dto.confgsGeral());
+        if (dto.configsGeral() != null) procedimento.setConfigsGeral(dto.configsGeral());
 
         return mapearParaDTO(procedimentoRepository.save(procedimento));
     }

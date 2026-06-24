@@ -6,5 +6,5 @@ public record ProcedimentoUpdateDTO(
         String nome,
         String descricao,
         String tipo,
-        JsonNode confgsGeral
+        JsonNode configsGeral
 ) {}

@@ -1,12 +1,21 @@
 package com.rpgvtt.montador_de_rpg_backend.engine.primitivos.handlers;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.entidade.EntidadeInstancia;
+import com.rpgvtt.montador_de_rpg_backend.engine.components.InterpretadorJson;
+import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.InstanciaResolver;
+import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.InterpretadorContexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ProcedimentoContexto;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.contexto.ResultadoEtapa;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.EtapaExecutavel;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.EtapaHandler;
 import com.rpgvtt.montador_de_rpg_backend.engine.procedimentos.interfaces.ExecucaoContexto;
+import com.rpgvtt.montador_de_rpg_backend.engine.utils.interpretador.ResultadoExpressao;
+import com.rpgvtt.montador_de_rpg_backend.repository.sessao.CenaRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Map;
 
@@ -14,31 +23,53 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VerificarCondicaoHandler implements EtapaHandler {
 
+    private final InstanciaResolver instanciaResolver;
+    private final InterpretadorJson interpretador;
+    private final CenaRepository cenaRepo;
+    private final JsonMapper mapper;
+
+
     @Override
     public String tipoEtapa() { return "VERIFICAR_CONDICAO"; }
 
     @Override
     public ResultadoEtapa executar(EtapaExecutavel etapa, ExecucaoContexto ctx) {
-        // Extrai a condição dos parâmetros da etapa
-        JsonNode condicao = etapa.getParametrosEtapa().path("condicao");
-        return executar(etapa, ctx, condicao);
+        JsonNode condicaoNode = etapa.getParametrosEtapa().get("condicao");
+        return verificar(condicaoNode, ctx);
     }
 
-    // Método sobrecarregado para ser chamado por outros handlers
-    @Override
-    public ResultadoEtapa executar(EtapaExecutavel etapa, ExecucaoContexto ctx, JsonNode condicao) {
+    public ResultadoEtapa verificar(JsonNode condicaoNode, ExecucaoContexto ctx) {
+        if (condicaoNode == null || condicaoNode.isMissingNode()) {
+            return ResultadoEtapa.concluida(Map.of("status", "sem_condicao"));
+        }
+
+        // Se for uma expressão do InterpretadorJson (objeto com "tipo"), delegue
+        if (condicaoNode.isObject() && condicaoNode.has("tipo")) {
+            InterpretadorContexto intCtx = new InterpretadorContexto(
+                (ProcedimentoContexto) ctx, instanciaResolver, cenaRepo, mapper);
+            ResultadoExpressao resultado = interpretador.interpretar(condicaoNode, intCtx);
+            boolean ok = resultado.comoBooleano();
+            if (!ok) {
+                return ResultadoEtapa.concluida(Map.of("status", "condicao_falhou"));
+            }
+            return ResultadoEtapa.concluida(Map.of("status", "condicao_ok"));
+        }
+
+        return verificarLegado(condicaoNode, ctx);
+    }
+
+    private ResultadoEtapa verificarLegado(JsonNode condicao, ExecucaoContexto ctx) {
         if (condicao == null || condicao.isMissingNode()) {
             return ResultadoEtapa.concluida(Map.of("status", "sem_condicao"));
         }
 
-        // Jackson 3.x: use properties() no lugar de fields()
         for (Map.Entry<String, JsonNode> entry : condicao.properties()) {
             String campo = entry.getKey();
             JsonNode valorEsperado = entry.getValue();
 
             Object valorReal = resolverValor(campo, ctx);
             if (valorReal == null) {
-                return ResultadoEtapa.erro("Campo '" + campo + "' não encontrado para verificação de condição");
+                return ResultadoEtapa.erro("Campo '" + campo + "' não encontrado");
             }
 
             boolean ok;
@@ -67,18 +98,25 @@ public class VerificarCondicaoHandler implements EtapaHandler {
     }
 
     private Object resolverValor(String campo, ExecucaoContexto ctx) {
-        // Primeiro, tenta obter do contexto
+        // Tenta obter do contexto
         if (ctx.getContexto().containsKey(campo)) {
             return ctx.getContexto().get(campo, Object.class).orElse(null);
         }
-        // Depois, tenta de instância ativa (se houver)
+        // Tenta obter da instância ativa
         if (!ctx.semInstancias()) {
-            // Precisamos do InstanciaResolver, mas para não injetar aqui, fazemos de forma simplificada:
-            // Supomos que a instância ativa já está disponível via ctx.idInstanciaAtiva()
-            // Vou usar o método que já existe em ExecucaoContexto (que talvez precise ser expandido)
-            // Alternativa: injetar InstanciaResolver, mas para manter o exemplo simples, vamos deixar assim:
-            // Retornamos null, pois a condição pode ser buscada de outra forma.
-            return null;
+            try {
+                EntidadeInstancia instancia = instanciaResolver.retornarAtiva(ctx);
+                JsonNode atributos = instancia.getAtributosAtuais();
+                if (atributos.has(campo)) {
+                    JsonNode valor = atributos.get(campo);
+                    // Converte para tipo Java apropriado
+                    if (valor.isBoolean()) return valor.asBoolean();
+                    if (valor.isNumber()) return valor.asDouble();
+                    return valor.asString();
+                }
+            } catch (Exception e) {
+                // Instância não encontrada, retorna null
+            }
         }
         return null;
     }
