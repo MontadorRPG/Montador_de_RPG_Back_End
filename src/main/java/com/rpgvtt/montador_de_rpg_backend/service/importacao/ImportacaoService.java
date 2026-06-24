@@ -168,14 +168,14 @@ public class ImportacaoService {
         return comPropriedades;
     }
 
-    private JsonNode garantirConfigsGeral(JsonNode dados) {
-        if (dados.has("configsGeral") && !dados.get("configsGeral").isNull()) {
-            return dados;
-        }
-        ObjectNode comConfig = (ObjectNode) dados.deepCopy();
-        comConfig.set("configsGeral", mapper.createObjectNode());
-        return comConfig;
-    }
+    // private JsonNode garantirConfigsGeral(JsonNode dados) {
+    //     if (dados.has("configsGeral") && !dados.get("configsGeral").isNull()) {
+    //         return dados;
+    //     }
+    //     ObjectNode comConfig = (ObjectNode) dados.deepCopy();
+    //     comConfig.set("configsGeral", mapper.createObjectNode());
+    //     return comConfig;
+    // }
 
 
 }

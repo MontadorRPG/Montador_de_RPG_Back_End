@@ -1,6 +1,8 @@
 package com.rpgvtt.montador_de_rpg_backend.controller.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Cena;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.AtributoAlteradoDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.ConviteDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.EntradaSessaoDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.SessaoDTO;
@@ -8,6 +10,7 @@ import com.rpgvtt.montador_de_rpg_backend.security.UsuarioPrincipal;
 import com.rpgvtt.montador_de_rpg_backend.service.sessao.SessaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

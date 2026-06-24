@@ -1,5 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.controller.sessao;
 
+import com.rpgvtt.montador_de_rpg_backend.domain.model.sessao.Cena;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaCreateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaUpdateDTO;
@@ -44,6 +45,13 @@ public class CenaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/sessoes/{idSessao}/cena")
+    public ResponseEntity<CenaResponseDTO> cenaAtiva(@PathVariable Long idSessao) {
+        Cena cena = service.buscarCenaAtiva(idSessao); // implemente no service
+        return ResponseEntity.ok(service.toDTO(cena));
     }
 
 }

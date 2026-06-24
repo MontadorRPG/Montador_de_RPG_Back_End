@@ -12,6 +12,7 @@ import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaCreateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.CenaUpdateDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sessao.IniciarCenaRequestDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.sessao.ParticipanteDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.sistema.ProcedimentoContextoDTO;
 import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.EntityNotFoundException;
 // import com.rpgvtt.montador_de_rpg_backend.engine.exceptions.EntityNotFoundException;
@@ -104,33 +105,52 @@ public class CenaService {
 
     @Transactional
     public void atualizarPosicaoToken(Long idSessao, Long idInstancia, double x, double y) {
-        // Busca todas as cenas da sessão ordenadas pela maior ordem (a mais recente primeiro)
-        List<Cena> cenas = cenaRepo.findBySessao_IdOrderByOrdemDesc(idSessao);
-        
+        // Tenta primeiro na cena mais recente (a ativa)
+        Optional<Cena> optCenaAtiva = cenaRepo.findTopBySessao_IdOrderByOrdemDesc(idSessao);
+
         CenaParticipantes participante = null;
-        Cena cenaAtiva = null;
-        
-        for (Cena cena : cenas) {
+        Cena cenaDoParticipante = null;
+
+        if (optCenaAtiva.isPresent()) {
+            Cena cena = optCenaAtiva.get();
             CenaParticipantesKey key = new CenaParticipantesKey(cena.getId(), idInstancia);
-            Optional<CenaParticipantes> opt = cenaParticipantesRepo.findById(key);
-            if (opt.isPresent()) {
-                participante = opt.get();
-                cenaAtiva = cena;
-                break;
+            Optional<CenaParticipantes> optPart = cenaParticipantesRepo.findById(key);
+            if (optPart.isPresent()) {
+                participante = optPart.get();
+                cenaDoParticipante = cena;
             }
         }
-        
-        if (participante == null || cenaAtiva == null) {
-            throw new EntityNotFoundException(CenaParticipantes.class, 
+
+        // Se não estava na cena mais recente, busca em todas as cenas da sessão
+        if (participante == null) {
+            List<Cena> todasCenas = cenaRepo.findBySessao_IdOrderByOrdemDesc(idSessao);
+            for (Cena cena : todasCenas) {
+                CenaParticipantesKey key = new CenaParticipantesKey(cena.getId(), idInstancia);
+                Optional<CenaParticipantes> optPart = cenaParticipantesRepo.findById(key);
+                if (optPart.isPresent()) {
+                    participante = optPart.get();
+                    cenaDoParticipante = cena;
+                    break;
+                }
+            }
+        }
+
+        if (participante == null) {
+            throw new EntityNotFoundException(CenaParticipantes.class,
                     "Instância " + idInstancia + " não está em nenhuma cena da sessão " + idSessao);
         }
 
-        ObjectNode posicao = participante.getPosicao() instanceof ObjectNode on 
+        ObjectNode posicao = participante.getPosicao() instanceof ObjectNode on
                 ? on : mapper.createObjectNode();
         posicao.put("x", x);
         posicao.put("y", y);
         participante.setPosicao(posicao);
         cenaParticipantesRepo.save(participante);
+    }
+
+    public Cena buscarCenaAtiva(Long idSessao) {
+        return cenaRepo.findTopBySessao_IdOrderByOrdemDesc(idSessao)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhuma cena ativa na sessão " + idSessao));
     }
 
 
@@ -331,16 +351,28 @@ public class CenaService {
 
     // ========== DTO Builders ==========
 
-    private CenaResponseDTO toDTO(Cena c) {
+    public CenaResponseDTO toDTO(Cena c) {
         Long sessaoId = c.getSessao() != null ? c.getSessao().getId() : null;
+
+        List<ParticipanteDTO> participantes = c.getParticipantes().stream()
+            .map(p -> new ParticipanteDTO(
+                p.getEntidadeInstancia().getId(),
+                p.getEntidadeInstancia().getNome(),
+                p.getEntidadeInstancia().getTipo(),
+                p.getPosicao(),
+                p.getEntidadeInstancia().getAtributosAtuais()
+            ))
+            .toList();
+
         return new CenaResponseDTO(
-                c.getId(),
-                sessaoId,
-                c.getMapaJson(),
-                c.getUrlMapa(),
-                c.getOrdem(),
-                c.getTipo(),
-                c.getEstado()
+            c.getId(),
+            sessaoId,
+            c.getMapaJson(),
+            c.getUrlMapa(),
+            c.getOrdem(),
+            c.getTipo(),
+            c.getEstado(),
+            participantes
         );
     }
 

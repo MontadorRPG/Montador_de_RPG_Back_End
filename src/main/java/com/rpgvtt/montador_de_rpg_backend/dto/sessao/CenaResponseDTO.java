@@ -1,4 +1,6 @@
 package com.rpgvtt.montador_de_rpg_backend.dto.sessao;
+import java.util.List;
+
 import tools.jackson.databind.JsonNode;
 
 public record CenaResponseDTO(
@@ -8,8 +10,6 @@ public record CenaResponseDTO(
     String urlMapa,
     Integer ordem,
     String tipo,
-    JsonNode estado
-) {
-
-    
-}
+    JsonNode estado,
+    List<ParticipanteDTO> participantes
+) {}
