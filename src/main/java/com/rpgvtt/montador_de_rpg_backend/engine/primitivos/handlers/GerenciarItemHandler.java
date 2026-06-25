@@ -16,8 +16,8 @@ import com.rpgvtt.montador_de_rpg_backend.repository.entidade.EntidadeRelacaoRep
 import com.rpgvtt.montador_de_rpg_backend.service.personagem.ItemEfeitoService;
 import lombok.RequiredArgsConstructor;
 
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 public class GerenciarItemHandler implements EtapaHandler {
 
     private final JsonMapper mapper;
@@ -39,8 +38,28 @@ public class GerenciarItemHandler implements EtapaHandler {
     private final ItemEfeitoService itemEfeitoService;
     private final EntidadeRelacaoRepository entidadeRelacaoRepo;
     private final EntidadeInstanciaRepository entidadeInstanciaRepo;
-    @Lazy @Autowired
-    private final HandlerRegistry handlers;
+    
+    private HandlerRegistry handlers;
+
+    public GerenciarItemHandler(JsonMapper mapper,
+                                InstanciaResolver instanciaResolver,
+                                ItemResolver itemResolver,
+                                ItemEfeitoService itemEfeitoService,
+                                EntidadeRelacaoRepository entidadeRelacaoRepo,
+                                EntidadeInstanciaRepository entidadeInstanciaRepo) {
+        this.mapper = mapper;
+        this.instanciaResolver = instanciaResolver;
+        this.itemResolver = itemResolver;
+        this.itemEfeitoService = itemEfeitoService;
+        this.entidadeRelacaoRepo = entidadeRelacaoRepo;
+        this.entidadeInstanciaRepo = entidadeInstanciaRepo;
+    }
+
+    @Lazy
+    @Autowired
+    public void setHandlers(HandlerRegistry handlers) {
+        this.handlers = handlers;
+    }
 
     @Override
     public String tipoEtapa() { return "GERENCIAR_ITEM"; }
