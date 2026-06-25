@@ -150,7 +150,31 @@ public class CenaService {
 
     public Cena buscarCenaAtiva(Long idSessao) {
         return cenaRepo.findTopBySessao_IdOrderByOrdemDesc(idSessao)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhuma cena ativa na sessão " + idSessao));
+                // Se não encontrar, chama o método para criar a cena padrão
+                .orElseGet(() -> criarCenaNarrativaPadrao(idSessao));
+    }
+
+    // 2. Adicione este método auxiliar logo abaixo
+    private Cena criarCenaNarrativaPadrao(Long idSessao) {
+        Sessao sessao = sessaoRepo.findById(idSessao)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Sessão não encontrada: " + idSessao));
+
+        Cena cena = new Cena();
+        cena.setSessao(sessao);
+        cena.setTipo("NARRATIVA"); // Define o tipo padrão
+        cena.setOrdem(0);
+        cena.setMapaJson(null);
+        cena.setUrlMapa(null);
+
+        // Inicializa o estado com as variáveis básicas de uma cena narrativa
+        ObjectNode estado = mapper.createObjectNode();
+        estado.put("combateAtivo", false);
+        estado.put("descricao", "A aventura aguarda...");
+        cena.setEstado(estado);
+
+        log.info("Nenhuma cena ativa encontrada. Criando cena NARRATIVA padrão para a sessão {}", idSessao);
+        
+        return cenaRepo.save(cena);
     }
 
 
