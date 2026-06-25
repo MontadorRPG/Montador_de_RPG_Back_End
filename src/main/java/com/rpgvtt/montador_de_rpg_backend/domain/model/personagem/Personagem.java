@@ -37,7 +37,7 @@ public class Personagem {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     @JoinColumn
     private EntidadeInstancia instancia;
 
