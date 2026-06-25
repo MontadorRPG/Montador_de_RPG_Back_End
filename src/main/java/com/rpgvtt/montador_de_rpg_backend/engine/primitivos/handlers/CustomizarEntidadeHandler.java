@@ -61,7 +61,8 @@ public class CustomizarEntidadeHandler implements EtapaHandler {
         EntidadeSistema entidade = entidadeSistemaRepo.findById(idEntidadeSistema)
                 .orElseThrow(() -> new IllegalArgumentException("Entidade não encontrada"));
 
-        JsonNode tabelaNode = entidade.getPropriedades().path("tabela_customizacao");
+        String chaveTabela = params.path("chave_tabela").asString("tabela_customizacao");
+        JsonNode tabelaNode = entidade.getPropriedades().path(chaveTabela);
         if (tabelaNode.isMissingNode()) {
             return ResultadoEtapa.concluida(Map.of("status", "sem_tabela"));
         }

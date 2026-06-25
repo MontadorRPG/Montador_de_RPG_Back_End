@@ -32,4 +32,5 @@ public interface CampanhaRepository extends JpaRepository<Campanha, Long> {
        @Query("SELECT c FROM Campanha c JOIN CampanhaUsuario cu ON cu.id.idCampanha = c.id " +
               "WHERE cu.id.idUsuario = :usuarioId")
        List<Campanha> findByUsuarioId(@Param("usuarioId") Long usuarioId);
+
 }

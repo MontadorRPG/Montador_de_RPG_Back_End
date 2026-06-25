@@ -136,31 +136,35 @@ public class GerenciarItemHandler implements EtapaHandler {
     }
 
     private ResultadoEtapa dispararCustomizacoes(EntidadeInstancia item, ExecucaoContexto ctx) {
-        JsonNode customizacoes = item.getEntidadeSistema()
-                .getPropriedades().path("customizacoes");
-        if (customizacoes.isMissingNode() || !customizacoes.isArray()) return null;
+        JsonNode propriedades = item.getEntidadeSistema().getPropriedades();
+        if (propriedades == null || propriedades.isMissingNode()) return null;
 
-        for (JsonNode c : customizacoes) {
-            String chave = c.get("chave").asString();
-            if (ctx.getContexto().containsKey(chave + "_concluida")) continue;
+        for (Map.Entry<String, JsonNode> entry : propriedades.properties()) {
+            if (!entry.getKey().startsWith("tabela_customizacao_")) continue;
 
-            // Monta uma etapa RESOLVER apontando para a Resolucao do item
+            String chaveTabela = entry.getKey();
+            String chaveRolagem = "customizacao_" + item.getId() + "_" + chaveTabela;
+            String chaveConcluida = chaveRolagem + "_concluida";
+
+            if (ctx.getContexto().containsKey(chaveConcluida)) continue;
+
             EtapaProcedimento sub = new EtapaProcedimento();
-            sub.setTipoEtapa("RESOLVER");
-            sub.setNome("Customizar " + chave);
+            sub.setTipoEtapa("CUSTOMIZAR_ENTIDADE");
+            sub.setNome("Customizar " + item.getEntidadeSistema().getNome() + " — " + chaveTabela);
             sub.setParametrosEtapa(mapper.valueToTree(Map.of(
-                    "id_resolucao", c.get("id_resolucao").asLong(),
-                    "salvar_em",    chave
+                    "id_entidade_sistema", item.getEntidadeSistema().getId(),
+                    "chave_rolagem",       chaveRolagem,
+                    "chave_tabela",        chaveTabela
             )));
 
-            ResultadoEtapa resultado = handlers.get("RESOLVER").executar(sub, ctx);
+            ResultadoEtapa resultado = handlers.get("CUSTOMIZAR_ENTIDADE").executar(sub, ctx);
 
             if (resultado.tipo() == ResultadoEtapa.Tipo.AGUARDANDO_INPUT
             || resultado.tipo() == ResultadoEtapa.Tipo.ERRO) {
                 return resultado;
             }
 
-            ctx.getContexto().put(chave + "_concluida", true);
+            ctx.getContexto().put(chaveConcluida, true);
         }
         return null;
     }
