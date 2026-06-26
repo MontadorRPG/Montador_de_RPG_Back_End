@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.rpgvtt.montador_de_rpg_backend.domain.enums.PapeisUsuario;
+import com.rpgvtt.montador_de_rpg_backend.domain.enums.StatusCampanha;
 import com.rpgvtt.montador_de_rpg_backend.repository.campanha.CampanhaRepository;
 import com.rpgvtt.montador_de_rpg_backend.repository.sessao.CenaRepository;
 import com.rpgvtt.montador_de_rpg_backend.repository.sessao.SessaoRepository;
@@ -33,7 +34,7 @@ public class DashboardController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long idUsuario = ((UsuarioPrincipal) auth.getPrincipal()).getId();
 
-        long campanhasAtivas = campanhaRepo.countByUsuarioIdAndStatus(idUsuario, "ATIVA");
+        long campanhasAtivas = campanhaRepo.countByUsuarioIdAndStatus(idUsuario, StatusCampanha.ATIVA);
         LocalDate hoje = LocalDate.now();
         long sessoesEsteMes = sessaoRepo.countByUsuarioIdAndMesAtual(idUsuario, hoje.getMonthValue(), hoje.getYear());
         long jogadores = campanhaRepo.countJogadoresNasMesmasCampanhas(idUsuario);
