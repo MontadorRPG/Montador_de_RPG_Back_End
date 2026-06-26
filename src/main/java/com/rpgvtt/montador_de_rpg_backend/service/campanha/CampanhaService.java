@@ -186,9 +186,9 @@ public class CampanhaService {
         return campanhaUsuarioRepository.findByCampanhaId(campanhaId)
                 .stream()
                 .map(cu -> new CampanhaParticipanteResponseDTO(
-                        cu.getCampanhaId(),
-                        cu.getUsuarioId(),
-                        cu.getPapel(),
+                        cu.getId().getIdCampanha(),
+                        cu.getId().getIdUsuario(),
+                        cu.getPapel().name(),
                         cu.getEntrouEm()
                 ))
                 .toList();

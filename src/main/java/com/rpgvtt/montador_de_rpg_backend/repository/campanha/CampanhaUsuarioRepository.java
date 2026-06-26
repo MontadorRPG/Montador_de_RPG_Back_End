@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Repository
@@ -17,7 +16,7 @@ public interface CampanhaUsuarioRepository extends JpaRepository<CampanhaUsuario
 
     Optional<CampanhaUsuario> findByCampanhaIdAndUsuarioIdAndPapel(Long idCampanha, Long idUsuario, PapeisUsuario papel);
 
-    List<CampanhaParticipanteResponseDTO> findByCampanhaId(Long idCampanha);
+    List<CampanhaUsuario> findByCampanhaId(Long campanhaId);
 
     Optional<CampanhaUsuario> findByCampanhaIdAndUsuarioId(Long idCampanha, Long idUsuario);
 }

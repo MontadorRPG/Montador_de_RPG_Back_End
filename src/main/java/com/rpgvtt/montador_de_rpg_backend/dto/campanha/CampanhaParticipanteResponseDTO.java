@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CampanhaParticipanteResponseDTO {
-    private Long campanhaId;
-    private Long usuarioId;
+    private Long idCampanha;
+    private Long idUsuario;
     private String papel;
     private LocalDateTime entrouEm;
 }
