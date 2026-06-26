@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record PersonagemCreateDTO(
         @NotNull(message = "O ID do usuário é obrigatório") Long usuarioId,
-        @NotNull(message = "O ID da campanha é obrigatório") Long campanhaId,
+        Long campanhaId,
         @NotNull(message = "O ID da instância é obrigatório") Long instanciaId,
         @NotBlank(message = "O nome é obrigatório") String nome,
         String historia,
