@@ -17,7 +17,7 @@ O **Montador de RPG Back-End** é um servidor que:
 
 - Um mestre cria uma campanha de Mythic Bastionland e convida jogadores.
 - Ao iniciar a sessão, o backend carrega as regras do sistema.
-- Um jogador clica em "Atacar" com a espada; o backend interpreta a ação, aplica modificadores, rola dados e retorna o resultado.
+- Um jogador clica em "Atacar" com a espada; o backend interpreta a ação, aplica modificadores, pede para rolar dados, aplica verificações e retorna o resultado.
 - Durante a criação de personagem, o backend guia o jogador por etapas de escolha de classe, rolagem de atributos e concessão de itens iniciais.
 - Tudo acontece em tempo real através do WebSocket.
 
@@ -217,21 +217,273 @@ O WebSocket STOMP é registrado em:
 - `/topic/sessao/{id}/chat` — mensagens do chat
 - `/user/queue/sessao/{id}` — mensagens privadas para um usuário
 
-## Exemplo de importação de conteúdo
+## Exemplo de sistema completo (Mythic Bastionland)
 
-Você pode importar um sistema completo com classes, itens, habilidades e procedimentos usando um único JSON:
+Este JSON define um sistema completo com esquema de atributos e entidades.  
+Envie `POST /api/sistemas` com este corpo para criar o sistema.
+
+```json
+{
+    "nome": "Mythic Bastionland",
+    "descricao": "Sistema baseado no pre-print de Fev 2025",
+    "criadorId": 1,
+    "configuracao": {},
+    "schemaAtributos": {
+        "VIG": { "label": "Vigor", "tipo": "int", "min": 0, "max": 19 },
+        "CLA": { "label": "Clareza", "tipo": "int", "min": 0, "max": 19 },
+        "SPI": { "label": "Espírito", "tipo": "int", "min": 0, "max": 19 },
+        "GD": { "label": "Guarda", "tipo": "int", "min": 0, "max": 99 },
+        "armadura": { "label": "Armadura", "tipo": "int", "min": 0, "max": 99},
+        "gloria": { "label": "Glória", "tipo": "int", "min": 0, "max": 12 },
+        "fatigado": { "label": "Fatigado", "tipo": "bool" },
+        "exausto": { "label": "Exausto", "tipo": "bool" },
+        "exposto": { "label": "Exposto", "tipo": "bool" },
+        "comprometido": { "label": "Comprometido", "tipo": "bool" },
+        "machucado": {"label": "Machucado", "tipo": "bool"},
+        "mortalmente_machucado": {"label": "Mortalmente Machucado", "tipo": "bool"},
+        "atropelar": {"label": "Atropelar", "tipo": "string"},
+        "moveu": {"label": "Se moveu", "tipo": "bool"},
+        "morto": {"label": "Morto", "tipo": "bool"},
+        "tipo_inicio": {"label": "Tipo incício", "tipo": "string"},
+        "pesado": { "label": "Pesado", "tipo": "bool" },
+        "longo": { "label": "Longo", "tipo": "bool" },
+        "lento": { "label": "Lento", "tipo": "bool" },
+        "rajada": { "label": "Rajada (Blast)", "tipo": "bool" },
+        "usos": { "label": "Usos", "tipo": "int", "min": 0, "max": 99},
+        "dado": { "label": "Dado", "tipo": "string" },
+        "pressagio": { "label": "Presságio", "tipo": "int", "min": 0, "max": 6 }
+    },
+    "schemaEntidades": {
+        "npc": {
+            "label": "NPC",
+            "atributos": [
+                "VIG", "CLA", "SPI", "GD",
+                "armadura", "fatigado", "exausto", "exposto", "comprometido", 
+                "machucado","mortalmente_machucado", "morto", "moveu"
+            ],
+            "obrigatorios": ["VIG", "CLA", "SPI", "GD"]
+        },
+        "montaria": {
+            "label": "Montaria",
+            "atributos": [
+                "VIG", "CLA", "SPI", "GD", "atropelar",
+                "machucado","mortalmente_machucado", "morto"
+            ],
+            "obrigatorio": ["VIG", "CLA", "SPI", "GD"]
+        },
+        "jogador": {
+            "label": "Jogador",
+            "atributos": [
+                "VIG", "CLA", "SPI", "GD",
+                "armadura", "fatigado", "exausto", "exposto", "comprometido",
+                "gloria", "machucado", "mortalmente_machucado", "morto", "moveu",  
+                "tipo_inicio"
+            ],
+            "obrigatorios": ["VIG", "CLA", "SPI", "GD"]
+        },
+        "item": {
+            "label": "Item",
+            "atributos": [
+                "pesado", "longo", "lento", "comprometido", "rajada",
+                "usos", "dado", "armadura"
+            ],
+            "obrigatorios": ["dado"]
+        },
+        "mito": {
+            "label": "Mito",
+            "atributos": ["pressagio"],
+            "obrigatorios": ["pressagio"]
+        },
+        "habilidade": {
+            "label": "Habilidade",
+            "atributos": ["usos", "dado"],
+            "obrigatorios": []
+        },
+        "cavaleiro": {
+            "label": "Cavaleiro (Classe)",
+            "atributos": [
+            "VIG", "CLA", "SPI", "GD",
+            "armadura", "fatigado", "exausto", "exposto", "comprometido",
+            "machucado", "mortalmente_machucado", "morto", "moveu"
+            ],
+            "obrigatorios": ["VIG", "CLA", "SPI", "GD"]
+        }
+    }
+}
+```
+
+## Exemplos de importação de conteúdo
+
+Você pode importar um sistema completo com classes, itens, habilidades e procedimentos usando um único JSON. Os aliases (ex.: `@estrela`, `@cavaleiro_moeda`) são resolvidos automaticamente, permitindo referências circulares sem precisar saber IDs do banco.
+
+### Item simples
 
 ```json
 {
   "definicoes": [
-    { "alias": "@cavaleiro_moeda", "tipo": "entidade", "dados": { ... } },
-    { "alias": "@proc_criacao", "tipo": "procedimento", "dados": { ... } },
-    ...
+    {
+      "alias": "@estrela",
+      "tipo": "entidade",
+      "dados": {
+        "sistemaId": 1,
+        "tipo": "item",
+        "nome": "Estrela da Manhã",
+        "atributos": { "dado": "d8", "pesado": true }
+      }
+    }
   ]
 }
 ```
 
-Os aliases (ex.: `@estrela`, `@cavaleiro_moeda`) são resolvidos automaticamente, permitindo referências circulares sem precisar saber IDs do banco.
+### Habilidade com procedimento
+
+```json
+{
+  "definicoes": [
+    {
+      "alias": "@habilidade_sorte",
+      "tipo": "entidade",
+      "dados": {
+        "sistemaId": 1,
+        "tipo": "habilidade",
+        "nome": "Jogado à Sorte",
+        "descricao": "Jogue uma moeda. Cara: o alvo é morto. Coroa: você é morto.",
+        "propriedades": { "procedimento_id": "@proc_sorte" }
+      }
+    },
+    {
+      "alias": "@proc_sorte",
+      "tipo": "procedimento",
+      "dados": {
+        "sistemaId": 1,
+        "nome": "Jogado à Sorte",
+        "tipo": "HABILIDADE",
+        "etapas": [
+          {
+            "ordem": 1,
+            "nome": "Jogar moeda",
+            "tipoEtapa": "SOLICITAR_ROLAGEM",
+            "parametrosEtapa": {
+              "campoPedido": "Jogue uma moeda (1 = Cara, 2 = Coroa)",
+              "salvar_em": "moeda",
+              "formula": "1d2"
+            }
+          },
+          {
+            "ordem": 2,
+            "nome": "Resolver moeda",
+            "tipoEtapa": "RESOLVER",
+            "parametrosEtapa": { "id_resolucao": "@resolucao_moeda" }
+          }
+        ]
+      }
+    },
+    {
+      "alias": "@resolucao_moeda",
+      "tipo": "resolucao",
+      "dados": {
+        "sistemaId": 1,
+        "nome": "Resolução da Moeda",
+        "tipo": "DADO_UNICO",
+        "parametros": {
+          "chave_rolagem": "moeda",
+          "tabela": [
+            { "valor": 1, "acao": { "tipo": "chamar_procedimento", "id_procedimento": "@proc_matar_alvo" } },
+            { "valor": 2, "acao": { "tipo": "chamar_procedimento", "id_procedimento": "@proc_matar_si" } }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+### Classe de cavaleiro com itens e habilidades
+
+```json
+{
+  "definicoes": [
+    {
+      "alias": "@cavaleiro_moeda",
+      "tipo": "entidade",
+      "dados": {
+        "sistemaId": 1,
+        "tipo": "cavaleiro",
+        "nome": "Cavaleiro da Moeda",
+        "descricao": "Em prata ou ouro, as decisões decidiram o destino.",
+        "atributos": {
+          "VIG": 0, "CLA": 0, "SPI": 0, "GD": 0,
+          "armadura": 0, "fatigado": false, "exausto": false,
+          "exposto": false, "comprometido": false, "morto": false
+        },
+        "propriedades": {
+          "itens_iniciais": ["@estrela", "@escudo", "@alazao", "@flauta"],
+          "habilidades": ["@habilidade_sorte"]
+        }
+      }
+    }
+  ]
+}
+```
+
+### Procedimento de criação de personagem (trecho)
+
+```json
+{
+  "definicoes": [
+    {
+      "alias": "@proc_criacao_personagem",
+      "tipo": "procedimento",
+      "dados": {
+        "sistemaId": 1,
+        "nome": "Criação de Personagem: Knight",
+        "tipo": "CRIACAO_PERSONAGEM",
+        "configsGeral": {
+          "start_types": {
+            "Errante":    { "virtude_dado": "d12+d6", "guard_dado": "d6" },
+            "Cortesão":   { "virtude_dado": "d12+6",  "guard_dado": "2d6" },
+            "Governante": { "virtude_dado": "d12+6",  "guard_dado": "d6+6" }
+          }
+        },
+        "etapas": [
+          {
+            "ordem": 1,
+            "nome": "Escolher tipo de início",
+            "tipoEtapa": "SOLICITAR_INPUT",
+            "parametrosEtapa": {
+              "campo_pedido": "Escolha o tipo de início da Companhia",
+              "salvar_em": "start_type",
+              "opcoes_estatico": [
+                { "label": "Errante",    "valor": "Errante",    "descricao": "d6 GD • d12+d6 em cada Virtude" },
+                { "label": "Cortesão",   "valor": "Cortesão",   "descricao": "2d6 GD • d12+6 em cada Virtude" },
+                { "label": "Governante", "valor": "Governante", "descricao": "d6+6 GD • d12+6 em cada Virtude" }
+              ]
+            }
+          },
+          {
+            "ordem": 2,
+            "nome": "Rolar Vigor (VIG)",
+            "tipoEtapa": "SOLICITAR_ROLAGEM",
+            "parametrosEtapa": {
+              "chave_confgs": "virtude_dado",
+              "salvar_em": "valor_vig",
+              "campo_pedido": "Role os dados para VIG"
+            }
+          },
+          {
+            "ordem": 3,
+            "nome": "Aplicar VIG",
+            "tipoEtapa": "ALTERAR_ATRIBUTO",
+            "parametrosEtapa": { "atributo": "VIG", "operacao": "set", "source_key": "valor_vig" }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+> **Nota:** Os aliases (`@nome`) são substituídos pelos IDs reais gerados durante a importação. A ordem de processamento resolve automaticamente as dependências (entidades primeiro, depois procedimentos e resoluções, depois classes que referenciam outras).
 
 ## Testes
 
