@@ -13,6 +13,7 @@ import com.rpgvtt.montador_de_rpg_backend.domain.model.sistema.Sistema;
 import com.rpgvtt.montador_de_rpg_backend.domain.model.usuario.Usuario;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.AdicionarJogadorDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaCreateDTO;
+import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaPapelDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaParticipanteResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaResponseDTO;
 import com.rpgvtt.montador_de_rpg_backend.dto.campanha.CampanhaSessaoTemporariaDTO;
@@ -189,6 +190,14 @@ public class CampanhaService {
 
        
         campanhaUsuarioRepository.deleteById(keyRemover);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<CampanhaPapelDTO> obterMinhaRole(Long campanhaId, Long usuarioId) {
+        CampanhaUsuarioKey key = new CampanhaUsuarioKey(campanhaId, usuarioId);
+        
+        return campanhaUsuarioRepository.findById(key)
+                .map(cu -> new CampanhaPapelDTO(cu.getPapel().name()));
     }
 
     @Transactional

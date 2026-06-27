@@ -88,7 +88,6 @@ public class CampanhaController {
         return ResponseEntity.ok(campanhaService.listarParticipantes(campanhaId));
     }
 
-    // Adicione este método ao seu CampanhaController
     @DeleteMapping("/{campanhaId}/jogadores/{usuarioId}")
     public ResponseEntity<Void> removerJogador(
             @PathVariable Long campanhaId,
@@ -97,6 +96,16 @@ public class CampanhaController {
         
         campanhaService.removerJogador(campanhaId, principal.getId(), usuarioId);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/{campanhaId}/minha-role")
+    public ResponseEntity<CampanhaPapelDTO> obterMinhaRole(
+            @PathVariable Long campanhaId,
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        
+        return campanhaService.obterMinhaRole(campanhaId, principal.getId())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     // ── Personagem do jogador nesta campanha ───────────────────────
