@@ -60,6 +60,15 @@ public class CampanhaController {
         return ResponseEntity.noContent().build();
     }
 
+    // CampanhaController.java
+    @DeleteMapping("/{id}/temporaria")
+    public ResponseEntity<Void> deletarTemporaria(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        campanhaService.deletarTemporaria(id, principal.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<CampanhaResponseDTO>> listarPorUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(campanhaService.listarPorUsuario(usuarioId));

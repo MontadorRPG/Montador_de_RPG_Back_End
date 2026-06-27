@@ -167,6 +167,29 @@ public class CampanhaService {
     }
 
     @Transactional
+    public void deletarTemporaria(Long id, Long usuarioId) {
+        Campanha campanha = campanhaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Campanha não encontrada"));
+
+        // só deleta se for temporária (nome começa com "Temp-Char-")
+        if (!campanha.getNome().startsWith("Temp-Char-")) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Esta campanha não é temporária");
+        }
+
+        entityManager.createQuery(
+                "DELETE FROM CampanhaUsuario cu WHERE cu.id.idCampanha = :id")
+                .setParameter("id", id).executeUpdate();
+
+        entityManager.createQuery(
+                "DELETE FROM Sessao s WHERE s.campanha.id = :id")
+                .setParameter("id", id).executeUpdate();
+
+        campanhaRepository.deleteById(id);
+    }
+
+    @Transactional
     public CampanhaParticipanteResponseDTO adicionarJogador(Long campanhaId, AdicionarJogadorDTO dto) {
         if (!campanhaRepository.existsById(campanhaId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada");
