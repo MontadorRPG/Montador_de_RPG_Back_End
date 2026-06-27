@@ -23,45 +23,45 @@ import java.util.List;
 @Entity
 @Table(name = "Entidade_Sistema")
 public class EntidadeSistema {
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "entSist_seq"
-    )
-    @SequenceGenerator(
-            name = "entSist_seq",
-            sequenceName = "entSist_sequence",
-            allocationSize = 1
-    )
-    @Column(name = "id_entidade")
-    private Long id;
+        @Id
+        @GeneratedValue(
+                strategy = GenerationType.SEQUENCE,
+                generator = "entSist_seq"
+        )
+        @SequenceGenerator(
+                name = "entSist_seq",
+                sequenceName = "entSist_sequence",
+                allocationSize = 1
+        )
+        @Column(name = "id_entidade")
+        private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sistema")
-    private Sistema sistema;
+        @ManyToOne(optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_sistema")
+        private Sistema sistema;
 
-    @NotNull
-    private String tipo;
+        @NotNull
+        private String tipo;
 
-    @NotNull
-    private String nome;
+        @NotNull
+        private String nome;
 
-    private String descricao;
+        private String descricao;
 
-    private String urlImagem;
+        private String urlImagem;
 
-    @NotNull
-    @JdbcTypeCode (SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode atributos;
+        @NotNull
+        @JdbcTypeCode (SqlTypes.JSON)
+        @Column(columnDefinition = "jsonb")
+        private JsonNode atributos;
 
-    @NotNull
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode propriedades;
+        @NotNull
+        @JdbcTypeCode(SqlTypes.JSON)
+        @Column(columnDefinition = "jsonb")
+        private JsonNode propriedades;
 
-    @OneToMany(mappedBy = "entidadeSistema")
-    private List<EntidadeInstancia> entidadeInstancias;
+        @OneToMany(mappedBy = "entidadeSistema")
+        private List<EntidadeInstancia> entidadeInstancias;
 
 //     @OneToMany(mappedBy = "entidadeSistema")
 //     private List<EntidadeEfeito> entidadeEfeitos;

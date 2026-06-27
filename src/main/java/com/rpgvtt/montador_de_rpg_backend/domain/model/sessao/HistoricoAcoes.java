@@ -23,36 +23,36 @@ import java.time.LocalDateTime;
 @Table(name = "Historico_Acoes")
 public class HistoricoAcoes {
 
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "histAc_seq"
-    )
-    @SequenceGenerator(
-            name = "histAc_seq",
-            sequenceName = "histAc_sequence",
-            allocationSize = 1
-    )
-    private Long id;
+        @Id
+        @GeneratedValue(
+                strategy = GenerationType.SEQUENCE,
+                generator = "histAc_seq"
+        )
+        @SequenceGenerator(
+                name = "histAc_seq",
+                sequenceName = "histAc_sequence",
+                allocationSize = 1
+        )
+        private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sessao")
-    private Sessao sessao;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_sessao")
+        private Sessao sessao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_campanha")
-    private Campanha campanha;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_campanha")
+        private Campanha campanha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_entidade")
-    private EntidadeInstancia entidadeInstancia;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_entidade")
+        private EntidadeInstancia entidadeInstancia;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime momento;
+        @CreationTimestamp
+        @Column(nullable = false, updatable = false)
+        private LocalDateTime momento;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode resultado;
+        @JdbcTypeCode(SqlTypes.JSON)
+        @Column(columnDefinition = "jsonb")
+        private JsonNode resultado;
 
 }

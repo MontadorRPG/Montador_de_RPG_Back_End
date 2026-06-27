@@ -46,6 +46,7 @@ public class Campanha {
         private String urlImagem;
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         @Column(name = "status")
         private StatusCampanha status;
 

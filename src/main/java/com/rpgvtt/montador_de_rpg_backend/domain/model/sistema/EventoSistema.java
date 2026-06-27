@@ -20,31 +20,31 @@ import tools.jackson.databind.JsonNode;
 @Entity
 @Table(name = "Evento_Sistema")
 public class EventoSistema {
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "evento_sistema_seq"
-    )
-    @SequenceGenerator(
-            name = "evento_sistema_seq",
-            sequenceName = "evento_sistema_sequence",
-            allocationSize = 1
-    )
-    @Column(name = "id_evento")
-    private Long id;
+        @Id
+        @GeneratedValue(
+                strategy = GenerationType.SEQUENCE,
+                generator = "evento_sistema_seq"
+        )
+        @SequenceGenerator(
+                name = "evento_sistema_seq",
+                sequenceName = "evento_sistema_sequence",
+                allocationSize = 1
+        )
+        @Column(name = "id_evento")
+        private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sistema")
-    private Sistema sistema;
+        @ManyToOne(optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_sistema")
+        private Sistema sistema;
 
-    @NotNull
-    private String nome;
+        @NotNull
+        private String nome;
 
-    private String descricao;
+        private String descricao;
 
-    @NotNull
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode payloadSchema;
+        @NotNull
+        @JdbcTypeCode(SqlTypes.JSON)
+        @Column(columnDefinition = "jsonb")
+        private JsonNode payloadSchema;
 
 }

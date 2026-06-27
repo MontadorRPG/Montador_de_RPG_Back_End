@@ -21,44 +21,44 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 public class Personagem {
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "pers_seq"
-    )
-    @SequenceGenerator(
-            name = "pers_seq",
-            sequenceName = "pers_sequence",
-            allocationSize = 1
-    )
-    private Long id;
+        @Id
+        @GeneratedValue(
+                strategy = GenerationType.SEQUENCE,
+                generator = "pers_seq"
+        )
+        @SequenceGenerator(
+                name = "pers_seq",
+                sequenceName = "pers_sequence",
+                allocationSize = 1
+        )
+        private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario")
-    private Usuario usuario;
+        @ManyToOne(optional = false, fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_usuario")
+        private Usuario usuario;
 
-    @OneToOne (cascade = CascadeType.ALL)
-    @JoinColumn
-    private EntidadeInstancia instancia;
+        @OneToOne (cascade = CascadeType.ALL)
+        @JoinColumn
+        private EntidadeInstancia instancia;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_campanha")
-    private Campanha campanha;
+        @ManyToOne(optional = true, fetch = FetchType.LAZY)
+        @JoinColumn(name = "id_campanha")
+        private Campanha campanha;
 
-    private String historia;
+        private String historia;
 
-    private boolean ativo;
+        private boolean ativo;
 
-    private String aparencia;
+        private String aparencia;
 
-    private String urlImagem;
+        private String urlImagem;
 
-    @Column(name = "notas_jogador")
-    private String notasJogador;
+        @Column(name = "notas_jogador")
+        private String notasJogador;
 
-    @CreationTimestamp
-    @Column(name = "criado_em")
-    private LocalDateTime criadoEm;
+        @CreationTimestamp
+        @Column(name = "criado_em")
+        private LocalDateTime criadoEm;
 
     // public JsonNode getAtributos() {
     //     throw new UnsupportedOperationException("Unimplemented method 'getAtributos'");

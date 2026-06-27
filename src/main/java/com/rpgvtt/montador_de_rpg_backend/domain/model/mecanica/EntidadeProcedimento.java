@@ -36,7 +36,7 @@ public class EntidadeProcedimento {
     )
     @Column(name = "id_entidade_procedimento")
     private Long id;
-    
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn (name = "id_sistema")
     private Sistema sistema;
@@ -52,7 +52,7 @@ public class EntidadeProcedimento {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_procedimento")
     private Procedimento procedimento;
-    
+
     // Se é automatico (sistema consegue realizar tudo), parcial (Tem que pedir algo ao usuário) ou narrativo (o sistema não consegue fazer)
     private String processamento;
 
